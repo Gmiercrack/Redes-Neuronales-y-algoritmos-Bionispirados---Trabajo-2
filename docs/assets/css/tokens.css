@@ -1,0 +1,19 @@
+/* Tokens independientes de la paleta */
+:root {
+  --f-titulo: "Fraunces", "Iowan Old Style", Georgia, serif;
+  --f-cuerpo: "Source Serif 4", "Iowan Old Style", Georgia, serif;
+  --f-ui:     "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono:   "IBM Plex Mono", ui-monospace, Consolas, monospace;
+
+  --fs-cuerpo: clamp(1.0625rem, 1.01rem + 0.22vw, 1.16rem);
+  --fs-h1: clamp(2.1rem, 1.5rem + 2.6vw, 3.1rem);
+  --fs-h2: clamp(1.5rem, 1.25rem + 1vw, 1.95rem);
+  --fs-h3: clamp(1.18rem, 1.08rem + 0.45vw, 1.38rem);
+
+  --ancho-pagina: 76rem;
+  --ancho-indice: 15.5rem;
+  --alto-cabecera: 3.25rem;
+  --radio: 6px;
+
+  --e1: .25rem; --e2: .5rem; --e3: 1rem; --e4: 1.5rem; --e5: 2.5rem; --e6: 4rem;
+}

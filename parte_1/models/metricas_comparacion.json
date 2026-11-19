@@ -2,7 +2,7 @@
   "modelo_referencia": {
     "nombre": "Regresi\u00f3n Log\u00edstica",
     "parametros": 55,
-    "tiempo_segundos": 1.3665082454681396,
+    "tiempo_segundos": 2.5564446449279785,
     "metricas_validacion": {
       "AUC": 0.6820300183078513,
       "Gini": 0.3640600366157025,
@@ -26,7 +26,7 @@
     ],
     "parametros": 5633,
     "epocas": 25,
-    "tiempo_segundos": 13.738476991653442,
+    "tiempo_segundos": 19.581337928771973,
     "metricas_validacion": {
       "AUC": 0.6827494094390659,
       "Gini": 0.36549881887813185,
@@ -40,5 +40,5 @@
       "Brier": 0.18470129259378393
     }
   },
-  "mejor_modelo": "MLP"
+  "mejor_modelo": "mlp_inicial"
 }

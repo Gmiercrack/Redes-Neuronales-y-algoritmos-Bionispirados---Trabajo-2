@@ -1,0 +1,17 @@
+/* Paleta definitiva: Lino y grafito (tema claro) */
+:root {
+  color-scheme: light;
+
+  --papel:  #F1EEE8;
+  --lamina: #FBFAF7;
+  --tinta:  #2A2A2A;
+  --tenue:  #65635E;
+  --filete: #D6D2C8;
+  --acento: #2F5D50;
+  --pd:     #3A5A80;
+  --lgd:    #A24C24;
+  --el:     #6A4C7A;
+
+  --ok:     #2E6B3F;
+  --aviso:  #8A5A00;
+}

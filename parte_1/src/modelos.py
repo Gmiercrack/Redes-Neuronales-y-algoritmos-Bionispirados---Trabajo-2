@@ -161,23 +161,32 @@ def main():
     # -------------------------------------------------------------------------
     # 3. Archivo de Intercambio para Parte 2 (LGD) y Pérdida Esperada
     # -------------------------------------------------------------------------
-    mejor_modelo = "MLP" if met_val_mlp["AUC"] >= met_val_lr["AUC"] else "Regresion Logistica"
-    mejor_prob_test = prob_test_mlp if mejor_modelo == "MLP" else prob_test_lr
+    mejor_modelo = "mlp_inicial" if met_val_mlp["AUC"] >= met_val_lr["AUC"] else "regresion_logistica"
+    mejor_prob_test = prob_test_mlp if mejor_modelo == "mlp_inicial" else prob_test_lr
 
     df_intercambio = pd.DataFrame({
         "id": test_ids["id"].values,
-        "pd": mejor_prob_test
+        "pd": np.round(mejor_prob_test, 6),
+        "modelo": mejor_modelo,
     })
 
     ruta_intercambio = ruta_datos / "predicciones_pd_prueba.csv"
-    df_intercambio.to_csv(ruta_intercambio, index=False)
+    df_intercambio[["id", "pd"]].to_csv(ruta_intercambio, index=False)
+
+    # Escribir en el archivo oficial compartido intercambio/pd_prueba.csv
+    ruta_oficial = Path("../intercambio/pd_prueba.csv")
+    if ruta_oficial.parent.exists():
+        df_intercambio.to_csv(ruta_oficial, index=False)
+
     print(f"\n=======================================================")
     print("      ARCHIVO DE INTERCAMBIO GENERADO CON ÉXITO        ")
     print("=======================================================")
-    print(f"Archivo guardado en : {ruta_intercambio}")
+    print(f"Archivo local       : {ruta_intercambio}")
+    if ruta_oficial.parent.exists():
+        print(f"Archivo oficial P2  : {ruta_oficial}")
     print(f"Modelo seleccionado : {mejor_modelo}")
     print(f"Créditos evaluados  : {len(df_intercambio):,}")
-    print(f"Formato             : columnas ['id', 'pd'] (id dtype={df_intercambio['id'].dtype})")
+    print(f"Formato             : columnas {list(df_intercambio.columns)} (id dtype={df_intercambio['id'].dtype})")
 
     # Copiar también en parte_2/data/processed/ si existe la carpeta para integración directa
     ruta_p2_proc = Path("../parte_2/data/processed")

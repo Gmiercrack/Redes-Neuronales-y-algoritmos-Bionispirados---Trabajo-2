@@ -1,0 +1,18 @@
+@media print {
+  :root { color-scheme: light; }
+  @page { margin: 2cm; }
+  body { background: #fff; color: #000; font-size: 11pt; }
+  body::before, .progreso, .cabecera, .indice, .selector-paleta, .btn-indice, .panel-indice, .enlaces, .copiar, .saltar { display: none !important; }
+  .pagina { display: block; padding: 0; }
+  .portada { padding: 0 0 1cm; }
+  .pendiente, .fig-pendiente { display: none !important; }
+  /* Notas al margen pasan al flujo normal */
+  .nota-margen { display: block !important; float: none; inline-size: auto; margin: .3cm 0; padding-left: .4cm; border-left: 1pt solid #000; }
+  .nota-ref { display: none; }
+  details.alucinacion { break-inside: avoid; }
+  details > * { display: block; }
+  figure, .tabla-paper, .eq, .callout { break-inside: avoid; }
+  h2, h3 { break-after: avoid; }
+  a[href^="http"]::after { content: " (" attr(href) ")"; font-size: .8em; word-break: break-all; }
+  .xref::after, .cita::after, .indice a::after { content: none !important; }
+}

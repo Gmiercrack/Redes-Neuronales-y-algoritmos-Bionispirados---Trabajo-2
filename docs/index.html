@@ -1,0 +1,1473 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="description"
+    content="Reporte técnico: redes neuronales para estimar la probabilidad de incumplimiento, la pérdida dado incumplimiento y la pérdida esperada de créditos de Lending Club.">
+  <title>Trabajo 2: Redes neuronales para datos tabulares</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+
+  <link rel="stylesheet" href="assets/css/paletas.css">
+  <link rel="stylesheet" href="assets/css/tokens.css">
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/layout.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/print.css" media="print">
+
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="assets/js/numeracion.js"></script>
+  <script defer src="assets/js/indice.js"></script>
+  <script defer src="assets/js/citas.js"></script>
+  <script defer src="assets/js/main.js"></script>
+</head>
+
+<body>
+  <a class="saltar" href="#contenido">Saltar al contenido</a>
+  <div class="progreso" aria-hidden="true"></div>
+
+  <header class="cabecera">
+    <div class="cabecera__inner">
+      <a class="marca" href="#inicio">Trabajo 2 · Riesgo de Crédito</a>
+      <nav aria-label="Principal">
+        <a class="secundario" href="#referencias">Referencias</a>
+        <a class="secundario pronto" aria-disabled="true" href="#">Aplicación</a>
+        <a class="secundario pronto" aria-disabled="true" href="#">Video</a>
+        <a class="secundario" href="https://github.com/" rel="noopener">Repositorio</a>
+        <button class="btn-indice" id="abrir-indice" type="button">Índice</button>
+      </nav>
+    </div>
+  </header>
+
+  <dialog class="panel-indice" id="panel-indice" aria-label="Índice del reporte">
+    <button class="cerrar" type="button">Cerrar</button>
+    <div class="contenido"></div>
+  </dialog>
+
+  <!-- ===================== PORTADA ===================== -->
+  <header class="portada" id="inicio">
+    <div class="portada__grid">
+      <div class="portada__principal">
+        <p class="antetitulo">Redes neuronales y algoritmos bioinspirados · 2026-02</p>
+        <h1>Trabajo 2: Redes neuronales para datos tabulares</h1>
+        <p class="bajada">Sistema de predicción sobre probabilidades de que un cliente no le pague a un banco, y en caso
+          de ser realidad, predecir la cantidad de dinero estimada que se perdería.</p>
+      </div>
+
+      <aside class="portada__meta" aria-label="Autores e información académica">
+        <p class="autores">Gian Carlo Mier Estrada<br>Nestor Enrique Mendoza Rueda</p>
+        <p class="meta">Universidad Nacional de Colombia · Sede Medellín<br>Facultad de Minas · Noviembre de
+          2026<br>Docente: Juan David Ospina Arango</p>
+      </aside>
+    </div>
+  </header>
+
+  <div class="pagina">
+    <nav class="indice" id="indice" aria-label="Índice del reporte">
+      <h2>Contenido</h2>
+    </nav>
+
+    <main id="contenido" class="wiki-caja">
+      <div class="wiki-barra"><span><strong>Documentación técnica</strong> · Trabajo 2 · Lending
+          Club</span><span>Edición · Noviembre 2026</span></div>
+      <article class="reporte">
+
+        <!-- ===================== RESUMEN ===================== -->
+        <section id="resumen">
+          <h2 class="sin-num">Resumen</h2>
+          <p class="capitular">Antes de aprobar un préstamo, un banco necesita responder dos preguntas muy concretas:
+            ¿qué tan probable es que el cliente deje de pagar? y, si eso ocurre, ¿cuánto dinero terminará perdiendo
+            después de intentar cobrarlo? En este trabajo respondemos ambas preguntas usando perceptrones multicapa
+            sobre créditos de consumo sin garantía de Lending Club, y juntamos los dos resultados para estimar la
+            pérdida esperada de cada préstamo desde el momento en que se aprueba.</p>
+          <p>Como las redes neuronales no siempre son la mejor opción para datos en tablas, pusimos a prueba cada red
+            frente a un modelo sencillo de referencia bajo reglas estrictamente justas: exactamente los mismos datos
+            preparados sin información del futuro, las mismas particiones temporales para simular el paso real del
+            tiempo, un presupuesto de búsqueda de configuraciones explícito y treinta corridas independientes para medir
+            qué tanto varían los resultados por puro azar.</p>
+          <p>Por último, convertimos el modelo de riesgo en una tarjeta de puntaje clara para cualquier solicitante,
+            analizamos qué factores pesan más en la decisión y publicamos una aplicación web donde cualquier persona
+            puede calcular su puntaje y probar qué tendría que cambiar en su perfil para mejorarlo.</p>
+        </section>
+
+        <!-- ===================== 1. CASO DE USO ===================== -->
+        <section id="caso-de-uso">
+          <h2>Caso de uso</h2>
+          <p class="antetitulo">Contexto del negocio, decisiones y regla anti-fuga</p>
+          <p>Lending Club es una plataforma estadounidense de préstamos entre pares (<em>peer-to-peer lending</em>) que
+            conecta a solicitantes con inversionistas o bancos. Sus créditos son de consumo <strong>sin garantía
+              prendaria ni hipotecaria</strong> (<em>unsecured consumer loans</em>): a diferencia de un crédito
+            hipotecario o vehicular, no existe un activo tangible de respaldo, por lo que si el prestatario entra en
+            cesación de pagos la entidad enfrenta una pérdida crediticia directa.</p>
+          <div class="tabla-paper" id="tab-caso-uso">
+            <div class="titulo-tabla"><span class="num"></span><span class="titulo">Definición del caso de uso</span>
+            </div>
+            <div class="contenedor" role="region" tabindex="0" aria-label="Definición del caso de uso">
+              <table>
+                <thead>
+                  <tr>
+                    <th scope="col">Pregunta</th>
+                    <th scope="col">Definición</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">¿Quién usa el modelo?</th>
+                    <td class="txt">El analista de riesgo crediticio o el motor automatizado de originación de la
+                      entidad.</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">¿En qué momento se usa el modelo?</th>
+                    <td class="txt">Al momento exacto de la solicitud y evaluación del crédito, antes de decidir su
+                      otorgamiento o desembolso.</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">¿Para qué decisiones sirve el modelo?</th>
+                    <td class="txt"><strong>1) Admisión y pérdida esperada:</strong> evaluar la probabilidad de
+                      incumplimiento (PD) y el costo estimado de pérdida en caso de impago (LGD y pérdida esperada).<br>
+                      <strong>2) Scorecard:</strong> asignar un puntaje transparente (300 a 850 puntos) comprensible
+                      para el banco y el cliente.
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">¿Con qué información se entrena el modelo?</th>
+                    <td class="txt">Únicamente variables conocidas y verificadas en la fecha de originación
+                      (<code>issue_d</code>): capacidad de pago, historial crediticio, liquidez rotativa, estabilidad
+                      laboral y condiciones del préstamo.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- ===================== 2. DATOS ===================== -->
+        <section id="datos">
+          <h2>Datos</h2>
+          <p>Se usa el conjunto <em>Credit Risk Analysis</em> de Kaggle (<a class="cita"
+              href="#ref-kaggle-credit">Ranadeep, s. f.</a>), descargado el <strong>27 de octubre de 2026</strong>, con
+            créditos de consumo de Lending Club. El significado de cada variable se cita desde el diccionario oficial
+            (<a class="cita" href="#ref-lc-diccionario">LendingClub, s. f.</a>), no desde una herramienta de IA.</p>
+          <div class="ficha">
+            <header>Ficha técnica de los datos</header>
+            <dl>
+              <dt>Fuente</dt>
+              <dd>Kaggle · Credit Risk Analysis (<code>loan.csv</code>)</dd>
+              <dt>Registros</dt>
+              <dd>887 379 créditos</dd>
+              <dt>Variables</dt>
+              <dd>74 columnas</dd>
+              <dt>Período</dt>
+              <dd>Originación entre junio de 2007 y diciembre de 2015</dd>
+              <dt>Fecha de descarga</dt>
+              <dd>27 de octubre de 2026</dd>
+              <dt>Diccionario</dt>
+              <dd><code>data/LCDataDictionary.xlsx</code>, hoja <code>LoanStats</code></dd>
+            </dl>
+          </div>
+          <div class="tabla-paper" id="tab-origen-datos">
+            <div class="titulo-tabla"><span class="num"></span><span class="titulo">Resumen del origen y descarga de los datos</span></div>
+            <div class="contenedor" role="region" tabindex="0" aria-label="Resumen de origen y descarga de datos">
+              <table>
+                <thead>
+                  <tr>
+                    <th scope="col">Aspecto</th>
+                    <th scope="col" class="txt">Detalle</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">De dónde se bajaron</th>
+                    <td class="txt">Repositorio público <em>Credit Risk Analysis</em> en Kaggle (<code>ranadeep/credit-risk-dataset</code>, archivo crudo <code>loan.csv</code> de Lending Club).</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Fecha de descarga</th>
+                    <td class="txt">27 de octubre de 2026.</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Qué contiene la descarga</th>
+                    <td class="txt">887 379 créditos de consumo y 74 columnas con originación entre junio de 2007 y diciembre de 2015, acompañados del diccionario oficial <code>LCDataDictionary.xlsx</code> (hoja <code>LoanStats</code>).</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Momento de decisión</th>
+                    <td class="txt">Al evaluar la solicitud en la fecha de originación (<code>issue_d</code>), antes de aprobar o desembolsar.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="nota"><em>Nota.</em> Elaboración propia a partir del conjunto descargado en Kaggle (<a class="cita" href="#ref-kaggle-credit">Ranadeep, s. f.</a>) y su diccionario oficial (<a class="cita" href="#ref-lc-diccionario">LendingClub, s. f.</a>).</p>
+          </div>
+          <p>El archivo crudo pesa cerca de 442 MB y no se sube al repositorio.<label class="nota-ref" for="nota-1"
+              title="Ver nota 1">1</label><input class="nota-toggle" type="checkbox" id="nota-1"
+              aria-label="Mostrar nota 1"><span class="nota-margen"><span class="n">1</span>Se versionan las tablas
+              procesadas en formato Parquet y los modelos entrenados. Ver la sección de reproducibilidad.</span></p>
+
+          <h3>Información permitida frente a información prohibida</h3>
+          <p>Para entrenar sin fuga de información (<em>no data leakage</em>), solo ingresan variables disponibles y
+            verificadas en la fecha de originación (<code>issue_d</code>). De las <strong>74 columnas</strong> del
+            archivo original, se seleccionan únicamente <strong>21 variables base</strong> (13 numéricas originales, 3
+            numéricas derivadas al originar y 5 categóricas) que, tras imputación con indicadores de faltantes y
+            codificación <em>one-hot</em>, producen <strong>54 variables numéricas de entrada</strong>. Otras
+            <strong>14 columnas generadas después del desembolso</strong> quedan explícitamente prohibidas, y las
+            restantes columnas administrativas, de texto libre o identificadores se descartan en la selección.</p>
+
+          <div class="tabla-paper" id="tab-info-entrenamiento">
+            <div class="titulo-tabla"><span class="num"></span><span class="titulo">Anatomía de las 21 variables
+                permitidas al momento de originación (5 dimensiones del riesgo)</span></div>
+            <div class="contenedor" role="region" tabindex="0" aria-label="Anatomía de variables permitidas">
+              <table>
+                <thead>
+                  <tr>
+                    <th scope="col">Variable (tipo)</th>
+                    <th scope="col" class="txt">Significado literal (<code>LCDataDictionary.xlsx · LoanStats</code>)</th>
+                    <th scope="col" class="txt">Rol en el análisis de riesgo</th>
+                    <th scope="col">Uso</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="grupo-fila">
+                    <th scope="colgroup" colspan="4">Dimensión 1 · Capacidad de pago y carga financiera (flujo de caja)</th>
+                  </tr>
+                  <tr>
+                    <th scope="row"><code>annual_inc</code><br><small>Numérica</small></th>
+                    <td class="txt">Ingreso anual autodeclarado por el solicitante durante el registro.</td>
+                    <td class="txt">A mayor ingreso, mayor capacidad de ahorro y resiliencia ante contingencias económicas.</td>
+                    <td><span class="estado-uso si">Sí entra</span></td>
+                  </tr>
+                  <tr>
+                    <th scope="row"><code>dti</code><br><small>Numérica</small></th>
+                    <td class="txt">Relación entre los pagos mensuales totales de deuda (sin hipoteca ni este préstamo LC) y el ingreso mensual autodeclarado.</td>
+                    <td class="txt"><strong>Predictor crítico.</strong> Un DTI elevado (ej. 45 %) revela asfixia financiera y alta vulnerabilidad al impago.</td>
+                    <td><span class="estado-uso si">Sí entra</span></td>
+                  </tr>
+                  <tr>
+                    <th scope="row"><code>installment</code><br><small>Numérica</small></th>
+                    <td class="txt">Cuota mensual que deberá pagar el prestatario si se origina el crédito.</td>
+                    <td class="txt">Mide la carga directa que el nuevo préstamo impone sobre el flujo de caja mensual.</td>
+                    <td><span class="estado-uso si">Sí entra</span></td>
+                  </tr>
+                  <tr>
+                    <th scope="row"><code>loan_amnt</code><br><small>Numérica</small></th>
+                    <td class="txt">Monto listado del préstamo solicitado por el prestatario; si el departamento de crédito lo reduce posteriormente, ese cambio se refleja en este valor.</td>
+                    <td class="txt">Montos mayores exigen un esfuerzo prolongado de pago y elevan la exposición ante impago.</td>
+                    <td><span class="estado-uso si">Sí entra</span></td>
+                  </tr>
+                  <tr>
+                    <th scope="row"><code>funded_amnt</code><br><small>Numérica</small></th>
+                    <td class="txt">Monto comprometido y fondeado para ese crédito en el momento de emisión.</td>
+                    <td class="txt">Captura la exposición efectiva comprometida en la originación del préstamo.</td>
+                    <td><span class="estado-uso si">Sí entra</span></td>
+                  </tr>
+
+                  <tr class="grupo-fila">
+                    <th scope="colgroup" colspan="4">Dimensión 2 · Carácter e historial crediticio (comportamiento pasado)</th>
+                  </tr>
+                  <tr>
+                    <th scope="row"><code>delinq_2yrs</code><br><small>Numérica</small></th>
+                    <td class="txt">Número de incidencias de mora de 30+ días en el historial durante los últimos 2 años.</td>
+                    <td class="txt">Quien tuvo moras recientes presenta mayor probabilidad de reincidir en incumplimiento.</td>
+                    <td><span class="estado-uso si">Sí entra</span></td>
+                  </tr>
+                  <tr>
+                    <th scope="row"><code>pub_rec</code><br><small>Numérica</small></th>
+                    <td class="txt">Número de registros públicos desfavorables.</td>
+                    <td class="txt">Incluye quiebras, bancarrotas o embargos; es señal crítica de insolvencia estructural previa frente a acreedores.</td>
+                    <td><span class="estado-uso si">Sí entra</span></td>
+                  </tr>
+                  <tr>
+                    <th scope="row"><code>inq_last_6mths</code><br><small>Numérica</small></th>
+                    <td class="txt">Consultas de crédito en el buró en los últimos 6 meses (excluyendo auto e hipoteca).</td>
+                    <td class="txt">Varias consultas recientes revelan búsqueda urgente de liquidez (<em>credit hunger</em>).</td>
+                    <td><span class="estado-uso si">Sí entra</span></td>
+                  </tr>
+                  <tr>
+                    <th scope="row"><code>meses_historial_credito</code><br><small>Derivada (<code>earliest_cr_line</code>)</small></th>
+                    <td class="txt">Antigüedad crediticia en meses desde la apertura de la primera línea reportada hasta <code>issue_d</code>.</td>
+                    <td class="txt">Un historial maduro con pocos incidentes refleja disciplina y confiabilidad sostenida.</td>
+                    <td><span class="estado-uso si">Sí entra</span></td>
+                  </tr>
+
+                  <tr class="grupo-fila">
+                    <th scope="colgroup" colspan="4">Dimensión 3 · Estrés de liquidez y líneas rotativas</th>
+                  </tr>
+                  <tr>
+                    <th scope="row"><code>revol_util</code><br><small>Numérica</small></th>
+                    <td class="txt">Porcentaje de utilización de crédito rotativo respecto al cupo total disponible.</td>
+                    <td class="txt"><strong>Predictor clave.</strong> Usar casi todo el cupo (ej. 90 %) deja sin margen ante imprevistos; por debajo del 30 % sugiere holgura.</td>
+                    <td><span class="estado-uso si">Sí entra</span></td>
+                  </tr>
+                  <tr>
+                    <th scope="row"><code>revol_bal</code><br><small>Numérica</small></th>
+                    <td class="txt">Saldo total adeudado en líneas de crédito rotativo.</td>
+                    <td class="txt">Refleja la magnitud nominal de la deuda corriente de corto plazo.</td>
+                    <td><span class="estado-uso si">Sí entra</span></td>
+                  </tr>
+                  <tr>
+                    <th scope="row"><code>open_acc</code><br><small>Numérica</small></th>
+                    <td class="txt">Número de líneas de crédito abiertas actualmente en el expediente del solicitante.</td>
+                    <td class="txt">Mide la carga simultánea de obligaciones activas que administra el cliente.</td>
+                    <td><span class="estado-uso si">Sí entra</span></td>
+                  </tr>
+                  <tr>
+                    <th scope="row"><code>total_acc</code><br><small>Numérica</small></th>
+                    <td class="txt">Número total de líneas de crédito históricas y vigentes registradas en el expediente.</td>
+                    <td class="txt">Captura la profundidad, madurez y diversificación de la experiencia crediticia.</td>
+                    <td><span class="estado-uso si">Sí entra</span></td>
+                  </tr>
+
+                  <tr class="grupo-fila">
+                    <th scope="colgroup" colspan="4">Dimensión 4 · Estabilidad laboral y arraigo</th>
+                  </tr>
+                  <tr>
+                    <th scope="row"><code>antiguedad_empleo</code><br><small>Derivada (<code>emp_length</code>)</small></th>
+                    <td class="txt">Años en el empleo actual (escala de 0 para menos de 1 año hasta 10 para diez años o más).</td>
+                    <td class="txt">Mayor permanencia laboral reduce el riesgo de interrupción súbita de ingresos.</td>
+                    <td><span class="estado-uso si">Sí entra</span></td>
+                  </tr>
+                  <tr>
+                    <th scope="row"><code>home_ownership</code><br><small>Categórica</small></th>
+                    <td class="txt">Tenencia de vivienda declarada en el registro (<code>RENT</code>, <code>OWN</code>, <code>MORTGAGE</code>, <code>OTHER</code>).</td>
+                    <td class="txt">Propietarios o compradores con hipoteca suelen mostrar mayor arraigo y respaldo indirecto que arrendatarios.</td>
+                    <td><span class="estado-uso si">Sí entra</span></td>
+                  </tr>
+                  <tr>
+                    <th scope="row"><code>verification_status</code><br><small>Categórica (<code>is_inc_v</code>)</small></th>
+                    <td class="txt">Indica si el ingreso o su fuente fueron verificados documentalmente por Lending Club.</td>
+                    <td class="txt">Señala el grado de respaldo documental sobre el ingreso declarado por el solicitante.</td>
+                    <td><span class="estado-uso si">Sí entra</span></td>
+                  </tr>
+
+                  <tr class="grupo-fila">
+                    <th scope="colgroup" colspan="4">Dimensión 5 · Condiciones del crédito y tarificación en originación</th>
+                  </tr>
+                  <tr>
+                    <th scope="row"><code>plazo_meses</code><br><small>Derivada (<code>term</code>)</small></th>
+                    <td class="txt">Plazo pactado en meses para amortizar el préstamo (36 o 60 meses).</td>
+                    <td class="txt">Horizontes más largos (5 años frente a 3) aumentan la exposición a choques económicos.</td>
+                    <td><span class="estado-uso si">Sí entra</span></td>
+                  </tr>
+                  <tr>
+                    <th scope="row"><code>purpose</code><br><small>Categórica</small></th>
+                    <td class="txt">Categoría proporcionada por el prestatario para la solicitud del préstamo.</td>
+                    <td class="txt">Destinos como <code>small_business</code> presentan históricamente mayor siniestralidad que <code>debt_consolidation</code>.</td>
+                    <td><span class="estado-uso si">Sí entra</span></td>
+                  </tr>
+                  <tr>
+                    <th scope="row"><code>grade</code><br><small>Categórica</small></th>
+                    <td class="txt">Grado de préstamo asignado por Lending Club.</td>
+                    <td class="txt">Toma valores de <code>A</code> a <code>G</code> en <code>loan.csv</code> y sintetiza la evaluación inicial de riesgo al emitir el crédito.</td>
+                    <td><span class="estado-uso si">Sí entra</span></td>
+                  </tr>
+                  <tr>
+                    <th scope="row"><code>int_rate</code><br><small>Numérica</small></th>
+                    <td class="txt">Tasa de interés del préstamo.</td>
+                    <td class="txt">Tasa anual asignada en originación; refleja la prima de riesgo y eleva la carga financiera del deudor.</td>
+                    <td><span class="estado-uso si">Sí entra</span></td>
+                  </tr>
+                  <tr>
+                    <th scope="row"><code>initial_list_status</code><br><small>Categórica</small></th>
+                    <td class="txt">Estado inicial de listado del préstamo (valores posibles: <code>W</code>, <code>F</code>).</td>
+                    <td class="txt">En <code>loan.csv</code> aparece como bloque completo institucional (<code>w</code>) o fraccionado minorista (<code>f</code>), capturando el canal de colocación.</td>
+                    <td><span class="estado-uso si">Sí entra</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="nota"><em>Nota.</em> La columna de significado literal proviene directamente de la hoja
+              <code>LoanStats</code> del diccionario oficial <code>LCDataDictionary.xlsx</code> (<a class="cita"
+                href="#ref-lc-diccionario">LendingClub, s. f.</a>); en dicho archivo la columna
+              <code>verification_status</code> de <code>loan.csv</code> figura como <code>is_inc_v</code>, y las variables
+              derivadas (<code>meses_historial_credito</code>, <code>antiguedad_empleo</code>, <code>plazo_meses</code>)
+              toman su definición de sus campos originales (<code>earliest_cr_line</code>, <code>emp_length</code>,
+              <code>term</code>). Los ejemplos observados y el rol de riesgo corresponden al análisis sobre
+              <code>loan.csv</code>, conservando <code>grade</code> e <code>int_rate</code> bajo el supuesto de evaluar
+              solicitudes ya pre-tarificadas en la originación.</p>
+          </div>
+
+          <div class="tabla-paper" id="tab-info-prohibida">
+            <div class="titulo-tabla"><span class="num"></span><span class="titulo">Las 14 columnas prohibidas por regla
+                estricta anti-fuga (información posterior al desembolso)</span></div>
+            <div class="contenedor" role="region" tabindex="0" aria-label="Columnas prohibidas por fuga de información">
+              <table>
+                <thead>
+                  <tr>
+                    <th scope="col">Columna(s)</th>
+                    <th scope="col" class="txt">Significado (<code>LCDataDictionary</code>)</th>
+                    <th scope="col" class="txt">Por qué NO entra como predictor</th>
+                    <th scope="col">Uso</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="grupo-fila">
+                    <th scope="colgroup" colspan="4">1 · Variable de desenlace</th>
+                  </tr>
+                  <tr>
+                    <th scope="row"><code>loan_status</code></th>
+                    <td class="txt">Estado actual o final observado del préstamo (<em>Fully Paid</em>, <em>Charged Off</em>, etc.).</td>
+                    <td class="txt">Define la etiqueta objetivo binaria (\(Y\)) en PD y el filtro de castigos en LGD; incluirla revelaría la respuesta.</td>
+                    <td><span class="estado-uso no">No entra</span></td>
+                  </tr>
+
+                  <tr class="grupo-fila">
+                    <th scope="colgroup" colspan="4">2 · Saldos vivos, pagos y fechas posteriores al desembolso</th>
+                  </tr>
+                  <tr>
+                    <th scope="row"><code>out_prncp</code><br><code>out_prncp_inv</code></th>
+                    <td class="txt">Saldo de capital aún pendiente por amortizar (total y porción de inversionistas).</td>
+                    <td class="txt">Evoluciona mes a mes después de originar el crédito; en la solicitud vale todo el principal.</td>
+                    <td><span class="estado-uso no">No entra</span></td>
+                  </tr>
+                  <tr>
+                    <th scope="row"><code>total_pymnt</code><br><code>total_pymnt_inv</code></th>
+                    <td class="txt">Pagos totales acumulados recibidos a la fecha de corte del dataset.</td>
+                    <td class="txt">Resume el desempeño futuro del cliente a lo largo de la vida del préstamo.</td>
+                    <td><span class="estado-uso no">No entra</span></td>
+                  </tr>
+                  <tr>
+                    <th scope="row"><code>total_rec_prncp</code><br><code>total_rec_int</code></th>
+                    <td class="txt">Capital e intereses efectivamente recaudados hasta la fecha.</td>
+                    <td class="txt">Son consecuencia directa de si el cliente pagó o dejó de pagar tras el desembolso.</td>
+                    <td><span class="estado-uso no">No entra</span></td>
+                  </tr>
+                  <tr>
+                    <th scope="row"><code>total_rec_late_fee</code></th>
+                    <td class="txt">Cargos por mora cobrados hasta la fecha.</td>
+                    <td class="txt">Solo se generan cuando el prestatario incurre en atrasos posteriores a la aprobación.</td>
+                    <td><span class="estado-uso no">No entra</span></td>
+                  </tr>
+                  <tr>
+                    <th scope="row"><code>last_pymnt_d</code><br><code>last_pymnt_amnt</code><br><code>next_pymnt_d</code></th>
+                    <td class="txt">Último mes en que se recibió pago, monto del último pago recibido y próxima fecha programada de pago.</td>
+                    <td class="txt">Reflejan eventos futuros de tesorería posteriores al momento de decisión.</td>
+                    <td><span class="estado-uso no">No entra</span></td>
+                  </tr>
+
+                  <tr class="grupo-fila">
+                    <th scope="colgroup" colspan="4">3 · Recuperaciones tras castigo</th>
+                  </tr>
+                  <tr>
+                    <th scope="row"><code>recoveries</code><br><code>collection_recovery_fee</code></th>
+                    <td class="txt">Recuperación bruta posterior al castigo y comisión de cobranza asociada.</td>
+                    <td class="txt">Solo existen tras declarar el impago; se usan únicamente para calcular el objetivo LGD en la Parte 2.</td>
+                    <td><span class="estado-uso no">No entra</span></td>
+                  </tr>
+
+                  <tr class="grupo-fila">
+                    <th scope="colgroup" colspan="4">4 · Seguimiento posterior del buró</th>
+                  </tr>
+                  <tr>
+                    <th scope="row"><code>last_credit_pull_d</code></th>
+                    <td class="txt">Mes más reciente en que Lending Club consultó el reporte crediticio del préstamo.</td>
+                    <td class="txt">Corresponde a revisiones de seguimiento hechas durante la vigencia del crédito, nunca en originación.</td>
+                    <td><span class="estado-uso no">No entra</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="nota"><em>Nota.</em> Definiciones tomadas de la hoja <code>LoanStats</code> de
+              <code>LCDataDictionary.xlsx</code> (<a class="cita" href="#ref-lc-diccionario">LendingClub, s. f.</a>).</p>
+          </div>
+        </section>
+
+        <!-- ===================== 3. OBJETIVO Y PARTICIÓN ===================== -->
+        <section id="objetivo-particion">
+          <h2>Ecuación general, variables objetivo y partición</h2>
+
+          <h3>Ecuación general del problema: pérdida esperada</h3>
+          <p>Antes de aprobar un crédito de consumo sin garantía, el banco debe responder dos preguntas concretas:
+            <strong>1) ¿qué tan probable es que el cliente incumpla?</strong> y <strong>2) si incumple, ¿qué fracción de la
+              deuda se perderá tras los cobros?</strong> Para responder ambas preguntas desde la originación, el proyecto se
+            estructura alrededor de la ecuación general de <strong>pérdida esperada</strong> (\(E[L]\)):</p>
+          <div class="eq" id="eq-el-general">
+            <div class="formula">\[ E[L]_i = PD_i \cdot LGD_i \cdot EAD_i, \qquad E[L]_{\text{total}} = \sum_{i} E[L]_i \]</div>
+            <span class="eq-num"></span>
+          </div>
+          <ul>
+            <li><strong>\(PD_i\) (Probabilidad de Incumplimiento · Parte 1):</strong> probabilidad de que el crédito \(i\)
+              termine en incumplimiento (\(Y = 1\)).</li>
+            <li><strong>\(LGD_i\) (Pérdida Dado el Incumplimiento · Parte 2):</strong> fracción de la deuda pendiente que
+              no se logra recuperar tras la gestión de cobro, en el rango \([0, 1]\).</li>
+            <li><strong>\(EAD_i\) (Exposición al Incumplimiento):</strong> monto de capital que seguiría pendiente de
+              pago al momento de producirse el impago.</li>
+            <li><strong>\(E[L]_i\) y \(E[L]_{\text{total}}\) (Resultado final):</strong> pérdida monetaria esperada para
+              cada crédito \(i\); la suma sobre toda la cartera evaluada entrega la pérdida esperada total.</li>
+          </ul>
+
+          <div class="versus">
+            <article style="--color-parte: var(--pd)">
+              <h4>Parte 1 · Modelado de \(PD\)</h4>
+              <p>Clasificación binaria supervisada sobre solicitudes con desenlace cerrado para estimar \(P(Y = 1 \mid X)\).</p>
+            </article>
+            <article style="--color-parte: var(--lgd)">
+              <h4>Parte 2 · Modelado de \(LGD\)</h4>
+              <p>Regresión fraccional acotada en \([0, 1]\) sobre créditos castigados para estimar la severidad de pérdida.</p>
+            </article>
+            <article style="--color-parte: var(--el)">
+              <h4>Integración · \(E[L]\)</h4>
+              <p>Combina \(\widehat{PD}_i \cdot \widehat{LGD}_i \cdot EAD_i\) por crédito y agrega la pérdida esperada total.</p>
+            </article>
+          </div>
+
+          <h3>Variables objetivo (PD y LGD)</h3>
+          <p>Para entrenar los modelos de la Parte 1 y la Parte 2 de forma supervisada, primero se traduce la columna
+            <code>loan_status</code> (estado observado del crédito) en la etiqueta binaria <code>malo</code>
+            (\(Y \in \{0, 1\}\)) para <strong>PD</strong> y en la máscara booleana <code>castigado</code> para
+            <strong>LGD</strong>. Los créditos que aún siguen vigentes o en estados tempranos sin desenlace cerrado se marcan
+            como <code>NA</code> y se excluyen del ajuste y de la evaluación.</p>
+
+          <div class="tabla-paper" id="tab-codificacion-objetivo">
+            <div class="titulo-tabla"><span class="num"></span><span class="titulo">Codificación de <code>loan_status</code>
+                para las variables objetivo de PD (<code>malo</code>) y LGD (<code>castigado</code>)</span></div>
+            <div class="contenedor" role="region" tabindex="0" aria-label="Codificación de loan_status">
+              <table>
+                <thead>
+                  <tr>
+                    <th scope="col" class="txt">Estado original (<code>loan_status</code>)</th>
+                    <th scope="col">Código \(Y\)</th>
+                    <th scope="col" class="txt">Uso en el proyecto</th>
+                    <th scope="col" class="txt">Justificación financiera</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row"><code>Fully Paid</code></th>
+                    <td><span class="estado-uso si">0 · Bueno</span></td>
+                    <td class="txt">PD (\(Y = 0\))</td>
+                    <td class="txt">Buen pagador: amortizó capital e intereses en su totalidad.</td>
+                  </tr>
+                  <tr>
+                    <th scope="row" class="txt"><code>Does not meet the credit policy. Status:Fully Paid</code></th>
+                    <td><span class="estado-uso si">0 · Bueno</span></td>
+                    <td class="txt">PD (\(Y = 0\))</td>
+                    <td class="txt">Buen pagador confirmado, aunque el crédito no cumplía políticas iniciales.</td>
+                  </tr>
+                  <tr>
+                    <th scope="row" class="txt"><code>Charged Off</code></th>
+                    <td><span class="estado-uso no">1 · Malo</span></td>
+                    <td class="txt">PD (\(Y = 1\)) y LGD</td>
+                    <td class="txt">Mal pagador: declarado incobrable, castigado contablemente y enviado a cobranza.</td>
+                  </tr>
+                  <tr>
+                    <th scope="row" class="txt"><code>Does not meet the credit policy. Status:Charged Off</code></th>
+                    <td><span class="estado-uso no">1 · Malo</span></td>
+                    <td class="txt">PD (\(Y = 1\)) y LGD</td>
+                    <td class="txt">Mal pagador fuera de política inicial que terminó castigado con pérdida.</td>
+                  </tr>
+                  <tr>
+                    <th scope="row"><code>Default</code></th>
+                    <td><span class="estado-uso no">1 · Malo</span></td>
+                    <td class="txt">Solo PD (\(Y = 1\))</td>
+                    <td class="txt">Mal pagador: impago confirmado y cesación prolongada, aún sin cobranza registrada tras castigo.</td>
+                  </tr>
+                  <tr>
+                    <th scope="row"><code>Late (31-120 days)</code></th>
+                    <td><span class="estado-uso no">1 · Malo</span></td>
+                    <td class="txt">Solo PD (\(Y = 1\))</td>
+                    <td class="txt">Mal pagador: mora grave con probabilidad mínima de recuperación espontánea, aún sin castigo.</td>
+                  </tr>
+                  <tr>
+                    <th scope="row"><code>Current</code>, <code>Issued</code>,<br><code>In Grace Period</code>, <code>Late (16-30 days)</code></th>
+                    <td><code>NA</code></td>
+                    <td class="txt">Excluidos</td>
+                    <td class="txt">Créditos abiertos o censurados: su desenlace final aún no se conoce al corte de los datos.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="nota"><em>Nota.</em> Adaptado de <code>Definición_trabajo/explicacion_problema.md</code>,
+              <code>parte_1/configs/pd.yaml</code> y <code>parte_2/configs/lgd.yaml</code>.</p>
+          </div>
+
+          <p>Así quedan definidas ambas variables objetivo desde el planteamiento del problema: la <strong>Parte 1
+              (PD)</strong> modela el evento binario de incumplimiento (\(Y = 1\) frente a \(Y = 0\)) sobre los créditos
+            con desenlace cerrado, mientras que la <strong>Parte 2 (LGD)</strong> modela la fracción continua de pérdida
+            en \([0, 1]\) exclusivamente sobre los créditos castigados (cuya fórmula exacta de cálculo a partir de
+            recuperaciones y capital se detalla en la Sección 6).</p>
+
+          <h3>Partición por fecha de originación</h3>
+          <div class="tabla-paper" id="tab-particion">
+            <div class="titulo-tabla"><span class="num"></span><span class="titulo">Particiones temporales y número de
+                créditos</span></div>
+            <div class="contenedor" role="region" tabindex="0" aria-label="Particiones temporales">
+              <table>
+                <thead>
+                  <tr>
+                    <th scope="col">Conjunto</th>
+                    <th scope="col">Años</th>
+                    <th scope="col">Créditos (PD)</th>
+                    <th scope="col">% malos</th>
+                    <th scope="col">Castigados (LGD)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">Entrenamiento</th>
+                    <td>2007–2012</td>
+                    <td>90 347</td>
+                    <td>16,30</td>
+                    <td>14 419</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Validación</th>
+                    <td>2013</td>
+                    <td>73 194</td>
+                    <td>22,95</td>
+                    <td>14 836</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Prueba</th>
+                    <td>2014</td>
+                    <td>74 154</td>
+                    <td>26,22</td>
+                    <td>13 981</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Excluido</th>
+                    <td>2015</td>
+                    <td>—</td>
+                    <td>—</td>
+                    <td>2 773</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="nota"><em>Nota.</em> Fuentes: <code>parte_1/configs/pd.yaml</code> y
+              <code>parte_2/reports/preprocesamiento/conteos_por_anio.csv</code>.</p>
+          </div>
+
+          <p class="destacado" style="--color-parte: var(--acento)">Los créditos de 2015 se excluyen: el 93 % no tiene
+            desenlace conocido.<cite>Censura por la fecha de recolección de los datos</cite></p>
+
+          <div class="tabla-paper" id="tab-censura">
+            <div class="titulo-tabla"><span class="num"></span><span class="titulo">Fracción de créditos sin desenlace
+                conocido por año de originación</span></div>
+            <div class="contenedor" role="region" tabindex="0" aria-label="Censura por año">
+              <table>
+                <thead>
+                  <tr>
+                    <th scope="col">Años</th>
+                    <th scope="col">Sin desenlace conocido</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">2007–2012</th>
+                    <td>3 %</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">2013</th>
+                    <td>46 %</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">2014</th>
+                    <td>69 %</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">2015</th>
+                    <td>93 %</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <aside class="callout" data-tipo="limitacion"><strong class="etq">Limitación</strong>
+            2014 también tiene censura importante (69 %). Los pocos créditos de 2015 con desenlace son sobre todo los
+            que fallaron muy rápido, así que su tasa de malos y su LGD estarían inflados. Esto queda como limitación del
+            trabajo.</aside>
+        </section>
+
+        <!-- ===================== 4. PREPROCESAMIENTO ===================== -->
+        <section id="preprocesamiento">
+          <h2>Preprocesamiento compartido</h2>
+          <p>Las dos partes usan el mismo preprocesador, ajustado una sola vez con los 90 347 créditos de entrenamiento,
+            para que la multiplicación PD · LGD tenga sentido y la comparación entre modelos sea justa.</p>
+          <ol class="pipeline">
+            <li><strong>Carga</strong>loan.csv, 887 379 filas</li>
+            <li><strong>Limpieza</strong>porcentajes, plazo, antigüedad</li>
+            <li><strong>Objetivo</strong>malo ∈ {0, 1, NA}</li>
+            <li><strong>Partición</strong>por <code>issue_d</code></li>
+            <li><strong>Transformación</strong>mediana, estandarizar, one-hot</li>
+            <li><strong>54 variables</strong>Parquet + joblib</li>
+          </ol>
+          <ul>
+            <li><strong>Entradas:</strong> 13 numéricas originales, 3 derivadas (<code>plazo_meses</code>,
+              <code>antiguedad_empleo</code>, <code>meses_historial_credito</code>) y 5 categóricas.</li>
+            <li><strong>Faltantes numéricos:</strong> imputación con la mediana más un indicador 0/1.</li>
+            <li><strong>Escalado:</strong> estandarización con media 0 y desviación estándar 1.</li>
+            <li><strong>Categóricas:</strong> one-hot; las categorías con menos del 0,5 % se agrupan.</li>
+          </ul>
+          <aside class="callout" data-tipo="supuesto"><strong class="etq">Supuesto abierto</strong>
+            <code>grade</code> e <code>int_rate</code> las asigna el propio modelo de riesgo de Lending Club. Se
+            incluyen suponiendo un crédito ya tarificado. Si el caso de uso es decidir sin esa información, hay que
+            retirarlas de <em>las dos partes</em>.
+          </aside>
+        </section>
+
+        <!-- ===================== 5. PARTE 1 · PD ===================== -->
+        <section id="parte-1" data-parte="pd">
+          <h2>Probabilidad de incumplimiento</h2>
+          <p class="antetitulo">Parte 1 · Clasificación binaria</p>
+          <p>Se modela \(P(Y = 1 \mid X)\), la probabilidad de que un crédito sea malo, con una regresión logística como
+            referencia y un perceptrón multicapa (MLP).</p>
+
+          <h3>Análisis descriptivo e hipótesis</h3>
+          <div class="esqueleto"><span class="pendiente">Pendiente · Parte 1</span> Cinco hipótesis explícitas sobre qué
+            hace más riesgosa a una persona, con tablas y figuras, y su veredicto al final (confirmada o no).</div>
+
+          <h3>Modelos y resultados preliminares</h3>
+          <div class="versus" style="--color-parte: var(--pd)">
+            <article>
+              <h4>Regresión logística</h4>
+              <dl>
+                <dt>Parámetros</dt>
+                <dd>55</dd>
+                <dt>Regularización</dt>
+                <dd>L2 (C = 0,1)</dd>
+                <dt>Tiempo</dt>
+                <dd>1,4 s</dd>
+                <dt>AUC prueba</dt>
+                <dd>0,6818</dd>
+              </dl>
+            </article>
+            <article>
+              <h4>MLP inicial (54-64-32-1)</h4>
+              <dl>
+                <dt>Parámetros</dt>
+                <dd>5 633</dd>
+                <dt>Regularización</dt>
+                <dd>L2 (α = 0,001) y parada temprana</dd>
+                <dt>Tiempo</dt>
+                <dd>13,7 s</dd>
+                <dt>AUC prueba</dt>
+                <dd>0,6803</dd>
+              </dl>
+            </article>
+          </div>
+          <div class="tabla-paper" id="tab-pd-metricas" style="--color-parte: var(--pd)">
+            <div class="titulo-tabla"><span class="num"></span><span class="titulo">Métricas de discriminación y
+                calibración de la Parte 1 (modelos preliminares)</span></div>
+            <div class="contenedor" role="region" tabindex="0" aria-label="Métricas de la Parte 1">
+              <table>
+                <thead>
+                  <tr>
+                    <th scope="col">Modelo</th>
+                    <th scope="col">Conjunto</th>
+                    <th scope="col">AUC</th>
+                    <th scope="col">Gini</th>
+                    <th scope="col">KS</th>
+                    <th scope="col">Brier</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">Regresión logística</th>
+                    <td>Validación</td>
+                    <td>0,6820</td>
+                    <td>0,3641</td>
+                    <td>0,2661</td>
+                    <td>0,1662</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Regresión logística</th>
+                    <td>Prueba</td>
+                    <td>0,6818</td>
+                    <td>0,3637</td>
+                    <td>0,2648</td>
+                    <td>0,1832</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">MLP inicial</th>
+                    <td>Validación</td>
+                    <td>0,6827</td>
+                    <td>0,3655</td>
+                    <td>0,2657</td>
+                    <td>0,1665</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">MLP inicial</th>
+                    <td>Prueba</td>
+                    <td>0,6803</td>
+                    <td>0,3606</td>
+                    <td>0,2615</td>
+                    <td>0,1847</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="nota"><em>Nota.</em> Fuente: <code>parte_1/models/metricas_comparacion.json</code>. El MLP es una
+              única corrida sin búsqueda de hiperparámetros; no es aún comparable con el resultado final.</p>
+          </div>
+          <aside class="callout" data-tipo="limitacion"><strong class="etq">Comparación todavía no justa</strong>
+            La regresión logística y el MLP aún no se comparan bajo la regla del enunciado: falta la búsqueda de
+            hiperparámetros con presupuesto explícito y las 30 semillas.</aside>
+
+          <h3>Búsqueda de hiperparámetros y 30 semillas</h3>
+          <div class="esqueleto"><span class="pendiente">Pendiente · Parte 1</span> Justificación del método de
+            búsqueda, número de configuraciones, tiempo total y tabla de media, desviación estándar, mínimo y máximo con
+            30 semillas.</div>
+          <figure class="lamina fig-pendiente" id="fig-pd-busqueda">
+            <figcaption><span class="num"></span><span class="pendiente">Pendiente · Parte 1</span><span
+                class="titulo">Resultados de la búsqueda de hiperparámetros del MLP de PD</span></figcaption>
+            <div class="cuerpo">Se generará con <code>parte_1/src/modelos.py</code> →
+              <code>parte_1/figures/busqueda_hiperparametros.png</code></div>
+          </figure>
+
+          <h3>Evaluación: discriminación y calibración</h3>
+          <figure class="lamina fig-pendiente" id="fig-roc">
+            <figcaption><span class="num"></span><span class="pendiente">Pendiente · Parte 1</span><span
+                class="titulo">Curva ROC de la regresión logística y del MLP en prueba</span></figcaption>
+            <div class="cuerpo">Se generará con <code>parte_1/src/evaluacion.py</code> →
+              <code>parte_1/figures/roc_prueba.png</code></div>
+          </figure>
+          <figure class="lamina fig-pendiente" id="fig-ks">
+            <figcaption><span class="num"></span><span class="pendiente">Pendiente · Parte 1</span><span
+                class="titulo">Estadístico KS: distribuciones acumuladas de buenos y malos en prueba</span></figcaption>
+            <div class="cuerpo">Se generará con <code>parte_1/src/evaluacion.py</code> →
+              <code>parte_1/figures/ks_prueba.png</code></div>
+          </figure>
+          <figure class="lamina fig-pendiente" id="fig-pd-calibracion">
+            <figcaption><span class="num"></span><span class="pendiente">Pendiente · Parte 1</span><span
+                class="titulo">Curva de calibración de la PD en validación y prueba</span></figcaption>
+            <div class="cuerpo">Se generará con <code>parte_1/src/evaluacion.py</code> →
+              <code>parte_1/figures/calibracion_pd.png</code></div>
+          </figure>
+
+          <h3>Scorecard</h3>
+          <p>La scorecard transforma la probabilidad en puntos. Con puntaje base \(P_0\), odds de referencia
+            \(\theta_0\) y puntos para duplicar las odds (PDO):</p>
+          <div class="eq" id="eq-scorecard">
+            <div class="formula">\[ \text{Puntaje} = P_0 + \frac{\text{PDO}}{\ln 2}\,\ln\!\left(\frac{1 - p}{p}\right) -
+              \frac{\text{PDO}}{\ln 2}\,\ln \theta_0 \]</div>
+            <span class="eq-num"></span>
+          </div>
+          <p><span class="pendiente">Pendiente · Parte 1</span> Verificar la derivación y los valores de \(P_0\),
+            \(\theta_0\) y PDO con los que se construye la tabla de puntos.</p>
+          <figure class="lamina fig-pendiente" id="fig-scorecard">
+            <figcaption><span class="num"></span><span class="pendiente">Pendiente · Parte 1</span><span
+                class="titulo">Distribución de puntajes de la scorecard en prueba, por buenos y malos</span>
+            </figcaption>
+            <div class="cuerpo">Se generará con <code>parte_1/src/scorecard.py</code> →
+              <code>parte_1/figures/distribucion_puntajes.png</code></div>
+          </figure>
+
+          <h3>Variables de riesgo e interpretabilidad</h3>
+          <figure class="lamina fig-pendiente" id="fig-permutacion">
+            <figcaption><span class="num"></span><span class="pendiente">Pendiente · Parte 1</span><span
+                class="titulo">Importancia por permutación de las variables del modelo de PD</span></figcaption>
+            <div class="cuerpo">Se generará con <code>parte_1/src/interpretabilidad.py</code> →
+              <code>parte_1/figures/importancia_permutacion.png</code></div>
+          </figure>
+        </section>
+
+        <!-- ===================== 6. PARTE 2 · LGD ===================== -->
+        <section id="parte-2" data-parte="lgd">
+          <h2>Pérdida dado incumplimiento</h2>
+          <p class="antetitulo">Parte 2 · Regresión</p>
+
+          <h3>Definición de la variable objetivo</h3>
+          <p>El LGD es la fracción de la deuda pendiente que se pierde después del proceso de cobro. Se construye con
+            campos del conjunto de datos:</p>
+          <div class="eq" id="eq-ead">
+            <div class="formula">\[ EAD_{\text{default}} = \texttt{funded\_amnt} - \texttt{total\_rec\_prncp} \]</div>
+            <span class="eq-num"></span>
+          </div>
+          <div class="eq" id="eq-lgd">
+            <div class="formula">\[ LGD = 1 - \frac{\texttt{recoveries} -
+              \texttt{collection\_recovery\_fee}}{EAD_{\text{default}}} \]</div>
+            <span class="eq-num"></span>
+          </div>
+          <p>Se usan solo los créditos <em>castigados</em><label class="nota-ref" for="nota-2"
+              title="Ver nota 2">2</label><input class="nota-toggle" type="checkbox" id="nota-2"
+              aria-label="Mostrar nota 2"><span class="nota-margen"><span class="n">2</span><em>Charged Off</em>:
+              crédito declarado incobrable y enviado a cobranza, según el diccionario de LendingClub. Las recuperaciones
+              se registran después del castigo.</span>. Los créditos en <em>Default</em> o <em>Late (31-120 days)</em>
+            cuentan como malos para la PD, pero no tienen cobranza registrada y su LGD saldría igual a 1 por
+            construcción.</p>
+          <div class="tabla-paper" id="tab-lgd-campos" style="--color-parte: var(--lgd)">
+            <div class="titulo-tabla"><span class="num"></span><span class="titulo">Campos usados en el cálculo del LGD
+                y su justificación</span></div>
+            <div class="contenedor" role="region" tabindex="0" aria-label="Campos del LGD">
+              <table>
+                <thead>
+                  <tr>
+                    <th scope="col">Campo</th>
+                    <th scope="col">Definición en el diccionario</th>
+                    <th scope="col">Motivo</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row"><code>funded_amnt</code></th>
+                    <td class="txt">Total amount committed to that loan</td>
+                    <td class="txt">Lo desembolsado; se prefiere a <code>loan_amnt</code> y
+                      <code>funded_amnt_inv</code>.</td>
+                  </tr>
+                  <tr>
+                    <th scope="row"><code>total_rec_prncp</code></th>
+                    <td class="txt">Principal received to date</td>
+                    <td class="txt">Capital devuelto antes del incumplimiento.</td>
+                  </tr>
+                  <tr>
+                    <th scope="row"><code>recoveries</code></th>
+                    <td class="txt">Post charge off gross recovery</td>
+                    <td class="txt">Lo cobrado después del castigo.</td>
+                  </tr>
+                  <tr>
+                    <th scope="row"><code>collection_recovery_fee</code></th>
+                    <td class="txt">Post charge off collection fee</td>
+                    <td class="txt">Se resta porque lo retiene la agencia de cobranza.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <aside class="callout" data-tipo="limitacion"><strong class="etq">Limitaciones de la variable
+              objetivo</strong>
+            No hay fechas de recuperación, así que no se pueden descontar en el tiempo. No se incluyen intereses no
+            cobrados ni costos internos de cobranza. Los créditos castigados poco antes de la recolección pueden no
+            haber terminado su cobranza; por eso se excluye 2015 y 2014 sigue parcialmente afectado.</aside>
+          <p>De los 46 009 créditos castigados, 38 casos con LGD menor que 0 se llevaron a 0 y ninguno superó 1. La
+            media es 0,930 y la mediana 0,981: el 47 % de los <em>Charged Off</em> no recuperó nada, así que su LGD es
+            exactamente 1.</p>
+
+          <h3>Modelos y presupuesto de búsqueda</h3>
+          <p>Se comparan un modelo nulo (siempre predice el LGD medio de entrenamiento), una regresión lineal y un MLP
+            con salida sigmoide, que mantiene la predicción en \([0, 1]\). La red usa entropía cruzada binaria con
+            objetivo fraccional (<em>fractional logit</em>; <a class="cita" href="#ref-papke1996">Papke y Wooldridge,
+              1996</a>) y el optimizador Adam (<a class="cita" href="#ref-kingma2015">Kingma y Ba, 2015</a>).</p>
+          <div class="versus" style="--color-parte: var(--lgd)">
+            <article>
+              <h4>Regresión lineal</h4>
+              <dl>
+                <dt>Parámetros</dt>
+                <dd>55</dd>
+                <dt>Configuraciones</dt>
+                <dd>1</dd>
+                <dt>Tiempo de ajuste</dt>
+                <dd>0,04 s</dd>
+              </dl>
+            </article>
+            <article>
+              <h4>MLP (64-32-16, tanh)</h4>
+              <dl>
+                <dt>Parámetros</dt>
+                <dd>6 145</dd>
+                <dt>Configuraciones</dt>
+                <dd>40</dd>
+                <dt>Búsqueda</dt>
+                <dd>237,5 s</dd>
+                <dt>30 semillas</dt>
+                <dd>108,9 s</dd>
+              </dl>
+            </article>
+          </div>
+          <div class="tabla-paper" id="tab-lgd-config" style="--color-parte: var(--lgd)">
+            <div class="titulo-tabla"><span class="num"></span><span class="titulo">Mejor configuración del MLP de LGD
+                según el RMSE de validación</span></div>
+            <div class="contenedor" role="region" tabindex="0" aria-label="Mejor configuración del MLP">
+              <table>
+                <thead>
+                  <tr>
+                    <th scope="col">Hiperparámetro</th>
+                    <th scope="col">Valor</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">Capas ocultas</th>
+                    <td>64 · 32 · 16</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Activación</th>
+                    <td>tanh</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Dropout</th>
+                    <td>0,1</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Función de pérdida</th>
+                    <td>Entropía cruzada binaria</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Optimizador</th>
+                    <td>Adam</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Tasa de aprendizaje</th>
+                    <td>0,00365</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Penalización L2</th>
+                    <td>2,89 × 10⁻⁵</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Tamaño de lote</th>
+                    <td>128</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="nota"><em>Nota.</em> Fuente: <code>parte_2/results/red/mejor_configuracion.yaml</code>.</p>
+          </div>
+          <figure class="lamina" id="fig-historial">
+            <figcaption><span class="num"></span><span class="titulo">Pérdida de entrenamiento y validación por época
+                del MLP de LGD</span></figcaption>
+            <img src="assets/img/figuras/parte_2/red/historial_perdida.png" width="1050" height="630" loading="lazy"
+              alt="Curvas de pérdida por época. La pérdida de entrenamiento cae rápido en las dos primeras épocas y luego se acerca a la de validación, que se mantiene casi plana cerca de 0,285. La línea vertical marca la mejor época, la 32.">
+            <p class="nota"><em>Nota.</em> Elaboración propia. Generada por <code>parte_2/src/red_lgd.py</code>.</p>
+          </figure>
+
+          <h3>Evaluación: MAE, RMSE y distribución</h3>
+          <div class="tabla-paper" id="tab-lgd-metricas" style="--color-parte: var(--lgd)">
+            <div class="titulo-tabla"><span class="num"></span><span class="titulo">MAE y RMSE del LGD en el conjunto de
+                prueba (2014)</span></div>
+            <div class="contenedor" role="region" tabindex="0" aria-label="Métricas del LGD en prueba">
+              <table>
+                <thead>
+                  <tr>
+                    <th scope="col">Modelo</th>
+                    <th scope="col">Parámetros</th>
+                    <th scope="col">MAE</th>
+                    <th scope="col">RMSE</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">Nulo (media)</th>
+                    <td>1</td>
+                    <td>0,0775</td>
+                    <td>0,0859</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Nulo (mediana)</th>
+                    <td>1</td>
+                    <td>0,0699</td>
+                    <td>0,0811</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Regresión lineal</th>
+                    <td>55</td>
+                    <td>0,0758</td>
+                    <td>0,0858</td>
+                  </tr>
+                  <tr class="mejor">
+                    <th scope="row">MLP (media de 30 semillas)</th>
+                    <td>6 145</td>
+                    <td>0,0762</td>
+                    <td>0,0855</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="nota"><em>Nota.</em> Fuentes: <code>parte_2/results/referencia/metricas.csv</code> y
+              <code>parte_2/results/red/resumen_semillas.csv</code>.</p>
+          </div>
+          <aside class="callout" data-tipo="nota"><strong class="etq">Observación a discutir</strong>
+            En prueba, la mejora del MLP frente al modelo nulo y a la regresión lineal es pequeña en RMSE (0,0855 frente
+            a 0,0859 y 0,0858), y el modelo nulo de la mediana tiene un MAE menor (0,0699). Hay que interpretarlo junto
+            con la concentración del 47 % de los créditos en LGD = 1.</aside>
+
+          <div class="tabla-paper" id="tab-semillas" style="--color-parte: var(--lgd)">
+            <div class="titulo-tabla"><span class="num"></span><span class="titulo">Variabilidad del MLP de LGD con 30
+                semillas independientes</span></div>
+            <div class="contenedor" role="region" tabindex="0" aria-label="Resultados con 30 semillas">
+              <table>
+                <thead>
+                  <tr>
+                    <th scope="col">Conjunto</th>
+                    <th scope="col">Métrica</th>
+                    <th scope="col">Media</th>
+                    <th scope="col">Desv. est.</th>
+                    <th scope="col">Mejor</th>
+                    <th scope="col">Peor</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">Entrenamiento</th>
+                    <td>MAE</td>
+                    <td>0,0729</td>
+                    <td>0,0006</td>
+                    <td>0,0716</td>
+                    <td>0,0744</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Entrenamiento</th>
+                    <td>RMSE</td>
+                    <td>0,1155</td>
+                    <td>0,0003</td>
+                    <td>0,1148</td>
+                    <td>0,1161</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Validación</th>
+                    <td>MAE</td>
+                    <td>0,0755</td>
+                    <td>0,0002</td>
+                    <td>0,0750</td>
+                    <td>0,0759</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Validación</th>
+                    <td>RMSE</td>
+                    <td>0,0923</td>
+                    <td>0,0001</td>
+                    <td>0,0922</td>
+                    <td>0,0924</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Prueba</th>
+                    <td>MAE</td>
+                    <td>0,0762</td>
+                    <td>0,0005</td>
+                    <td>0,0748</td>
+                    <td>0,0773</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Prueba</th>
+                    <td>RMSE</td>
+                    <td>0,0855</td>
+                    <td>0,0005</td>
+                    <td>0,0841</td>
+                    <td>0,0864</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="nota"><em>Nota.</em> Semillas 1 a 30. El modelo guardado usa la semilla 8. Fuente:
+              <code>parte_2/results/red/resumen_semillas.csv</code>.</p>
+          </div>
+
+          <figure class="lamina" id="fig-lgd-distribucion">
+            <figcaption><span class="num"></span><span class="titulo">Distribución del LGD observado frente a las
+                predicciones del modelo nulo y de la red en prueba</span></figcaption>
+            <img src="assets/img/figuras/parte_2/red/distribucion_lgd_prueba.png" width="1050" height="630"
+              loading="lazy"
+              alt="Histograma del LGD en prueba. El LGD observado se concentra en 1,0, con cerca del 63 % de los créditos, y tiene una cola entre 0,77 y 0,95. Las predicciones de la red se concentran en un rango estrecho cerca de 0,93. Una línea vertical marca la predicción constante del modelo nulo, 0,917.">
+            <p class="nota"><em>Nota.</em> Elaboración propia. Generada por <code>parte_2/src/red_lgd.py</code>. Versión
+              del modelo de referencia: <code>assets/img/figuras/parte_2/referencia/distribucion_lgd_prueba.png</code>.
+            </p>
+          </figure>
+          <figure class="lamina" id="fig-lgd-calibracion">
+            <figcaption><span class="num"></span><span class="titulo">Calibración por deciles del LGD en prueba:
+                regresión lineal y red neuronal</span></figcaption>
+            <div class="fig-fila">
+              <img src="assets/img/figuras/parte_2/referencia/calibracion_lineal_prueba.png" width="750" height="750"
+                loading="lazy"
+                alt="Calibración por deciles de la regresión lineal en prueba: LGD observado promedio frente a LGD predicho promedio, comparado con la diagonal de calibración perfecta.">
+              <img src="assets/img/figuras/parte_2/red/calibracion_red_prueba.png" width="750" height="750"
+                loading="lazy"
+                alt="Calibración por deciles de la red neuronal en prueba. Los diez puntos quedan por encima de la diagonal: el LGD observado promedio, entre 0,937 y 0,953, es mayor que el predicho, entre 0,896 y 0,936.">
+            </div>
+            <p class="nota"><em>Nota.</em> Elaboración propia. Izquierda: regresión lineal. Derecha: red neuronal.</p>
+          </figure>
+        </section>
+
+        <!-- ===================== 7. PÉRDIDA ESPERADA ===================== -->
+        <section id="perdida-esperada" data-parte="el">
+          <h2>Pérdida esperada</h2>
+          <p class="antetitulo">PD × LGD × EAD</p>
+          <p>Para cada crédito de prueba se combinan las dos partes:</p>
+          <div class="eq" id="eq-el">
+            <div class="formula">\[ E[L] = PD \cdot LGD \cdot EAD \]</div>
+            <span class="eq-num"></span>
+          </div>
+          <p>La EAD por defecto es el monto desembolsado multiplicado por la fracción promedio que seguía pendiente al
+            incumplir, estimada en los castigados de entrenamiento y separada por plazo: 0,601 para 36 meses y 0,749
+            para 60 meses. Es coherente con la definición del LGD.</p>
+          <aside class="callout" data-tipo="alerta"><strong class="etq">PD provisional</strong>
+            Estos resultados usan la PD provisional (<code>provisional_regresion_logistica</code>), no la del modelo
+            final de la Parte 1. Deben recalcularse cuando <code>intercambio/pd_prueba.csv</code> se sobrescriba.
+          </aside>
+          <div class="tabla-paper" id="tab-el" style="--color-parte: var(--el)">
+            <div class="titulo-tabla"><span class="num"></span><span class="titulo">Pérdida esperada frente a pérdida
+                observada en el conjunto de prueba (2014)</span></div>
+            <div class="contenedor" role="region" tabindex="0" aria-label="Pérdida esperada en prueba">
+              <table>
+                <thead>
+                  <tr>
+                    <th scope="col">Indicador</th>
+                    <th scope="col">Valor</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">Créditos de prueba</th>
+                    <td>74 154</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Monto desembolsado (US$)</th>
+                    <td>1 061 569 725</td>
+                  </tr>
+                  <tr class="mejor">
+                    <th scope="row">Pérdida esperada total (US$)</th>
+                    <td>141 208 624</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Pérdida observada, cota inferior (US$)</th>
+                    <td>168 195 586</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Pérdida observada, cota superior (US$)</th>
+                    <td>229 530 555</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">PD media predicha</th>
+                    <td>0,196</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Tasa real de malos</th>
+                    <td>0,262</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">LGD medio predicho</th>
+                    <td>0,923</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="nota"><em>Nota.</em> Fuente: <code>parte_2/results/perdida_esperada/resumen.json</code>. La cota
+              inferior suma la pérdida real de los castigados; la superior supone que los créditos en <em>Default</em> o
+              <em>Late</em> pierden toda su deuda pendiente.</p>
+          </div>
+          <figure class="lamina" id="fig-el-calibracion">
+            <figcaption><span class="num"></span><span class="titulo">Pérdida esperada frente a observada por grupos en
+                prueba</span></figcaption>
+            <img src="assets/img/figuras/parte_2/perdida_esperada/calibracion_perdida_prueba.png" width="825"
+              height="825" loading="lazy"
+              alt="Pérdida esperada frente a observada, en porcentaje del monto prestado, por grupos de riesgo. Los puntos observados quedan por encima de la diagonal en los grupos de menor pérdida esperada y se acercan a ella en los de mayor pérdida. Las barras muestran la cota superior que incluye los créditos en Default y Late.">
+            <p class="nota"><em>Nota.</em> Elaboración propia. Generada por
+              <code>parte_2/src/perdida_esperada.py</code>.</p>
+          </figure>
+        </section>
+
+        <!-- ===================== 8. COMPARACIÓN JUSTA ===================== -->
+        <section id="comparacion-justa">
+          <h2>Comparación justa</h2>
+          <p>El enunciado exige mismos datos, presupuesto de búsqueda explícito, 30 semillas y número de parámetros.
+            Esta tabla se llena a medida que cada parte entrega sus resultados.</p>
+          <div class="tabla-paper" id="tab-justa">
+            <div class="titulo-tabla"><span class="num"></span><span class="titulo">Condiciones de comparación por tarea
+                y familia de modelos</span></div>
+            <div class="contenedor" role="region" tabindex="0" aria-label="Condiciones de comparación">
+              <table>
+                <thead>
+                  <tr>
+                    <th scope="col">Tarea</th>
+                    <th scope="col">Modelo</th>
+                    <th scope="col">Parámetros</th>
+                    <th scope="col">Configuraciones</th>
+                    <th scope="col">Semillas</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">PD</th>
+                    <td>Regresión logística</td>
+                    <td>55</td>
+                    <td>1</td>
+                    <td>—</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">PD</th>
+                    <td>MLP</td>
+                    <td>5 633 (inicial)</td>
+                    <td><span class="pendiente">Pendiente</span></td>
+                    <td><span class="pendiente">Pendiente</span></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">LGD</th>
+                    <td>Regresión lineal</td>
+                    <td>55</td>
+                    <td>1</td>
+                    <td>—</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">LGD</th>
+                    <td>MLP</td>
+                    <td>6 145</td>
+                    <td>40</td>
+                    <td>30</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===================== 9. DISCUSIÓN ===================== -->
+        <section id="discusion">
+          <h2>Discusión</h2>
+          <h3>¿Qué aportó la red neuronal?</h3>
+          <div class="esqueleto"><span class="pendiente">Pendiente</span> Respuesta por tarea, con base en las métricas,
+            su variabilidad entre semillas, el costo de cómputo y la interpretabilidad.</div>
+          <h3>Hipótesis: confirmadas y no confirmadas</h3>
+          <div class="esqueleto"><span class="pendiente">Pendiente · Parte 1</span> Veredicto de cada una de las
+            hipótesis del análisis descriptivo.</div>
+          <h3>Aprendizajes sobre el problema</h3>
+          <div class="esqueleto"><span class="pendiente">Pendiente</span> Listado de aprendizajes que surgieron del
+            proceso de modelamiento.</div>
+        </section>
+
+        <!-- ===================== 10. ALUCINACIONES ===================== -->
+        <section id="alucinaciones">
+          <h2>Cacería de la alucinación</h2>
+          <p>Al menos cinco hallazgos, en al menos tres categorías (matemáticas, código, datos del mundo real,
+            bibliografía, conceptos). Cada uno con prompt literal, respuesta de la IA, sospecha, evidencia, corrección y
+            lección aprendida. Una tarjeta sin evidencia no se publica.</p>
+
+          <details class="alucinacion">
+            <summary>Hallazgo 1 <span class="cat">Categoría · pendiente</span></summary>
+            <dl>
+              <dt>Prompt literal</dt>
+              <dd><span class="pendiente">Pendiente</span></dd>
+              <dt>Respuesta de la IA</dt>
+              <dd><span class="pendiente">Pendiente</span></dd>
+              <dt>Cómo se sospechó</dt>
+              <dd><span class="pendiente">Pendiente</span></dd>
+              <dt>Evidencia</dt>
+              <dd><span class="pendiente">Pendiente</span></dd>
+              <dt>Corrección</dt>
+              <dd><span class="pendiente">Pendiente</span></dd>
+              <dt>Lección aprendida</dt>
+              <dd><span class="pendiente">Pendiente</span></dd>
+            </dl>
+          </details>
+          <details class="alucinacion">
+            <summary>Hallazgo 2 <span class="cat">Categoría · pendiente</span></summary>
+            <dl>
+              <dt>Prompt literal</dt>
+              <dd><span class="pendiente">Pendiente</span></dd>
+              <dt>Respuesta de la IA</dt>
+              <dd><span class="pendiente">Pendiente</span></dd>
+              <dt>Cómo se sospechó</dt>
+              <dd><span class="pendiente">Pendiente</span></dd>
+              <dt>Evidencia</dt>
+              <dd><span class="pendiente">Pendiente</span></dd>
+              <dt>Corrección</dt>
+              <dd><span class="pendiente">Pendiente</span></dd>
+              <dt>Lección aprendida</dt>
+              <dd><span class="pendiente">Pendiente</span></dd>
+            </dl>
+          </details>
+          <details class="alucinacion">
+            <summary>Hallazgo 3 <span class="cat">Categoría · pendiente</span></summary>
+            <dl>
+              <dt>Prompt literal</dt>
+              <dd><span class="pendiente">Pendiente</span></dd>
+              <dt>Respuesta de la IA</dt>
+              <dd><span class="pendiente">Pendiente</span></dd>
+              <dt>Cómo se sospechó</dt>
+              <dd><span class="pendiente">Pendiente</span></dd>
+              <dt>Evidencia</dt>
+              <dd><span class="pendiente">Pendiente</span></dd>
+              <dt>Corrección</dt>
+              <dd><span class="pendiente">Pendiente</span></dd>
+              <dt>Lección aprendida</dt>
+              <dd><span class="pendiente">Pendiente</span></dd>
+            </dl>
+          </details>
+          <details class="alucinacion">
+            <summary>Hallazgo 4 <span class="cat">Categoría · pendiente</span></summary>
+            <dl>
+              <dt>Prompt literal</dt>
+              <dd><span class="pendiente">Pendiente</span></dd>
+              <dt>Respuesta de la IA</dt>
+              <dd><span class="pendiente">Pendiente</span></dd>
+              <dt>Cómo se sospechó</dt>
+              <dd><span class="pendiente">Pendiente</span></dd>
+              <dt>Evidencia</dt>
+              <dd><span class="pendiente">Pendiente</span></dd>
+              <dt>Corrección</dt>
+              <dd><span class="pendiente">Pendiente</span></dd>
+              <dt>Lección aprendida</dt>
+              <dd><span class="pendiente">Pendiente</span></dd>
+            </dl>
+          </details>
+          <details class="alucinacion">
+            <summary>Hallazgo 5 <span class="cat">Categoría · pendiente</span></summary>
+            <dl>
+              <dt>Prompt literal</dt>
+              <dd><span class="pendiente">Pendiente</span></dd>
+              <dt>Respuesta de la IA</dt>
+              <dd><span class="pendiente">Pendiente</span></dd>
+              <dt>Cómo se sospechó</dt>
+              <dd><span class="pendiente">Pendiente</span></dd>
+              <dt>Evidencia</dt>
+              <dd><span class="pendiente">Pendiente</span></dd>
+              <dt>Corrección</dt>
+              <dd><span class="pendiente">Pendiente</span></dd>
+              <dt>Lección aprendida</dt>
+              <dd><span class="pendiente">Pendiente</span></dd>
+            </dl>
+          </details>
+        </section>
+
+        <!-- ===================== 11. REPRODUCIBILIDAD ===================== -->
+        <section id="reproducibilidad">
+          <h2>Reproducibilidad</h2>
+          <p>Todo el proyecto usa un único entorno virtual en Python 3.12. Los comandos se ejecutan desde
+            <code>parte_2/</code>.</p>
+          <pre><code>python -m pip install -r requirements.txt
+python -m src.preprocesamiento --config configs/lgd.yaml
+python -m src.referencia_lgd   --config configs/lgd.yaml
+python -m src.red_lgd          --config configs/lgd.yaml --modo busqueda
+python -m src.red_lgd          --config configs/lgd.yaml --modo semillas
+python -m src.perdida_esperada --config configs/lgd.yaml</code></pre>
+          <p>Para una demostración de menos de dos minutos se agrega <code>--demo</code> a cualquier modo. Cualquier
+            parámetro se puede cambiar sin editar archivos, por ejemplo
+            <code>--set particion.fin_entrenamiento=2012-12-31</code>.</p>
+          <div class="esqueleto"><span class="pendiente">Pendiente · Parte 1</span> Comandos de la Parte 1 y del
+            servidor local de la aplicación.</div>
+        </section>
+
+        <!-- ===================== 12. CONTRIBUCIONES ===================== -->
+        <section id="contribuciones">
+          <h2>Contribuciones y videos</h2>
+          <div class="esqueleto"><span class="pendiente">Pendiente</span> Aporte de Gian Carlo Mier Estrada y de Nestor
+            Enrique Mendoza Rueda, con enlaces a los videos individuales y al video promocional.</div>
+        </section>
+
+        <!-- ===================== REFERENCIAS ===================== -->
+        <section id="referencias">
+          <h2 class="sin-num">Referencias</h2>
+          <aside class="callout" data-tipo="limitacion"><strong class="etq">Por verificar</strong>
+            Antes de entregar, comprobar cada referencia en su fuente primaria (autores, año, DOI o URL). Una referencia
+            inexistente se penaliza.</aside>
+          <ol class="referencias">
+            <li id="ref-kaggle-credit">Ranadeep. (s. f.). <em>Credit risk analysis</em> [Conjunto de datos]. Kaggle.
+              https://www.kaggle.com/datasets/ranadeep/credit-risk-dataset</li>
+            <li id="ref-lc-diccionario">LendingClub. (s. f.). <em>LCDataDictionary</em> [Diccionario de datos, hoja
+              LoanStats]. Incluido en el conjunto de datos de Kaggle.</li>
+            <li id="ref-papke1996">Papke, L. E., y Wooldridge, J. M. (1996). Econometric methods for fractional response
+              variables with an application to 401(k) plan participation rates. <em>Journal of Applied Econometrics,
+                11</em>(6), 619–632.</li>
+            <li id="ref-kingma2015">Kingma, D. P., y Ba, J. (2015). Adam: A method for stochastic optimization. <em>3rd
+                International Conference on Learning Representations (ICLR 2015)</em>. https://arxiv.org/abs/1412.6980
+            </li>
+          </ol>
+        </section>
+
+      </article>
+    </main>
+  </div>
+
+  <footer class="pie">
+    <p><strong>Trabajo 2: Redes neuronales para datos tabulares</strong> · Redes Neuronales y Algoritmos Bioinspirados ·
+      Universidad Nacional de Colombia, Sede Medellín, 2026-02</p>
+    <p>Gian Carlo Mier Estrada · Nestor Enrique Mendoza Rueda</p>
+    <p><a href="#inicio">Volver arriba ↑</a></p>
+  </footer>
+</body>
+
+</html>

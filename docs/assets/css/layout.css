@@ -1,0 +1,104 @@
+/* ---------- Progreso de lectura ---------- */
+.progreso { position: fixed; inset: 0 0 auto 0; block-size: 3px; background: var(--acento); z-index: 60;
+            transform-origin: left; scale: 0 1; }
+@supports (animation-timeline: scroll()) {
+  .progreso { animation: crecer linear both; animation-timeline: scroll(root); }
+  @keyframes crecer { to { scale: 1 1; } }
+}
+
+/* ---------- Cabecera ---------- */
+.cabecera { position: sticky; top: 0; z-index: 50; min-block-size: var(--alto-cabecera);
+            background: color-mix(in oklab, var(--papel) 92%, transparent);
+            backdrop-filter: blur(6px); border-bottom: 1px solid var(--filete);
+            font: 500 .82rem var(--f-ui); }
+.cabecera__inner { max-inline-size: var(--ancho-pagina); margin-inline: auto; min-block-size: var(--alto-cabecera);
+                   padding-inline: clamp(1rem, 2.5vw, 2rem);
+                   display: flex; align-items: center; justify-content: space-between; gap: var(--e3); }
+.marca { font: 700 .95rem var(--f-titulo); letter-spacing: .06em; text-transform: uppercase; color: var(--tinta); text-decoration: none; }
+.cabecera nav { display: flex; gap: var(--e4); align-items: center; }
+.cabecera nav a { color: var(--tenue); text-decoration: none; }
+.cabecera nav a:hover { color: var(--acento); }
+.btn-indice { display: none; font: 600 .8rem var(--f-ui); background: none; color: var(--tinta);
+              border: 1px solid var(--tinta); padding: .35rem .7rem; cursor: pointer; }
+.pronto { opacity: .6; cursor: not-allowed; }
+.pronto::after { content: " · pronto"; font-size: .85em; }
+
+/* ---------- Portada en dos columnas centrada ---------- */
+.portada { padding: var(--e5) clamp(1rem, 2.5vw, 2rem); border-bottom: 1px solid var(--filete); text-align: left; }
+.portada__grid { max-inline-size: calc(var(--ancho-pagina) - 2 * clamp(1rem, 2.5vw, 2rem)); margin-inline: auto;
+                 display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(18rem, 1fr); gap: var(--e5); align-items: center; }
+.portada__principal h1 { font-size: var(--fs-h1); font-weight: 600; letter-spacing: -.015em;
+                         margin: var(--e2) 0 var(--e3); font-variation-settings: "SOFT" 50, "WONK" 1; }
+.portada__principal .bajada { font: italic 400 clamp(1.05rem, .95rem + .4vw, 1.22rem)/1.55 var(--f-cuerpo); color: var(--tenue);
+                              max-inline-size: 62ch; margin: 0; }
+.portada__meta { border-inline-start: 2px solid var(--acento); padding-inline-start: var(--e4); }
+.autores { font: 600 1rem/1.45 var(--f-ui); margin: 0 0 .35rem; }
+.meta { font: 400 .85rem/1.5 var(--f-ui); color: var(--tenue); margin: 0; }
+
+/* ---------- Grid principal estilo GitHub Wiki ---------- */
+.pagina { max-inline-size: var(--ancho-pagina); margin-inline: auto;
+          display: grid; grid-template-columns: var(--ancho-indice) minmax(0, 1fr); gap: var(--e4); align-items: start;
+          padding: var(--e4) clamp(1rem, 2.5vw, 2rem) var(--e6); }
+
+.indice { grid-column: 1; grid-row: 1; position: sticky; top: calc(var(--alto-cabecera) + var(--e3)); align-self: start;
+          max-block-size: calc(100dvh - var(--alto-cabecera) - var(--e4)); overflow: auto; overscroll-behavior: contain;
+          font: 400 .84rem/1.35 var(--f-ui);
+          padding: var(--e3); border: 1px solid var(--filete); border-radius: var(--radio);
+          background: var(--lamina); box-shadow: 0 1px 2px rgb(42 42 42 / 0.04); }
+.indice h2 { font: 700 .7rem var(--f-ui); letter-spacing: .14em; text-transform: uppercase; color: var(--tenue);
+             margin: 0 0 var(--e2); padding-bottom: var(--e2); border-bottom: 1px solid var(--filete); }
+.indice ol { list-style: none; padding: 0; margin: 0; }
+.indice .grupo { margin-top: .9rem; font: 700 .68rem var(--f-ui); letter-spacing: .12em; text-transform: uppercase; color: var(--color-parte, var(--tenue)); }
+.indice ol ol { padding-inline-start: .9rem; border-inline-start: 1px solid var(--filete); margin-block: .15rem .35rem; }
+.indice a { display: block; padding: .22rem .6rem; color: var(--tenue); text-decoration: none;
+            border-inline-start: 3px solid transparent; margin-inline-start: -3px; }
+.indice a:hover { color: var(--tinta); }
+.indice { scroll-target-group: auto; }
+.indice a:is(:target-current, .activo) { color: var(--tinta); font-weight: 600; border-inline-start-color: var(--acento); }
+
+section[id], article[id], h2[id], h3[id] { scroll-margin-top: calc(var(--alto-cabecera) + 1rem); }
+
+/* Tarjeta Wiki principal: texto, tablas y figuras alineados al 100% del contenedor interior */
+.wiki-caja { grid-column: 2; min-inline-size: 0; background: var(--lamina);
+             border: 1px solid var(--filete); border-radius: var(--radio);
+             box-shadow: 0 1px 3px rgb(42 42 42 / 0.04); overflow: clip; }
+.wiki-barra { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--e2);
+              padding: .65rem clamp(1.25rem, 3.2vw, 3rem);
+              background: color-mix(in oklab, var(--papel) 65%, var(--lamina));
+              border-bottom: 1px solid var(--filete);
+              font: 500 .78rem/1.4 var(--f-ui); color: var(--tenue); }
+.wiki-barra strong { color: var(--tinta); font-weight: 600; }
+
+.reporte { padding: clamp(1.5rem, 3.2vw, 3rem); }
+.reporte section > h2 { border-bottom: 1px solid var(--filete); padding-bottom: .35em; }
+.reporte section > h2:first-child { margin-top: 0; }
+.reporte section + section { margin-top: var(--e5); }
+
+/* Secciones con color de parte */
+section[data-parte="pd"]  { --color-parte: var(--pd); }
+section[data-parte="lgd"] { --color-parte: var(--lgd); }
+section[data-parte="el"]  { --color-parte: var(--el); }
+section[data-parte] > h2 { border-top: 3px solid var(--color-parte); padding-top: var(--e3); }
+
+/* ---------- Panel de índice móvil ---------- */
+.panel-indice { border: 0; padding: var(--e4); background: var(--papel); color: var(--tinta);
+                inline-size: min(22rem, 90vw); block-size: 100dvh; margin: 0 auto 0 0; max-block-size: none;
+                border-inline-end: 1px solid var(--tinta); }
+.panel-indice::backdrop { background: rgb(0 0 0 / .45); }
+.panel-indice .cerrar { float: right; font: 600 .8rem var(--f-ui); background: none; border: 1px solid var(--tinta); color: var(--tinta); padding: .3rem .6rem; cursor: pointer; }
+
+/* ---------- Pie ---------- */
+.pie { border-top: 1.5px solid var(--tinta); padding: var(--e5) clamp(1rem, 4vw, 2.5rem); font: .85rem/1.6 var(--f-ui);
+       color: var(--tenue); text-align: center; }
+.pie p { margin: 0 0 .4rem; }
+
+/* ---------- Responsive ---------- */
+@media (width < 940px) {
+  .portada__grid { grid-template-columns: 1fr; gap: var(--e4); }
+  .portada__meta { border-inline-start: 0; padding-inline-start: 0; border-top: 2px solid var(--acento); padding-top: var(--e3); }
+  .pagina { grid-template-columns: minmax(0, 1fr); padding: var(--e3) .75rem var(--e5); }
+  .wiki-caja { grid-column: 1; }
+  .indice { display: none; }
+  .btn-indice { display: inline-block; }
+  .cabecera nav .secundario { display: none; }
+}

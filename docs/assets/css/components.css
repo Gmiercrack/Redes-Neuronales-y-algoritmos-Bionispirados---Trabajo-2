@@ -1,0 +1,167 @@
+﻿/* ---------- Antetítulo, capitular, pull quote ---------- */
+.antetitulo { font: 700 .74rem/1 var(--f-ui); letter-spacing: .16em; text-transform: uppercase;
+              color: var(--color-parte, var(--acento)); margin: 0 0 var(--e2); }
+.capitular::first-letter { float: left; font: 600 4.3em/.78 var(--f-titulo); padding: .06em .1em 0 0; color: var(--acento); }
+
+.destacado { margin: var(--e5) 0; padding: var(--e3) 0 var(--e3) var(--e4);
+             border-inline-start: 3px solid var(--color-parte, var(--acento));
+             font: italic 500 clamp(1.25rem, 1.1rem + .7vw, 1.6rem)/1.35 var(--f-titulo); }
+.destacado cite { display: block; font: 500 .8rem var(--f-ui); font-style: normal; color: var(--tenue); margin-top: .5rem; }
+
+/* ---------- Ficha técnica ---------- */
+.ficha { background: color-mix(in oklab, var(--papel) 55%, var(--lamina)); border: 1px solid var(--tinta); border-radius: var(--radio); margin: var(--e4) 0; overflow: clip; }
+.ficha > header { background: var(--tinta); color: var(--papel); font: 700 .72rem var(--f-ui);
+                  letter-spacing: .14em; text-transform: uppercase; padding: .45rem var(--e3); }
+.ficha dl { display: grid; grid-template-columns: max-content 1fr; margin: 0; }
+.ficha dt, .ficha dd { margin: 0; padding: .5rem var(--e3); border-top: 1px solid var(--filete); font: .92rem/1.4 var(--f-ui); }
+.ficha dt { font-weight: 600; color: var(--tenue); }
+.ficha dd { font-variant-numeric: tabular-nums; }
+
+/* ---------- Figuras APA en lámina ---------- */
+figure.lamina { margin: var(--e5) 0; background: color-mix(in oklab, var(--papel) 40%, var(--lamina)); border: 1px solid var(--filete); border-radius: var(--radio); padding: var(--e3); }
+figure.lamina figcaption { margin-bottom: var(--e2); font: 400 .95rem/1.4 var(--f-ui); }
+figure.lamina .num { display: block; font-weight: 700; }
+figure.lamina .titulo { font-style: italic; }
+figure.lamina img { margin-inline: auto; }
+figure.lamina .nota, .tabla-paper .nota { font: .8rem/1.45 var(--f-ui); color: var(--tenue); margin: var(--e2) 0 0; }
+.fig-fila { display: grid; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); gap: var(--e3); }
+
+/* Figura pendiente */
+.fig-pendiente { border: 2px dashed var(--filete); text-align: center; color: var(--tenue);
+                 background: repeating-linear-gradient(-45deg, transparent 0 12px, color-mix(in oklab, var(--filete) 30%, transparent) 12px 13px); }
+.fig-pendiente .cuerpo { padding: var(--e4) var(--e3); font: .88rem/1.5 var(--f-ui); }
+.pendiente { display: inline-block; font: 700 .66rem/1 var(--f-ui); letter-spacing: .1em; text-transform: uppercase;
+             border: 1px solid var(--acento); color: var(--acento); padding: .22em .5em; margin-right: .5em; vertical-align: middle; }
+
+/* ---------- Tablas estilo booktabs / APA ---------- */
+.tabla-paper { margin: var(--e5) 0; }
+.tabla-paper .titulo-tabla { font: 400 .95rem/1.4 var(--f-ui); margin-bottom: var(--e2); }
+.tabla-paper .num { display: block; font-weight: 700; }
+.tabla-paper .titulo { font-style: italic; }
+.tabla-paper .contenedor { overflow: auto; max-inline-size: 100%; container-type: inline-size; }
+.tabla-paper .contenedor:focus-visible { outline-offset: 2px; }
+.tabla-paper table { border-collapse: collapse; inline-size: 100%; font: .9rem/1.4 var(--f-ui); font-variant-numeric: tabular-nums; }
+.tabla-paper caption { text-align: left; }
+.tabla-paper thead { border-block: 1.5px solid var(--tinta); }
+.tabla-paper tbody { border-block-end: 1.5px solid var(--tinta); }
+.tabla-paper th, .tabla-paper td { padding: .45rem .75rem; text-align: right; white-space: nowrap; }
+.tabla-paper th:first-child, .tabla-paper td:first-child { text-align: left; }
+.tabla-paper tbody th { font-weight: 600; }
+.tabla-paper tbody tr:hover { background: color-mix(in oklab, var(--filete) 30%, transparent); }
+.tabla-paper tr.mejor td, .tabla-paper tr.mejor th { font-weight: 700; color: var(--color-parte, var(--acento)); }
+.tabla-paper td.txt, .tabla-paper th.txt { text-align: left; white-space: normal; }
+.tabla-paper tr.grupo-fila th {
+  background: color-mix(in oklab, var(--papel) 72%, var(--lamina));
+  color: var(--acento);
+  font: 700 .74rem/1.3 var(--f-ui);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  text-align: left;
+  white-space: normal;
+  padding-block: .55rem;
+  border-top: 1px solid var(--filete);
+  border-bottom: 1px solid var(--filete);
+}
+.estado-uso {
+  display: inline-block;
+  font: 700 .7rem/1 var(--f-ui);
+  letter-spacing: .04em;
+  padding: .25em .55em;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+.estado-uso.si {
+  color: var(--ok);
+  background: color-mix(in oklab, var(--ok) 12%, transparent);
+  border: 1px solid color-mix(in oklab, var(--ok) 35%, transparent);
+}
+.estado-uso.no {
+  color: var(--lgd);
+  background: color-mix(in oklab, var(--lgd) 12%, transparent);
+  border: 1px solid color-mix(in oklab, var(--lgd) 35%, transparent);
+}
+
+/* ---------- Ecuaciones numeradas ---------- */
+.eq { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: var(--e3); margin: var(--e4) 0; }
+.eq .formula { text-align: center; min-inline-size: 0; overflow-x: auto; overflow-y: hidden; padding-block: .35rem; }
+.eq .eq-num { font: .95rem var(--f-ui); color: var(--tenue); }
+.eq .eq-num::before { content: "("; } .eq .eq-num::after { content: ")"; }
+.katex-display { margin: 0 !important; }
+
+/* ---------- Callouts ---------- */
+.callout { margin: var(--e4) 0; padding: var(--e3) var(--e4); background: color-mix(in oklab, var(--papel) 55%, var(--lamina));
+           border: 1px solid var(--filete); border-inline-start: 4px solid var(--tipo, var(--acento)); border-radius: var(--radio); font: .95rem/1.55 var(--f-ui); }
+.callout > :last-child { margin-bottom: 0; }
+.callout strong.etq { display: block; font: 700 .7rem var(--f-ui); letter-spacing: .14em; text-transform: uppercase; color: var(--tipo); margin-bottom: .3rem; }
+.callout[data-tipo="nota"]       { --tipo: var(--pd); }
+.callout[data-tipo="supuesto"]   { --tipo: var(--el); }
+.callout[data-tipo="limitacion"] { --tipo: var(--aviso); }
+.callout[data-tipo="decision"]   { --tipo: var(--ok); }
+.callout[data-tipo="alerta"]     { --tipo: var(--acento); }
+
+/* ---------- Notas inline desplegables ---------- */
+.nota-toggle { display: none; }
+.nota-ref { display: inline-flex; align-items: center; justify-content: center; font: 700 .72em/1 var(--f-ui);
+            color: var(--acento); background: color-mix(in oklab, var(--acento) 12%, transparent);
+            border: 1px solid color-mix(in oklab, var(--acento) 35%, transparent); border-radius: 3px;
+            cursor: pointer; vertical-align: super; padding: .15em .35em; margin-inline: .15em; user-select: none; }
+.nota-ref:hover { background: color-mix(in oklab, var(--acento) 20%, transparent); }
+.nota-margen { display: none; margin: .6rem 0 .9rem; padding: .55rem .9rem;
+               border-inline-start: 3px solid var(--acento); border-radius: var(--radio);
+               background: color-mix(in oklab, var(--papel) 60%, var(--lamina));
+               font: .84rem/1.5 var(--f-ui); color: var(--tenue); }
+.nota-margen .n { color: var(--acento); font-weight: 700; margin-right: .35em; }
+.nota-toggle:checked + .nota-margen { display: block; }
+
+/* ---------- Comparación de modelos ---------- */
+.versus { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: var(--e3); margin: var(--e4) 0; }
+.versus > article { background: color-mix(in oklab, var(--papel) 55%, var(--lamina)); border: 1px solid var(--filete); border-top: 4px solid var(--color-parte, var(--acento)); border-radius: var(--radio); padding: var(--e3); font: .92rem/1.5 var(--f-ui); }
+.versus h4 { margin: 0 0 var(--e2); font-family: var(--f-titulo); font-size: 1.1rem; }
+.versus dl { display: grid; grid-template-columns: 1fr auto; margin: 0; }
+.versus dt, .versus dd { margin: 0; padding: .3rem 0; border-top: 1px solid var(--filete); }
+.versus dd { text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; }
+.versus dt { color: var(--tenue); }
+
+/* ---------- Tarjetas de alucinación ---------- */
+.alucinacion { background: color-mix(in oklab, var(--papel) 55%, var(--lamina)); border: 1px solid var(--filete); border-radius: var(--radio); margin: var(--e3) 0; font: .93rem/1.55 var(--f-ui); }
+.alucinacion > summary { cursor: pointer; padding: var(--e3); font-weight: 600; list-style: none; display: flex; gap: var(--e2); align-items: center; }
+.alucinacion > summary::before { content: "▸"; transition: rotate .2s; }
+.alucinacion[open] > summary::before { rotate: 90deg; }
+.alucinacion .cat { margin-left: auto; font: 700 .64rem var(--f-ui); letter-spacing: .1em; text-transform: uppercase; border: 1px solid var(--tenue); color: var(--tenue); padding: .2em .5em; }
+.alucinacion dl { margin: 0; padding: 0 var(--e3) var(--e3); display: grid; grid-template-columns: 9.5rem 1fr; }
+.alucinacion dt, .alucinacion dd { margin: 0; padding: .45rem 0; border-top: 1px solid var(--filete); }
+.alucinacion dt { font: 700 .72rem var(--f-ui); letter-spacing: .08em; text-transform: uppercase; color: var(--tenue); }
+@media (width < 600px) { .alucinacion dl { grid-template-columns: 1fr; } .alucinacion dt { border-bottom: 0; padding-bottom: 0; } .alucinacion dd { border-top: 0; padding-top: 0; } }
+
+/* ---------- Pipeline ---------- */
+.pipeline { list-style: none; padding: 0; margin: var(--e4) 0; display: flex; flex-wrap: wrap; gap: var(--e2); counter-reset: paso; }
+.pipeline li { flex: 1 1 8.5rem; background: color-mix(in oklab, var(--papel) 55%, var(--lamina)); border: 1px solid var(--filete); border-top: 3px solid var(--color-parte, var(--acento)); border-radius: var(--radio);
+               padding: .7rem .8rem; font: .82rem/1.4 var(--f-ui); position: relative; counter-increment: paso; margin: 0; }
+.pipeline li::before { content: counter(paso, decimal-leading-zero); display: block; font: 700 .68rem var(--f-ui); letter-spacing: .1em; color: var(--tenue); margin-bottom: .2rem; }
+.pipeline li strong { display: block; font-size: .9rem; }
+
+/* Bloque de código con botón copiar */
+.copiar { position: absolute; top: .4rem; right: .4rem; font: 600 .7rem var(--f-ui); background: var(--papel); color: var(--tinta);
+          border: 1px solid var(--filete); padding: .2rem .5rem; cursor: pointer; }
+
+/* Referencias APA (sangría francesa) */
+.referencias { list-style: none; padding: 0; font: .95rem/1.55 var(--f-cuerpo); }
+.referencias li { padding-inline-start: 2.2rem; text-indent: -2.2rem; margin-block: .8em; }
+.referencias .volver { font: .8rem var(--f-ui); margin-left: .4em; }
+.cita { text-decoration-style: dotted; }
+
+/* Esqueleto de sección pendiente */
+.esqueleto { border: 2px dashed var(--filete); padding: var(--e4); text-align: center; color: var(--tenue); font: .9rem/1.5 var(--f-ui); margin: var(--e4) 0; }
+
+/* Muestras de paleta (guía de estilos) */
+.muestra { background: var(--papel); color: var(--tinta); border: 1px solid var(--tinta); padding: var(--e3); font: .9rem/1.5 var(--f-ui); max-inline-size: 28rem; }
+.muestra h3 { margin: 0 0 var(--e2); font-size: 1.1rem; }
+.muestra .chips { display: flex; gap: .4rem; margin: .6rem 0; }
+.muestra .chip { inline-size: 2.2rem; block-size: 2.2rem; border: 1px solid var(--tinta); }
+
+/* Numeración de encabezados (la escribe indice.js en data-num) */
+.reporte h2[data-num]::before { content: attr(data-num) ". "; color: var(--color-parte, var(--acento)); }
+.reporte h3[data-num]::before { content: attr(data-num) "  "; color: var(--tenue); font-family: var(--f-ui); font-size: .8em; }
+.cita-rota { color: var(--acento); background: color-mix(in oklab, var(--acento) 15%, transparent); }
+
+
