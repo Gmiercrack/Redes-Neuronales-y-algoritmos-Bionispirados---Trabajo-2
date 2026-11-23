@@ -1,5 +1,5 @@
 {
-  "creado_utc": "2026-10-30T22:36:26+00:00",
+  "creado_utc": "2026-11-21T01:53:11+00:00",
   "muestra": null,
   "filas_leidas": 887379,
   "filas_ajuste_preprocesador": 90347,
@@ -315,7 +315,7 @@
     }
   },
   "versiones": {
-    "python": "3.14.3",
+    "python": "3.12.2",
     "pandas": "3.0.5",
     "numpy": "2.5.3",
     "scikit-learn": "1.9.1"

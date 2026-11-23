@@ -1,0 +1,75 @@
+{
+  "configuraciones_evaluadas": 3,
+  "mejor_C": 0.01,
+  "metrica_seleccion": "auc",
+  "parametros_entrenables": 55,
+  "intercepto": -1.8154197688117906,
+  "segundos_totales_rejilla": 0.576738399999158,
+  "tasa_base_entrenamiento": 0.15927832198793515,
+  "metricas": {
+    "modelo_nulo": {
+      "entrenamiento": {
+        "n": 18069,
+        "tasa_malos_obs": 0.15927832198793515,
+        "pd_media_pred": 0.15927832198793515,
+        "auc": 0.5,
+        "gini": 0.0,
+        "ks": 0.0,
+        "brier": 0.1339087381326428,
+        "log_loss": 0.4384712327243953
+      },
+      "validacion": {
+        "n": 73194,
+        "tasa_malos_obs": 0.22949968576659288,
+        "pd_media_pred": 0.15927832198793518,
+        "auc": 0.5,
+        "gini": 0.0,
+        "ks": 0.0,
+        "brier": 0.18176061993056258,
+        "log_loss": 0.5552920228886032
+      },
+      "prueba": {
+        "n": 74154,
+        "tasa_malos_obs": 0.26217061790328233,
+        "pd_media_pred": 0.15927832198793515,
+        "auc": 0.5,
+        "gini": 0.0,
+        "ks": 0.0,
+        "brier": 0.20402400957022487,
+        "log_loss": 0.6096436318895277
+      }
+    },
+    "regresion_logistica": {
+      "entrenamiento": {
+        "n": 18069,
+        "tasa_malos_obs": 0.15927832198793515,
+        "pd_media_pred": 0.15925137534228798,
+        "auc": 0.6947115233961588,
+        "gini": 0.38942304679231765,
+        "ks": 0.2831242567137587,
+        "brier": 0.1243049027729968,
+        "log_loss": 0.40573952723977663
+      },
+      "validacion": {
+        "n": 73194,
+        "tasa_malos_obs": 0.22949968576659288,
+        "pd_media_pred": 0.18557640468285727,
+        "auc": 0.6823184237353564,
+        "gini": 0.3646368474707129,
+        "ks": 0.26746224360873816,
+        "brier": 0.16647211136938322,
+        "log_loss": 0.5096358248316036
+      },
+      "prueba": {
+        "n": 74154,
+        "tasa_malos_obs": 0.26217061790328233,
+        "pd_media_pred": 0.18579295626614314,
+        "auc": 0.6836851086697986,
+        "gini": 0.3673702173395972,
+        "ks": 0.26936671103881743,
+        "brier": 0.18452161791528582,
+        "log_loss": 0.5546936119908589
+      }
+    }
+  }
+}

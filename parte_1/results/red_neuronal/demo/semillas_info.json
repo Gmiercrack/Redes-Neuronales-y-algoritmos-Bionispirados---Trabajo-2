@@ -1,0 +1,23 @@
+{
+  "configuracion_usada": "results\\red_neuronal\\demo\\mejor_configuracion.yaml",
+  "hiperparametros": {
+    "capas_ocultas": [
+      16
+    ],
+    "activacion": "relu",
+    "dropout": 0.0,
+    "optimizador": "sgd",
+    "tasa_aprendizaje": 0.006913537471562276,
+    "penalizacion_l2": 0.000349529001699874,
+    "tamano_lote": 256
+  },
+  "semillas": [
+    1,
+    2,
+    3
+  ],
+  "segundos_totales": 7.399881600002118,
+  "metrica_seleccion": "validacion.auc",
+  "semilla_del_modelo_guardado": 2,
+  "parametros": 897
+}

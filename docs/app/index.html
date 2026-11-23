@@ -1,0 +1,841 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="description"
+    content="Simulador interactivo de Scorecard crediticia (PD, LGD y pérdida esperada) basado en los modelos entrenados sobre créditos de Lending Club.">
+  <title>Simulador de Scorecard Crediticia | Trabajo 2</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+
+  <link rel="stylesheet" href="../assets/css/paletas.css">
+  <link rel="stylesheet" href="../assets/css/tokens.css">
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="app.css">
+
+  <script type="module" src="app.js"></script>
+</head>
+
+<body>
+  <a class="saltar" href="#titulo-app">Saltar al simulador</a>
+
+  <header class="cabecera">
+    <div class="cabecera__inner">
+      <a class="marca" href="../index.html">Trabajo 2 · Riesgo de Crédito</a>
+      <nav aria-label="Principal">
+        <a class="nav-enlace" href="../index.html">Reporte técnico</a>
+        <a class="nav-enlace activo" href="#simulador" aria-current="page">Aplicación</a>
+        <button class="nav-btn" type="button" commandfor="dialog-metodologia" command="show-modal">
+          Metodología y video
+        </button>
+        <a class="nav-enlace" href="https://github.com/" target="_blank" rel="noopener noreferrer">Repositorio</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="simulador" class="app-contenedor">
+    <section class="hero-app">
+      <div class="hero-app__texto">
+        <p class="antetitulo">Parte 1 (PD) + Parte 2 (LGD · EAD) · Simulador en tiempo real</p>
+        <h1 id="titulo-app" tabindex="-1">Simulador interactivo de Scorecard crediticia</h1>
+        <p class="bajada">
+          Ingresa las condiciones de un préstamo y el historial del solicitante para estimar su puntaje Scorecard,
+          su probabilidad de incumplimiento (PD), su posición frente a 74.154 créditos reales y su sensibilidad
+          ante cambios (<em>what-if</em>).
+        </p>
+      </div>
+
+      <div class="hero-app__perfiles">
+        <p class="perfiles-etiqueta" id="etiqueta-presets">Cargar un perfil de ejemplo para probar al instante:</p>
+        <div class="perfiles-barra" role="group" aria-labelledby="etiqueta-presets">
+          <button type="button" class="btn-preset" data-preset="bajo_riesgo">
+            <span class="btn-preset__titulo">Cliente conservador</span>
+            <span class="btn-preset__detalle">Grado A · 36 m · ingreso alto</span>
+          </button>
+          <button type="button" class="btn-preset activo" data-preset="perfil_medio">
+            <span class="btn-preset__titulo">Perfil promedio</span>
+            <span class="btn-preset__detalle">Grado C · valores medianos</span>
+          </button>
+          <button type="button" class="btn-preset" data-preset="alto_riesgo">
+            <span class="btn-preset__titulo">Perfil de alto riesgo</span>
+            <span class="btn-preset__detalle">Grado F · 60 m · sin dato laboral</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <div id="banner-error" class="banner-alerta" role="alert" hidden>
+      <strong>No se pudo cargar <code>data/modelo_web.json</code>.</strong>
+      Si abriste este archivo directamente con doble clic (<code>file://</code>), el navegador bloquea la lectura local de JSON.
+      Ejecuta en la carpeta raíz del proyecto:
+      <code>.\.venv\Scripts\python.exe -m http.server 8000 --directory docs</code>
+      y abre <code>http://localhost:8000/app/</code>. Si cambiaste los scripts Python, regenera el JSON con
+      <code>.\.venv\Scripts\python.exe -m src.exportar_app</code> desde <code>parte_1/</code>.
+    </div>
+
+    <div id="anunciador-estado" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+    <div class="app-grid">
+      <!-- ==================== COLUMNA IZQUIERDA: FORMULARIO ==================== -->
+      <section class="columna-formulario">
+        <div class="tarjeta formulario-tarjeta">
+          <div class="tarjeta-barra">
+            <h2>Datos del solicitante y del préstamo</h2>
+            <button type="button" class="btn-secundario btn-compacto" id="btn-reiniciar">Restaurar perfil promedio</button>
+          </div>
+
+          <form id="form-perfil" novalidate>
+            <!-- FIELDSET 1 -->
+            <fieldset class="grupo-campos">
+              <legend>1. Condiciones del préstamo</legend>
+
+              <div class="campos-dos">
+                <div class="campo">
+                  <div class="campo-cabecera">
+                    <label for="inp-loan_amnt">Monto solicitado (USD)</label>
+                  </div>
+                  <span id="help-loan_amnt" class="campo-ayuda">Rango típico: 500 a 40.000 USD</span>
+                  <input id="inp-loan_amnt" name="loan_amnt" type="number" inputmode="decimal"
+                    min="500" max="40000" step="250" required
+                    aria-describedby="help-loan_amnt" data-error="err-loan_amnt">
+                  <span id="err-loan_amnt" class="campo-error">
+                    <span role="img" aria-label="Error">⚠</span>
+                    <span class="err-texto">Ingresa un monto entre 500 y 40.000 USD.</span>
+                  </span>
+                </div>
+
+                <div class="campo">
+                  <div class="campo-cabecera">
+                    <label for="inp-int_rate">Tasa de interés anual (%)</label>
+                    <button type="button" class="btn-ayuda" commandfor="pop-int_rate" command="toggle-popover"
+                      aria-label="Más información sobre tasa de interés">?</button>
+                  </div>
+                  <span id="help-int_rate" class="campo-ayuda">De 5,0 % a 31,0 % efectiva nominal anual</span>
+                  <input id="inp-int_rate" name="int_rate" type="number" inputmode="decimal"
+                    min="5" max="31" step="0.1" required
+                    aria-describedby="help-int_rate" data-error="err-int_rate">
+                  <span id="err-int_rate" class="campo-error">
+                    <span role="img" aria-label="Error">⚠</span>
+                    <span class="err-texto">Ingresa una tasa entre 5 % y 31 %.</span>
+                  </span>
+                </div>
+              </div>
+
+              <div class="campos-dos">
+                <fieldset class="sub-fieldset">
+                  <legend>Plazo del préstamo</legend>
+                  <span id="help-plazo_meses" class="campo-ayuda">Elige el horizonte de amortización</span>
+                  <div class="radio-grupo">
+                    <div class="radio-opcion">
+                      <input id="rad-plazo-36" name="plazo_meses" type="radio" value="36" required>
+                      <label for="rad-plazo-36">36 meses</label>
+                    </div>
+                    <div class="radio-opcion">
+                      <input id="rad-plazo-60" name="plazo_meses" type="radio" value="60">
+                      <label for="rad-plazo-60">60 meses</label>
+                    </div>
+                  </div>
+                </fieldset>
+
+                <div class="campo">
+                  <div class="campo-cabecera">
+                    <label for="inp-grade">Grado crediticio Lending Club</label>
+                    <button type="button" class="btn-ayuda" commandfor="pop-grade" command="toggle-popover"
+                      aria-label="Más información sobre grado crediticio">?</button>
+                  </div>
+                  <span id="help-grade" class="campo-ayuda">A (menor riesgo) hasta G (mayor riesgo)</span>
+                  <select id="inp-grade" name="grade" required aria-describedby="help-grade" data-error="err-grade">
+                    <option value="A">A · Perfil preferencial</option>
+                    <option value="B">B · Riesgo bajo</option>
+                    <option value="C">C · Riesgo moderado</option>
+                    <option value="D">D · Riesgo medio-alto</option>
+                    <option value="E">E · Riesgo alto</option>
+                    <option value="F">F · Riesgo muy alto</option>
+                    <option value="G">G · Riesgo extremo</option>
+                  </select>
+                  <span id="err-grade" class="campo-error">
+                    <span role="img" aria-label="Error">⚠</span>
+                    <span class="err-texto">Selecciona un grado crediticio.</span>
+                  </span>
+                </div>
+              </div>
+
+              <div class="campo">
+                <div class="campo-cabecera">
+                  <label for="inp-purpose">Propósito del préstamo</label>
+                </div>
+                <span id="help-purpose" class="campo-ayuda">Destino declarado por el solicitante en la originación</span>
+                <select id="inp-purpose" name="purpose" required aria-describedby="help-purpose" data-error="err-purpose">
+                  <option value="debt_consolidation">Consolidación de deudas (debt_consolidation)</option>
+                  <option value="credit_card">Refinanciación de tarjetas (credit_card)</option>
+                  <option value="home_improvement">Mejoras del hogar (home_improvement)</option>
+                  <option value="major_purchase">Compra mayor (major_purchase)</option>
+                  <option value="small_business">Pequeña empresa (small_business)</option>
+                  <option value="car">Vehículo (car)</option>
+                  <option value="medical">Gastos médicos (medical)</option>
+                  <option value="moving">Mudanza (moving)</option>
+                  <option value="vacation">Vacaciones (vacation)</option>
+                  <option value="house">Vivienda (house)</option>
+                  <option value="wedding">Boda (wedding)</option>
+                  <option value="other">Otro propósito (other)</option>
+                  <option value="renewable_energy">Energía renovable · infrecuente</option>
+                  <option value="educational">Educación · infrecuente</option>
+                </select>
+                <span id="err-purpose" class="campo-error">
+                  <span role="img" aria-label="Error">⚠</span>
+                  <span class="err-texto">Selecciona un propósito válido.</span>
+                </span>
+              </div>
+            </fieldset>
+
+            <!-- FIELDSET 2 -->
+            <fieldset class="grupo-campos">
+              <legend>2. Ingresos, vivienda y empleo</legend>
+
+              <div class="campos-dos">
+                <div class="campo">
+                  <div class="campo-cabecera">
+                    <label for="inp-annual_inc">Ingreso anual bruto (USD)</label>
+                  </div>
+                  <span id="help-annual_inc" class="campo-ayuda">Ingreso anual declarado (2.000 a 1.000.000 USD)</span>
+                  <input id="inp-annual_inc" name="annual_inc" type="number" inputmode="decimal"
+                    min="2000" max="1000000" step="1000" required
+                    aria-describedby="help-annual_inc" data-error="err-annual_inc">
+                  <span id="err-annual_inc" class="campo-error">
+                    <span role="img" aria-label="Error">⚠</span>
+                    <span class="err-texto">Ingresa un ingreso entre 2.000 y 1.000.000 USD.</span>
+                  </span>
+                </div>
+
+                <div class="campo">
+                  <div class="campo-cabecera">
+                    <label for="inp-dti">Relación deuda / ingreso — DTI (%)</label>
+                    <button type="button" class="btn-ayuda" commandfor="pop-dti" command="toggle-popover"
+                      aria-label="Más información sobre el índice DTI">?</button>
+                  </div>
+                  <span id="help-dti" class="campo-ayuda">Pagos mensuales de deuda sobre ingreso mensual (0 a 50 %)</span>
+                  <input id="inp-dti" name="dti" type="number" inputmode="decimal"
+                    min="0" max="50" step="0.5" required
+                    aria-describedby="help-dti" data-error="err-dti">
+                  <span id="err-dti" class="campo-error">
+                    <span role="img" aria-label="Error">⚠</span>
+                    <span class="err-texto">Ingresa un DTI entre 0 % y 50 %.</span>
+                  </span>
+                </div>
+              </div>
+
+              <div class="campos-dos">
+                <div class="campo">
+                  <div class="campo-cabecera">
+                    <label for="inp-home_ownership">Tenencia de vivienda</label>
+                  </div>
+                  <span id="help-home_ownership" class="campo-ayuda">Situación residencial reportada</span>
+                  <select id="inp-home_ownership" name="home_ownership" required
+                    aria-describedby="help-home_ownership" data-error="err-home_ownership">
+                    <option value="MORTGAGE">Hipoteca (MORTGAGE)</option>
+                    <option value="RENT">Arriendo (RENT)</option>
+                    <option value="OWN">Propia pagada (OWN)</option>
+                    <option value="OTHER">Otra · infrecuente (OTHER)</option>
+                  </select>
+                  <span id="err-home_ownership" class="campo-error">
+                    <span role="img" aria-label="Error">⚠</span>
+                    <span class="err-texto">Selecciona una tenencia de vivienda.</span>
+                  </span>
+                </div>
+
+                <div class="campo">
+                  <div class="campo-cabecera">
+                    <label for="inp-verification_status">Verificación de ingresos</label>
+                    <button type="button" class="btn-ayuda" commandfor="pop-verif" command="toggle-popover"
+                      aria-label="Más información sobre verificación de ingresos">?</button>
+                  </div>
+                  <span id="help-verification_status" class="campo-ayuda">Auditoría aplicada por Lending Club</span>
+                  <select id="inp-verification_status" name="verification_status" required
+                    aria-describedby="help-verification_status" data-error="err-verification_status">
+                    <option value="Not Verified">Sin verificar (Not Verified)</option>
+                    <option value="Source Verified">Fuente verificada (Source Verified)</option>
+                    <option value="Verified">Ingreso verificado (Verified)</option>
+                  </select>
+                  <span id="err-verification_status" class="campo-error">
+                    <span role="img" aria-label="Error">⚠</span>
+                    <span class="err-texto">Selecciona un estado de verificación.</span>
+                  </span>
+                </div>
+              </div>
+
+              <div class="campo">
+                <div class="campo-cabecera">
+                  <label for="inp-antiguedad_empleo">Antigüedad laboral (años)</label>
+                  <button type="button" class="btn-ayuda" commandfor="pop-antiguedad" command="toggle-popover"
+                    aria-label="Más información sobre antigüedad laboral faltante">?</button>
+                </div>
+                <span id="help-antiguedad_empleo" class="campo-ayuda">De 0 (&lt;1 año) a 10 (10+ años en el empleo)</span>
+                <input id="inp-antiguedad_empleo" name="antiguedad_empleo" type="number" inputmode="numeric"
+                  min="0" max="10" step="1"
+                  aria-describedby="help-antiguedad_empleo" data-error="err-antiguedad_empleo">
+                <span id="err-antiguedad_empleo" class="campo-error">
+                  <span role="img" aria-label="Error">⚠</span>
+                  <span class="err-texto">Ingresa años enteros entre 0 y 10, o marca "Sin dato".</span>
+                </span>
+                <div class="check-inline">
+                  <input id="chk-sin-antiguedad" name="sin_antiguedad" type="checkbox">
+                  <label for="chk-sin-antiguedad">Sin dato reportado (activa indicador de dato faltante)</label>
+                </div>
+              </div>
+            </fieldset>
+
+            <!-- FIELDSET 3 -->
+            <fieldset class="grupo-campos">
+              <legend>3. Historial y utilización del crédito</legend>
+
+              <div class="campos-dos">
+                <div class="campo">
+                  <div class="campo-cabecera">
+                    <label for="inp-revol_util">Utilización de crédito revolvente (%)</label>
+                    <button type="button" class="btn-ayuda" commandfor="pop-revol" command="toggle-popover"
+                      aria-label="Más información sobre utilización revolvente">?</button>
+                  </div>
+                  <span id="help-revol_util" class="campo-ayuda">Porcentaje del cupo de tarjetas actualmente usado (0 a 130 %)</span>
+                  <input id="inp-revol_util" name="revol_util" type="number" inputmode="decimal"
+                    min="0" max="130" step="1" required
+                    aria-describedby="help-revol_util" data-error="err-revol_util">
+                  <span id="err-revol_util" class="campo-error">
+                    <span role="img" aria-label="Error">⚠</span>
+                    <span class="err-texto">Ingresa un valor entre 0 % y 130 %.</span>
+                  </span>
+                </div>
+
+                <div class="campo">
+                  <div class="campo-cabecera">
+                    <label for="inp-meses_historial_credito">Antigüedad del historial (meses)</label>
+                  </div>
+                  <span id="help-meses_historial_credito" class="campo-ayuda">Meses desde la primera línea en el buró (12 a 700)</span>
+                  <input id="inp-meses_historial_credito" name="meses_historial_credito" type="number" inputmode="numeric"
+                    min="12" max="700" step="6" required
+                    aria-describedby="help-meses_historial_credito" data-error="err-meses_historial_credito">
+                  <span id="err-meses_historial_credito" class="campo-error">
+                    <span role="img" aria-label="Error">⚠</span>
+                    <span class="err-texto">Ingresa un historial entre 12 y 700 meses.</span>
+                  </span>
+                </div>
+              </div>
+
+              <div class="campos-dos">
+                <div class="campo">
+                  <div class="campo-cabecera">
+                    <label for="inp-open_acc">Líneas de crédito abiertas</label>
+                  </div>
+                  <span id="help-open_acc" class="campo-ayuda">Cuentas activas actuales (1 a 60)</span>
+                  <input id="inp-open_acc" name="open_acc" type="number" inputmode="numeric"
+                    min="1" max="60" step="1" required
+                    aria-describedby="help-open_acc" data-error="err-open_acc">
+                  <span id="err-open_acc" class="campo-error">
+                    <span role="img" aria-label="Error">⚠</span>
+                    <span class="err-texto">Ingresa un entero entre 1 y 60.</span>
+                  </span>
+                </div>
+
+                <div class="campo">
+                  <div class="campo-cabecera">
+                    <label for="inp-inq_last_6mths">Consultas en últimos 6 meses</label>
+                  </div>
+                  <span id="help-inq_last_6mths" class="campo-ayuda">Solicitudes recientes al buró (0 a 15)</span>
+                  <input id="inp-inq_last_6mths" name="inq_last_6mths" type="number" inputmode="numeric"
+                    min="0" max="15" step="1" required
+                    aria-describedby="help-inq_last_6mths" data-error="err-inq_last_6mths">
+                  <span id="err-inq_last_6mths" class="campo-error">
+                    <span role="img" aria-label="Error">⚠</span>
+                    <span class="err-texto">Ingresa un entero entre 0 y 15.</span>
+                  </span>
+                </div>
+              </div>
+            </fieldset>
+
+            <!-- FIELDSET 4 COLAPSABLE: PARÁMETROS ADICIONALES (COMPLETA LAS 21 VARIABLES) -->
+            <details class="bloque-avanzado" id="detalles-avanzados">
+              <summary>
+                <span class="resumen-titulo">Parámetros adicionales del modelo (las otras 7 variables exactas)</span>
+                <span class="resumen-subtitulo">Cuota automática, fondeo, saldo revolvente, moras y listado</span>
+              </summary>
+
+              <fieldset class="grupo-campos grupo-avanzado">
+                <legend>4. Detalles complementarios de las 21 variables</legend>
+
+                <div class="check-inline check-arriba">
+                  <input id="chk-auto-cuota" name="auto_cuota" type="checkbox" checked>
+                  <label for="chk-auto-cuota">
+                    Sincronizar monto fondeado y calcular cuota mensual automáticamente (amortización francesa)
+                  </label>
+                </div>
+
+                <div class="campos-dos">
+                  <div class="campo">
+                    <div class="campo-cabecera">
+                      <label for="inp-installment">Cuota mensual (USD)</label>
+                    </div>
+                    <span id="help-installment" class="campo-ayuda">Calculada según monto, tasa y plazo</span>
+                    <input id="inp-installment" name="installment" type="number" inputmode="decimal"
+                      min="10" max="2000" step="1" required
+                      aria-describedby="help-installment" data-error="err-installment">
+                    <span id="err-installment" class="campo-error">
+                      <span role="img" aria-label="Error">⚠</span>
+                      <span class="err-texto">Ingresa una cuota entre 10 y 2.000 USD.</span>
+                    </span>
+                  </div>
+
+                  <div class="campo">
+                    <div class="campo-cabecera">
+                      <label for="inp-funded_amnt">Monto fondeado (USD)</label>
+                    </div>
+                    <span id="help-funded_amnt" class="campo-ayuda">Habitualmente igual al monto solicitado</span>
+                    <input id="inp-funded_amnt" name="funded_amnt" type="number" inputmode="decimal"
+                      min="500" max="40000" step="250" required
+                      aria-describedby="help-funded_amnt" data-error="err-funded_amnt">
+                    <span id="err-funded_amnt" class="campo-error">
+                      <span role="img" aria-label="Error">⚠</span>
+                      <span class="err-texto">Ingresa un valor entre 500 y 40.000 USD.</span>
+                    </span>
+                  </div>
+                </div>
+
+                <div class="campos-dos">
+                  <div class="campo">
+                    <div class="campo-cabecera">
+                      <label for="inp-revol_bal">Saldo revolvente (USD)</label>
+                    </div>
+                    <span id="help-revol_bal" class="campo-ayuda">Saldo total en líneas rotativas</span>
+                    <input id="inp-revol_bal" name="revol_bal" type="number" inputmode="decimal"
+                      min="0" max="300000" step="500" required
+                      aria-describedby="help-revol_bal" data-error="err-revol_bal">
+                    <span id="err-revol_bal" class="campo-error">
+                      <span role="img" aria-label="Error">⚠</span>
+                      <span class="err-texto">Ingresa un saldo entre 0 y 300.000 USD.</span>
+                    </span>
+                  </div>
+
+                  <div class="campo">
+                    <div class="campo-cabecera">
+                      <label for="inp-total_acc">Total histórico de líneas</label>
+                    </div>
+                    <span id="help-total_acc" class="campo-ayuda">Total de cuentas cerradas y abiertas (1 a 120)</span>
+                    <input id="inp-total_acc" name="total_acc" type="number" inputmode="numeric"
+                      min="1" max="120" step="1" required
+                      aria-describedby="help-total_acc" data-error="err-total_acc">
+                    <span id="err-total_acc" class="campo-error">
+                      <span role="img" aria-label="Error">⚠</span>
+                      <span class="err-texto">Ingresa un entero entre 1 y 120.</span>
+                    </span>
+                  </div>
+                </div>
+
+                <div class="campos-dos">
+                  <div class="campo">
+                    <div class="campo-cabecera">
+                      <label for="inp-delinq_2yrs">Moras &gt;30 días en 2 años</label>
+                    </div>
+                    <span id="help-delinq_2yrs" class="campo-ayuda">Incidencias registradas en los últimos 24 meses</span>
+                    <input id="inp-delinq_2yrs" name="delinq_2yrs" type="number" inputmode="numeric"
+                      min="0" max="20" step="1" required
+                      aria-describedby="help-delinq_2yrs" data-error="err-delinq_2yrs">
+                    <span id="err-delinq_2yrs" class="campo-error">
+                      <span role="img" aria-label="Error">⚠</span>
+                      <span class="err-texto">Ingresa un entero entre 0 y 20.</span>
+                    </span>
+                  </div>
+
+                  <div class="campo">
+                    <div class="campo-cabecera">
+                      <label for="inp-pub_rec">Registros públicos adversos</label>
+                    </div>
+                    <span id="help-pub_rec" class="campo-ayuda">Quiebras o embargos públicos (0 a 10)</span>
+                    <input id="inp-pub_rec" name="pub_rec" type="number" inputmode="numeric"
+                      min="0" max="10" step="1" required
+                      aria-describedby="help-pub_rec" data-error="err-pub_rec">
+                    <span id="err-pub_rec" class="campo-error">
+                      <span role="img" aria-label="Error">⚠</span>
+                      <span class="err-texto">Ingresa un entero entre 0 y 10.</span>
+                    </span>
+                  </div>
+                </div>
+
+                <fieldset class="sub-fieldset">
+                  <legend>Estado inicial de listado (initial_list_status)</legend>
+                  <span id="help-initial_list_status" class="campo-ayuda">Modalidad de colocación en plataforma</span>
+                  <div class="radio-grupo">
+                    <div class="radio-opcion">
+                      <input id="rad-list-f" name="initial_list_status" type="radio" value="f" required>
+                      <label for="rad-list-f">Fraccional (f)</label>
+                    </div>
+                    <div class="radio-opcion">
+                      <input id="rad-list-w" name="initial_list_status" type="radio" value="w">
+                      <label for="rad-list-w">Completo institucional (w)</label>
+                    </div>
+                  </div>
+                </fieldset>
+              </fieldset>
+            </details>
+
+            <div class="form-pie">
+              <button type="submit" class="btn-primario">Validar y enfocar resultado</button>
+              <span class="form-nota">Todos los campos actualizan la Scorecard instantáneamente en tu navegador.</span>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- ==================== COLUMNA DERECHA: RESULTADOS EN VIVO ==================== -->
+      <section class="columna-resultados" id="resultados-panel">
+        <!-- TARJETA 1: RESULTADO SCORECARD -->
+        <article class="tarjeta tarjeta-principal">
+          <div class="tarjeta-barra">
+            <div>
+              <h2>Puntaje Scorecard y Probabilidad de Incumplimiento</h2>
+              <p class="subtitulo-tarjeta" id="subtitulo-modelo">Modelo principal: MLP · escala PDO 20</p>
+            </div>
+            <button type="button" class="btn-ayuda" commandfor="pop-scorecard" command="toggle-popover"
+              aria-label="Cómo se interpreta la escala Scorecard">?</button>
+          </div>
+
+          <div class="kpi-grid">
+            <div class="gauge-contenedor">
+              <svg id="svg-gauge" viewBox="0 0 260 155" class="svg-gauge" role="img"
+                aria-label="Indicador semicircular de puntaje Scorecard">
+                <path d="M 24 132 A 106 106 0 0 1 236 132" class="gauge-pista" />
+                <path id="gauge-arco" d="M 24 132 A 106 106 0 0 1 236 132" class="gauge-relleno"
+                  pathLength="100" stroke-dasharray="100" stroke-dashoffset="50" />
+                <line id="gauge-p0-marca" x1="130" y1="18" x2="130" y2="33" class="gauge-p0" />
+                <text id="gauge-p0-texto" x="130" y="14" class="gauge-p0-txt">P₀=600</text>
+                <text id="gauge-puntaje" x="130" y="108" class="gauge-valor">---</text>
+                <text x="130" y="130" class="gauge-etiqueta">PUNTOS SCORECARD</text>
+                <text x="20" y="150" class="gauge-extremo">470</text>
+                <text x="240" y="150" class="gauge-extremo" text-anchor="end">640</text>
+              </svg>
+            </div>
+
+            <div class="kpi-detalles">
+              <div class="kpi-fila-destacada">
+                <div>
+                  <span class="kpi-nombre">Probabilidad de incumplimiento (PD)</span>
+                  <strong class="kpi-dato-grande" id="out-pd-mlp">-- %</strong>
+                </div>
+                <div class="insignia-banda" id="out-banda-badge">Banda --</div>
+              </div>
+
+              <dl class="lista-metricas">
+                <div>
+                  <dt>Posición en población (2014)</dt>
+                  <dd id="out-percentil">--</dd>
+                </div>
+                <div>
+                  <dt>Tasa de incumplimiento histórica de la banda</dt>
+                  <dd id="out-tasa-banda">--</dd>
+                </div>
+                <div>
+                  <dt>Referencia Regresión Logística</dt>
+                  <dd id="out-lr-ref">--</dd>
+                </div>
+              </dl>
+            </div>
+          </div>
+
+          <div id="badge-delta-whatif" class="delta-banner" hidden>
+            <strong>Comparación frente a tu perfil base fijado:</strong>
+            <span id="texto-delta-whatif">--</span>
+          </div>
+        </article>
+
+        <!-- TARJETA 2: SIMULADOR WHAT-IF -->
+        <article class="tarjeta">
+          <div class="tarjeta-barra">
+            <div>
+              <h2>Simulador <em>What-If</em>: ¿cómo cambia el puntaje al modificar el perfil?</h2>
+              <p class="subtitulo-tarjeta">Fija un punto de partida y mueve las palancas clave en tiempo real</p>
+            </div>
+          </div>
+
+          <div class="whatif-controles-base">
+            <button type="button" class="btn-primario btn-compacto" id="btn-fijar-base">
+              Fijar perfil actual como base
+            </button>
+            <button type="button" class="btn-secundario btn-compacto" id="btn-restaurar-base" disabled>
+              Restaurar base
+            </button>
+            <button type="button" class="btn-texto btn-compacto" id="btn-quitar-base" disabled>
+              Quitar comparación
+            </button>
+            <span class="estado-base-txt" id="txt-estado-base">Sin base fijada</span>
+          </div>
+
+          <div class="whatif-sliders">
+            <div class="slider-fila">
+              <div class="slider-etiquetas">
+                <label for="sld-int_rate">Tasa de interés anual</label>
+                <span class="slider-valor" id="val-sld-int_rate">--</span>
+              </div>
+              <input id="sld-int_rate" type="range" min="5" max="31" step="0.2" value="13.5">
+            </div>
+
+            <div class="slider-fila">
+              <div class="slider-etiquetas">
+                <label for="sld-annual_inc">Ingreso anual bruto</label>
+                <span class="slider-valor" id="val-sld-annual_inc">--</span>
+              </div>
+              <input id="sld-annual_inc" type="range" min="15000" max="250000" step="2500" value="65000">
+            </div>
+
+            <div class="slider-fila">
+              <div class="slider-etiquetas">
+                <label for="sld-revol_util">Utilización revolvente</label>
+                <span class="slider-valor" id="val-sld-revol_util">--</span>
+              </div>
+              <input id="sld-revol_util" type="range" min="0" max="110" step="1" value="55">
+            </div>
+
+            <div class="slider-fila">
+              <div class="slider-etiquetas">
+                <label for="sld-dti">Relación deuda / ingreso (DTI)</label>
+                <span class="slider-valor" id="val-sld-dti">--</span>
+              </div>
+              <input id="sld-dti" type="range" min="0" max="45" step="0.5" value="17.5">
+            </div>
+
+            <div class="slider-fila slider-plazo">
+              <span class="slider-etiqueta-plana">Cambio directo de plazo:</span>
+              <div class="botones-plazo">
+                <button type="button" class="btn-pill" id="btn-whatif-36" data-plazo="36" aria-pressed="true">36 meses</button>
+                <button type="button" class="btn-pill" id="btn-whatif-60" data-plazo="60" aria-pressed="false">60 meses</button>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- TARJETA 3: POSICIÓN EN POBLACIÓN -->
+        <article class="tarjeta">
+          <div class="tarjeta-barra">
+            <div>
+              <h2>Tu posición frente a la población de prueba</h2>
+              <p class="subtitulo-tarjeta" id="subtitulo-poblacion">Distribución sobre 74.154 créditos fuera de tiempo (2014)</p>
+            </div>
+          </div>
+
+          <figure class="grafica-poblacion">
+            <svg id="svg-poblacion" viewBox="0 0 640 240" class="svg-poblacion" role="img"
+              aria-label="Histograma comparativo de puntajes entre créditos buenos y malos con la posición del perfil actual">
+            </svg>
+            <div class="leyenda-grafica" aria-hidden="true">
+              <span class="ley-item"><span class="muestra bueno"></span>Buenos (pagaron)</span>
+              <span class="ley-item"><span class="muestra malo"></span>Malos (incumplieron)</span>
+              <span class="ley-item"><span class="linea-ley actual"></span>Tu perfil</span>
+              <span class="ley-item" id="leyenda-base-item" hidden><span class="linea-ley base"></span>Perfil base</span>
+            </div>
+            <figcaption id="caption-poblacion" class="grafica-caption">
+              Cargando distribución de referencia...
+            </figcaption>
+          </figure>
+
+          <details class="acordeon-tabla">
+            <summary>Ver tabla numérica de las 10 bandas decílicas de riesgo</summary>
+            <div class="tabla-envoltorio" tabindex="0">
+              <table class="tabla-bandas" id="tabla-bandas">
+                <caption>Tasa de incumplimiento observada por decil de puntaje del MLP en prueba (2014)</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Banda</th>
+                    <th scope="col">Rango de puntaje</th>
+                    <th scope="col">Créditos</th>
+                    <th scope="col">PD media MLP</th>
+                    <th scope="col">Incumplimiento real</th>
+                  </tr>
+                </thead>
+                <tbody id="tbody-bandas"></tbody>
+              </table>
+            </div>
+          </details>
+        </article>
+
+        <!-- TARJETA 4: DESCOMPOSICIÓN ADITIVA Y SENSIBILIDAD DEL MLP -->
+        <article class="tarjeta">
+          <div class="tarjeta-barra">
+            <div>
+              <h2>¿Qué explica este puntaje y qué palancas lo mejoran más?</h2>
+              <p class="subtitulo-tarjeta">
+                Sensibilidad local del MLP y descomposición aditiva por variable (escala PDO = 20)
+              </p>
+            </div>
+          </div>
+
+          <div class="bloque-explicabilidad">
+            <h3>Sensibilidad local del MLP para este perfil</h3>
+            <p class="ayuda-bloque">
+              Simulación en vivo de cuánto cambiaría el puntaje de la red neuronal (MLP) si modificaras una sola condición a la vez:
+            </p>
+            <ul id="lista-palancas-mlp" class="lista-palancas"></ul>
+          </div>
+
+          <div class="bloque-explicabilidad">
+            <h3>Contribución por variable en la Scorecard aditiva (vs. cartera promedio)</h3>
+            <p class="ayuda-bloque" id="resumen-aditivo-lr">
+              Descomposición exacta de la Regresión Logística agrupada en las 21 variables originales.
+            </p>
+            <div class="contribuciones-grid">
+              <div>
+                <h4 class="titulo-subgrid pos">Factores que suman puntos</h4>
+                <ul id="lista-factores-pos" class="lista-factores"></ul>
+              </div>
+              <div>
+                <h4 class="titulo-subgrid neg">Factores que restan puntos</h4>
+                <ul id="lista-factores-neg" class="lista-factores"></ul>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- TARJETA 5: INTEGRACIÓN PARTE 2 (PERDIDA ESPERADA) -->
+        <article class="tarjeta tarjeta-el" id="tarjeta-perdida-esperada" hidden>
+          <div class="tarjeta-barra">
+            <div>
+              <h2>Integración Parte 2: Pérdida Esperada (E[L] = PD · LGD · EAD)</h2>
+              <p class="subtitulo-tarjeta" id="subtitulo-parte2">
+                Estimación conjunta con el perceptrón multicapa de severidad (LGD) y factor de exposición (EAD)
+              </p>
+            </div>
+          </div>
+
+          <div class="el-grid">
+            <div class="el-caja">
+              <span class="el-etiqueta">PD (MLP Parte 1)</span>
+              <strong class="el-valor" id="el-pd">--</strong>
+            </div>
+            <div class="el-caja">
+              <span class="el-etiqueta">LGD estimada (MLP Parte 2)</span>
+              <strong class="el-valor" id="el-lgd">--</strong>
+            </div>
+            <div class="el-caja">
+              <span class="el-etiqueta">EAD estimada</span>
+              <strong class="el-valor" id="el-ead">--</strong>
+              <span class="el-sub" id="el-ead-frac">--</span>
+            </div>
+            <div class="el-caja el-caja-final">
+              <span class="el-etiqueta">Pérdida esperada E[L]</span>
+              <strong class="el-valor" id="el-monto">--</strong>
+              <span class="el-sub" id="el-pct">--</span>
+            </div>
+          </div>
+        </article>
+      </section>
+    </div>
+  </main>
+
+  <footer class="pie">
+    <p>
+      <strong>Universidad Nacional de Colombia · Sede Medellín · Facultad de Minas</strong><br>
+      Redes neuronales y algoritmos bioinspirados (2026-02) · Autores: Gian Carlo Mier Estrada (Parte 1: PD) y
+      Nestor Enrique Mendoza Rueda (Parte 2: LGD).
+    </p>
+    <p class="pie-meta" id="pie-meta-modelo">
+      Cargando metadatos del modelo exportado...
+    </p>
+    <p>
+      <a href="../index.html">Volver al reporte técnico completo</a>
+    </p>
+  </footer>
+
+  <!-- ==================== POPOVERS DECLARATIVOS DE AYUDA ==================== -->
+  <div id="pop-scorecard" class="pop-ayuda" popover>
+    <h3>Escala de la Scorecard</h3>
+    <p>
+      Se calibró con puntaje base <strong>P₀ = 600</strong> a odds de <strong>19:1</strong> (PD = 5 %) y
+      <strong>PDO = 20</strong>: cada +20 puntos en la escala duplican las odds de buen pagador frente a incumplimiento.
+    </p>
+  </div>
+
+  <div id="pop-int_rate" class="pop-ayuda" popover>
+    <h3>Tasa de interés anual</h3>
+    <p>
+      En la importancia por permutación sobre prueba (2014), es la variable individual más influyente tanto en el MLP
+      (ΔAUC = 0,0395) como en la Regresión Logística (ΔAUC = 0,0502).
+    </p>
+  </div>
+
+  <div id="pop-grade" class="pop-ayuda" popover>
+    <h3>Grado crediticio Lending Club</h3>
+    <p>
+      Clasificación interna de originación (A a G) asignada antes de desembolsar el crédito según el riesgo percibido y el pricing.
+    </p>
+  </div>
+
+  <div id="pop-dti" class="pop-ayuda" popover>
+    <h3>Relación deuda / ingreso (DTI)</h3>
+    <p>
+      Proporción entre los compromisos mensuales totales de deuda del solicitante (excluyendo hipoteca) y su ingreso mensual declarado.
+    </p>
+  </div>
+
+  <div id="pop-verif" class="pop-ayuda" popover>
+    <h3>Verificación de ingresos (hallazgo H5)</h3>
+    <p>
+      En los datos históricos de Lending Club, los créditos marcados como <em>Verified</em> presentan mayor incumplimiento
+      observado (19,4 %) que <em>Not Verified</em> (13,7 %) porque la plataforma exigía verificación justamente en perfiles más riesgosos.
+    </p>
+  </div>
+
+  <div id="pop-antiguedad" class="pop-ayuda" popover>
+    <h3>Indicador de antigüedad faltante</h3>
+    <p>
+      En el análisis descriptivo previo, los solicitantes sin reporte de antigüedad laboral tuvieron una tasa de incumplimiento del
+      21,3 % frente al ~15 % del resto. El preprocesador agrega un indicador binario específico para capturar esta señal.
+    </p>
+  </div>
+
+  <div id="pop-revol" class="pop-ayuda" popover>
+    <h3>Utilización de crédito revolvente</h3>
+    <p>
+      Mide cuánto del cupo disponible en tarjetas y líneas rotativas está consumido al momento de la solicitud. Es una de las principales
+      variables continuas en el MLP (ΔAUC = 0,0077).
+    </p>
+  </div>
+
+  <!-- ==================== DIÁLOGO MODAL DECLARATIVO: METODOLOGÍA Y VIDEO ==================== -->
+  <dialog id="dialog-metodologia" class="modal-editorial" aria-labelledby="titulo-dialog-met">
+    <div class="modal-cabecera">
+      <h2 id="titulo-dialog-met">Metodología, actualización automática y video</h2>
+      <button type="button" class="btn-cerrar-modal" commandfor="dialog-metodologia" command="close">
+        Cerrar
+      </button>
+    </div>
+    <div class="modal-cuerpo">
+      <h3>Arquitectura e inferencia local</h3>
+      <p>
+        Este simulador ejecuta en el navegador exactamente los mismos pasos del flujo Python oficial:
+        imputación por mediana con 9 indicadores de faltante, estandarización sobre 25 columnas, codificación
+        <em>One-Hot</em> con manejo de categorías infrecuentes (54 entradas finales) y el perceptrón multicapa
+        ganador seleccionado por AUC de validación temporal (2013) y evaluado fuera de tiempo en 2014.
+      </p>
+
+      <h3>Cómo se actualiza tras reentrenar los modelos</h3>
+      <p>
+        No es necesario editar HTML ni JavaScript al cambiar hiperparámetros o reentrenar la red neuronal, la regresión
+        logística o el modelo LGD de Parte 2. Basta ejecutar desde <code>parte_1/</code>:
+      </p>
+      <pre><code>.\.venv\Scripts\python.exe -m src.exportar_app --config configs/pd.yaml</code></pre>
+      <p>
+        El script regenera <code>docs/app/data/modelo_web.json</code> y verifica automáticamente que la diferencia numérica
+        entre PyTorch / scikit-learn y los pesos exportados sea menor a 10<sup>−5</sup>.
+      </p>
+
+      <h3>Video promocional del proyecto</h3>
+      <p id="estado-video-promo">
+        Espacio reservado para el video de divulgación (máximo 3 minutos) que se incluirá en la entrega final.
+        Puedes volver al <a href="../index.html">reporte técnico completo</a> para consultar todas las gráficas y tablas.
+      </p>
+    </div>
+  </dialog>
+</body>
+
+</html>

@@ -89,3 +89,87 @@ preprocesamiento:
   escalado: estandar
   categoria_frecuencia_minima: 0.005
 
+# -----------------------------------------------------------------------------
+# MODELO DE REFERENCIA: REGRESIÓN LOGÍSTICA (src/regresion_logistica.py)
+# -----------------------------------------------------------------------------
+regresion_logistica:
+  resultados: results/regresion_logistica
+  rejilla_c: [0.001, 0.01, 0.05, 0.1, 0.5, 1.0, 10.0]
+  max_iter: 1000
+  metrica_seleccion: auc          # auc | brier | log_loss en validación (2013)
+  demo:
+    fraccion_entrenamiento: 0.2
+    rejilla_c: [0.01, 0.1, 1.0]
+
+# -----------------------------------------------------------------------------
+# RED NEURONAL: PERCEPTRÓN MULTICAPA EN PYTORCH (src/red_neuronal.py)
+# -----------------------------------------------------------------------------
+red_neuronal:
+  resultados: results/red_neuronal
+  figuras: figures
+  metrica_seleccion: auc          # auc | log_loss en validación (2013)
+  entrenar:
+    semilla: 2026
+    capas_ocultas: [64, 32]
+    activacion: relu              # relu | tanh | elu
+    dropout: 0.1
+    optimizador: adam             # adam | sgd
+    tasa_aprendizaje: 0.001
+    penalizacion_l2: 0.0001
+    tamano_lote: 256
+    epocas_max: 100
+    paciencia: 10
+  busqueda:
+    configuraciones: 30
+    semilla: 2026
+    epocas_max: 100
+    paciencia: 10
+    espacio:
+      capas_ocultas: [[16], [32], [64], [32, 16], [64, 32], [128, 64], [64, 32, 16]]
+      activacion: [relu, tanh, elu]
+      dropout: [0.0, 0.1, 0.2, 0.3]
+      optimizador: [adam, sgd]
+      tasa_aprendizaje: {log_uniforme: [0.0001, 0.01]}
+      penalizacion_l2: {log_uniforme: [0.000001, 0.01]}
+      tamano_lote: [128, 256, 512]
+  semillas:
+    n: 30
+    primera: 1
+    configuracion: results/red_neuronal/mejor_configuracion.yaml
+  demo:
+    fraccion_entrenamiento: 0.2
+    epocas_max: 20
+    configuraciones: 4
+    n_semillas: 3
+
+# -----------------------------------------------------------------------------
+# EVALUACIÓN, SCORECARD E INTERPRETABILIDAD
+# -----------------------------------------------------------------------------
+evaluacion:
+  resultados: results/evaluacion
+  figuras: figures
+  grupos_calibracion: 10
+
+scorecard:
+  resultados: results/scorecard
+  figuras: figures
+  puntaje_base: 600.0
+  odds_referencia: 19.0           # 19 buenos por cada 1 malo (p = 5 %)
+  pdo: 20.0                       # puntos para duplicar las odds de ser bueno
+
+interpretabilidad:
+  resultados: results/interpretabilidad
+  figuras: figures
+  repeticiones_permutacion: 10
+  semilla: 2026
+
+# -----------------------------------------------------------------------------
+# APLICATIVO WEB INTERACTIVO (src/exportar_app.py -> docs/app/data/modelo_web.json)
+# -----------------------------------------------------------------------------
+app_web:
+  salida_json: ../docs/app/data/modelo_web.json
+  ruta_parte_2_red: ../parte_2/results/red/modelo_red.pt
+  ruta_parte_2_perdida: ../parte_2/results/perdida_esperada/resumen.json
+  bins_histograma: 40
+  muestras_verificacion: 200
+

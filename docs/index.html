@@ -39,7 +39,7 @@
       <a class="marca" href="#inicio">Trabajo 2 · Riesgo de Crédito</a>
       <nav aria-label="Principal">
         <a class="secundario" href="#referencias">Referencias</a>
-        <a class="secundario pronto" aria-disabled="true" href="#">Aplicación</a>
+        <a class="secundario" href="app/index.html">Aplicación</a>
         <a class="secundario pronto" aria-disabled="true" href="#">Video</a>
         <a class="secundario" href="https://github.com/" rel="noopener">Repositorio</a>
         <button class="btn-indice" id="abrir-indice" type="button">Índice</button>
@@ -175,7 +175,8 @@
             </dl>
           </div>
           <div class="tabla-paper" id="tab-origen-datos">
-            <div class="titulo-tabla"><span class="num"></span><span class="titulo">Resumen del origen y descarga de los datos</span></div>
+            <div class="titulo-tabla"><span class="num"></span><span class="titulo">Resumen del origen y descarga de los
+                datos</span></div>
             <div class="contenedor" role="region" tabindex="0" aria-label="Resumen de origen y descarga de datos">
               <table>
                 <thead>
@@ -187,7 +188,9 @@
                 <tbody>
                   <tr>
                     <th scope="row">De dónde se bajaron</th>
-                    <td class="txt">Repositorio público <em>Credit Risk Analysis</em> en Kaggle (<code>ranadeep/credit-risk-dataset</code>, archivo crudo <code>loan.csv</code> de Lending Club).</td>
+                    <td class="txt">Repositorio público <em>Credit Risk Analysis</em> en Kaggle
+                      (<code>ranadeep/credit-risk-dataset</code>, archivo crudo <code>loan.csv</code> de Lending Club).
+                    </td>
                   </tr>
                   <tr>
                     <th scope="row">Fecha de descarga</th>
@@ -195,16 +198,21 @@
                   </tr>
                   <tr>
                     <th scope="row">Qué contiene la descarga</th>
-                    <td class="txt">887 379 créditos de consumo y 74 columnas con originación entre junio de 2007 y diciembre de 2015, acompañados del diccionario oficial <code>LCDataDictionary.xlsx</code> (hoja <code>LoanStats</code>).</td>
+                    <td class="txt">887 379 créditos de consumo y 74 columnas con originación entre junio de 2007 y
+                      diciembre de 2015, acompañados del diccionario oficial <code>LCDataDictionary.xlsx</code> (hoja
+                      <code>LoanStats</code>).</td>
                   </tr>
                   <tr>
                     <th scope="row">Momento de decisión</th>
-                    <td class="txt">Al evaluar la solicitud en la fecha de originación (<code>issue_d</code>), antes de aprobar o desembolsar.</td>
+                    <td class="txt">Al evaluar la solicitud en la fecha de originación (<code>issue_d</code>), antes de
+                      aprobar o desembolsar.</td>
                   </tr>
                 </tbody>
               </table>
             </div>
-            <p class="nota"><em>Nota.</em> Elaboración propia a partir del conjunto descargado en Kaggle (<a class="cita" href="#ref-kaggle-credit">Ranadeep, s. f.</a>) y su diccionario oficial (<a class="cita" href="#ref-lc-diccionario">LendingClub, s. f.</a>).</p>
+            <p class="nota"><em>Nota.</em> Elaboración propia a partir del conjunto descargado en Kaggle (<a
+                class="cita" href="#ref-kaggle-credit">Ranadeep, s. f.</a>) y su diccionario oficial (<a class="cita"
+                href="#ref-lc-diccionario">LendingClub, s. f.</a>).</p>
           </div>
           <p>El archivo crudo pesa cerca de 442 MB y no se sube al repositorio.<label class="nota-ref" for="nota-1"
               title="Ver nota 1">1</label><input class="nota-toggle" type="checkbox" id="nota-1"
@@ -218,7 +226,8 @@
             numéricas derivadas al originar y 5 categóricas) que, tras imputación con indicadores de faltantes y
             codificación <em>one-hot</em>, producen <strong>54 variables numéricas de entrada</strong>. Otras
             <strong>14 columnas generadas después del desembolso</strong> quedan explícitamente prohibidas, y las
-            restantes columnas administrativas, de texto libre o identificadores se descartan en la selección.</p>
+            restantes columnas administrativas, de texto libre o identificadores se descartan en la selección.
+          </p>
 
           <div class="tabla-paper" id="tab-info-entrenamiento">
             <div class="titulo-tabla"><span class="num"></span><span class="titulo">Anatomía de las 21 variables
@@ -228,37 +237,45 @@
                 <thead>
                   <tr>
                     <th scope="col">Variable (tipo)</th>
-                    <th scope="col" class="txt">Significado literal (<code>LCDataDictionary.xlsx · LoanStats</code>)</th>
+                    <th scope="col" class="txt">Significado literal (<code>LCDataDictionary.xlsx · LoanStats</code>)
+                    </th>
                     <th scope="col" class="txt">Rol en el análisis de riesgo</th>
                     <th scope="col">Uso</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr class="grupo-fila">
-                    <th scope="colgroup" colspan="4">Dimensión 1 · Capacidad de pago y carga financiera (flujo de caja)</th>
+                    <th scope="colgroup" colspan="4">Dimensión 1 · Capacidad de pago y carga financiera (flujo de caja)
+                    </th>
                   </tr>
                   <tr>
                     <th scope="row"><code>annual_inc</code><br><small>Numérica</small></th>
                     <td class="txt">Ingreso anual autodeclarado por el solicitante durante el registro.</td>
-                    <td class="txt">A mayor ingreso, mayor capacidad de ahorro y resiliencia ante contingencias económicas.</td>
+                    <td class="txt">A mayor ingreso, mayor capacidad de ahorro y resiliencia ante contingencias
+                      económicas.</td>
                     <td><span class="estado-uso si">Sí entra</span></td>
                   </tr>
                   <tr>
                     <th scope="row"><code>dti</code><br><small>Numérica</small></th>
-                    <td class="txt">Relación entre los pagos mensuales totales de deuda (sin hipoteca ni este préstamo LC) y el ingreso mensual autodeclarado.</td>
-                    <td class="txt"><strong>Predictor crítico.</strong> Un DTI elevado (ej. 45 %) revela asfixia financiera y alta vulnerabilidad al impago.</td>
+                    <td class="txt">Relación entre los pagos mensuales totales de deuda (sin hipoteca ni este préstamo
+                      LC) y el ingreso mensual autodeclarado.</td>
+                    <td class="txt"><strong>Predictor crítico.</strong> Un DTI elevado (ej. 45 %) revela asfixia
+                      financiera y alta vulnerabilidad al impago.</td>
                     <td><span class="estado-uso si">Sí entra</span></td>
                   </tr>
                   <tr>
                     <th scope="row"><code>installment</code><br><small>Numérica</small></th>
                     <td class="txt">Cuota mensual que deberá pagar el prestatario si se origina el crédito.</td>
-                    <td class="txt">Mide la carga directa que el nuevo préstamo impone sobre el flujo de caja mensual.</td>
+                    <td class="txt">Mide la carga directa que el nuevo préstamo impone sobre el flujo de caja mensual.
+                    </td>
                     <td><span class="estado-uso si">Sí entra</span></td>
                   </tr>
                   <tr>
                     <th scope="row"><code>loan_amnt</code><br><small>Numérica</small></th>
-                    <td class="txt">Monto listado del préstamo solicitado por el prestatario; si el departamento de crédito lo reduce posteriormente, ese cambio se refleja en este valor.</td>
-                    <td class="txt">Montos mayores exigen un esfuerzo prolongado de pago y elevan la exposición ante impago.</td>
+                    <td class="txt">Monto listado del préstamo solicitado por el prestatario; si el departamento de
+                      crédito lo reduce posteriormente, ese cambio se refleja en este valor.</td>
+                    <td class="txt">Montos mayores exigen un esfuerzo prolongado de pago y elevan la exposición ante
+                      impago.</td>
                     <td><span class="estado-uso si">Sí entra</span></td>
                   </tr>
                   <tr>
@@ -269,30 +286,39 @@
                   </tr>
 
                   <tr class="grupo-fila">
-                    <th scope="colgroup" colspan="4">Dimensión 2 · Carácter e historial crediticio (comportamiento pasado)</th>
+                    <th scope="colgroup" colspan="4">Dimensión 2 · Carácter e historial crediticio (comportamiento
+                      pasado)</th>
                   </tr>
                   <tr>
                     <th scope="row"><code>delinq_2yrs</code><br><small>Numérica</small></th>
-                    <td class="txt">Número de incidencias de mora de 30+ días en el historial durante los últimos 2 años.</td>
-                    <td class="txt">Quien tuvo moras recientes presenta mayor probabilidad de reincidir en incumplimiento.</td>
+                    <td class="txt">Número de incidencias de mora de 30+ días en el historial durante los últimos 2
+                      años.</td>
+                    <td class="txt">Quien tuvo moras recientes presenta mayor probabilidad de reincidir en
+                      incumplimiento.</td>
                     <td><span class="estado-uso si">Sí entra</span></td>
                   </tr>
                   <tr>
                     <th scope="row"><code>pub_rec</code><br><small>Numérica</small></th>
                     <td class="txt">Número de registros públicos desfavorables.</td>
-                    <td class="txt">Incluye quiebras, bancarrotas o embargos; es señal crítica de insolvencia estructural previa frente a acreedores.</td>
+                    <td class="txt">Incluye quiebras, bancarrotas o embargos; es señal crítica de insolvencia
+                      estructural previa frente a acreedores.</td>
                     <td><span class="estado-uso si">Sí entra</span></td>
                   </tr>
                   <tr>
                     <th scope="row"><code>inq_last_6mths</code><br><small>Numérica</small></th>
-                    <td class="txt">Consultas de crédito en el buró en los últimos 6 meses (excluyendo auto e hipoteca).</td>
-                    <td class="txt">Varias consultas recientes revelan búsqueda urgente de liquidez (<em>credit hunger</em>).</td>
+                    <td class="txt">Consultas de crédito en el buró en los últimos 6 meses (excluyendo auto e hipoteca).
+                    </td>
+                    <td class="txt">Varias consultas recientes revelan búsqueda urgente de liquidez (<em>credit
+                        hunger</em>).</td>
                     <td><span class="estado-uso si">Sí entra</span></td>
                   </tr>
                   <tr>
-                    <th scope="row"><code>meses_historial_credito</code><br><small>Derivada (<code>earliest_cr_line</code>)</small></th>
-                    <td class="txt">Antigüedad crediticia en meses desde la apertura de la primera línea reportada hasta <code>issue_d</code>.</td>
-                    <td class="txt">Un historial maduro con pocos incidentes refleja disciplina y confiabilidad sostenida.</td>
+                    <th scope="row"><code>meses_historial_credito</code><br><small>Derivada
+                        (<code>earliest_cr_line</code>)</small></th>
+                    <td class="txt">Antigüedad crediticia en meses desde la apertura de la primera línea reportada hasta
+                      <code>issue_d</code>.</td>
+                    <td class="txt">Un historial maduro con pocos incidentes refleja disciplina y confiabilidad
+                      sostenida.</td>
                     <td><span class="estado-uso si">Sí entra</span></td>
                   </tr>
 
@@ -301,8 +327,10 @@
                   </tr>
                   <tr>
                     <th scope="row"><code>revol_util</code><br><small>Numérica</small></th>
-                    <td class="txt">Porcentaje de utilización de crédito rotativo respecto al cupo total disponible.</td>
-                    <td class="txt"><strong>Predictor clave.</strong> Usar casi todo el cupo (ej. 90 %) deja sin margen ante imprevistos; por debajo del 30 % sugiere holgura.</td>
+                    <td class="txt">Porcentaje de utilización de crédito rotativo respecto al cupo total disponible.
+                    </td>
+                    <td class="txt"><strong>Predictor clave.</strong> Usar casi todo el cupo (ej. 90 %) deja sin margen
+                      ante imprevistos; por debajo del 30 % sugiere holgura.</td>
                     <td><span class="estado-uso si">Sí entra</span></td>
                   </tr>
                   <tr>
@@ -313,13 +341,15 @@
                   </tr>
                   <tr>
                     <th scope="row"><code>open_acc</code><br><small>Numérica</small></th>
-                    <td class="txt">Número de líneas de crédito abiertas actualmente en el expediente del solicitante.</td>
+                    <td class="txt">Número de líneas de crédito abiertas actualmente en el expediente del solicitante.
+                    </td>
                     <td class="txt">Mide la carga simultánea de obligaciones activas que administra el cliente.</td>
                     <td><span class="estado-uso si">Sí entra</span></td>
                   </tr>
                   <tr>
                     <th scope="row"><code>total_acc</code><br><small>Numérica</small></th>
-                    <td class="txt">Número total de líneas de crédito históricas y vigentes registradas en el expediente.</td>
+                    <td class="txt">Número total de líneas de crédito históricas y vigentes registradas en el
+                      expediente.</td>
                     <td class="txt">Captura la profundidad, madurez y diversificación de la experiencia crediticia.</td>
                     <td><span class="estado-uso si">Sí entra</span></td>
                   </tr>
@@ -328,55 +358,69 @@
                     <th scope="colgroup" colspan="4">Dimensión 4 · Estabilidad laboral y arraigo</th>
                   </tr>
                   <tr>
-                    <th scope="row"><code>antiguedad_empleo</code><br><small>Derivada (<code>emp_length</code>)</small></th>
-                    <td class="txt">Años en el empleo actual (escala de 0 para menos de 1 año hasta 10 para diez años o más).</td>
+                    <th scope="row"><code>antiguedad_empleo</code><br><small>Derivada (<code>emp_length</code>)</small>
+                    </th>
+                    <td class="txt">Años en el empleo actual (escala de 0 para menos de 1 año hasta 10 para diez años o
+                      más).</td>
                     <td class="txt">Mayor permanencia laboral reduce el riesgo de interrupción súbita de ingresos.</td>
                     <td><span class="estado-uso si">Sí entra</span></td>
                   </tr>
                   <tr>
                     <th scope="row"><code>home_ownership</code><br><small>Categórica</small></th>
-                    <td class="txt">Tenencia de vivienda declarada en el registro (<code>RENT</code>, <code>OWN</code>, <code>MORTGAGE</code>, <code>OTHER</code>).</td>
-                    <td class="txt">Propietarios o compradores con hipoteca suelen mostrar mayor arraigo y respaldo indirecto que arrendatarios.</td>
+                    <td class="txt">Tenencia de vivienda declarada en el registro (<code>RENT</code>, <code>OWN</code>,
+                      <code>MORTGAGE</code>, <code>OTHER</code>).</td>
+                    <td class="txt">Propietarios o compradores con hipoteca suelen mostrar mayor arraigo y respaldo
+                      indirecto que arrendatarios.</td>
                     <td><span class="estado-uso si">Sí entra</span></td>
                   </tr>
                   <tr>
-                    <th scope="row"><code>verification_status</code><br><small>Categórica (<code>is_inc_v</code>)</small></th>
-                    <td class="txt">Indica si el ingreso o su fuente fueron verificados documentalmente por Lending Club.</td>
-                    <td class="txt">Señala el grado de respaldo documental sobre el ingreso declarado por el solicitante.</td>
+                    <th scope="row"><code>verification_status</code><br><small>Categórica
+                        (<code>is_inc_v</code>)</small></th>
+                    <td class="txt">Indica si el ingreso o su fuente fueron verificados documentalmente por Lending
+                      Club.</td>
+                    <td class="txt">Señala el grado de respaldo documental sobre el ingreso declarado por el
+                      solicitante.</td>
                     <td><span class="estado-uso si">Sí entra</span></td>
                   </tr>
 
                   <tr class="grupo-fila">
-                    <th scope="colgroup" colspan="4">Dimensión 5 · Condiciones del crédito y tarificación en originación</th>
+                    <th scope="colgroup" colspan="4">Dimensión 5 · Condiciones del crédito y tarificación en originación
+                    </th>
                   </tr>
                   <tr>
                     <th scope="row"><code>plazo_meses</code><br><small>Derivada (<code>term</code>)</small></th>
                     <td class="txt">Plazo pactado en meses para amortizar el préstamo (36 o 60 meses).</td>
-                    <td class="txt">Horizontes más largos (5 años frente a 3) aumentan la exposición a choques económicos.</td>
+                    <td class="txt">Horizontes más largos (5 años frente a 3) aumentan la exposición a choques
+                      económicos.</td>
                     <td><span class="estado-uso si">Sí entra</span></td>
                   </tr>
                   <tr>
                     <th scope="row"><code>purpose</code><br><small>Categórica</small></th>
                     <td class="txt">Categoría proporcionada por el prestatario para la solicitud del préstamo.</td>
-                    <td class="txt">Destinos como <code>small_business</code> presentan históricamente mayor siniestralidad que <code>debt_consolidation</code>.</td>
+                    <td class="txt">Destinos como <code>small_business</code> presentan históricamente mayor
+                      siniestralidad que <code>debt_consolidation</code>.</td>
                     <td><span class="estado-uso si">Sí entra</span></td>
                   </tr>
                   <tr>
                     <th scope="row"><code>grade</code><br><small>Categórica</small></th>
                     <td class="txt">Grado de préstamo asignado por Lending Club.</td>
-                    <td class="txt">Toma valores de <code>A</code> a <code>G</code> en <code>loan.csv</code> y sintetiza la evaluación inicial de riesgo al emitir el crédito.</td>
+                    <td class="txt">Toma valores de <code>A</code> a <code>G</code> en <code>loan.csv</code> y sintetiza
+                      la evaluación inicial de riesgo al emitir el crédito.</td>
                     <td><span class="estado-uso si">Sí entra</span></td>
                   </tr>
                   <tr>
                     <th scope="row"><code>int_rate</code><br><small>Numérica</small></th>
                     <td class="txt">Tasa de interés del préstamo.</td>
-                    <td class="txt">Tasa anual asignada en originación; refleja la prima de riesgo y eleva la carga financiera del deudor.</td>
+                    <td class="txt">Tasa anual asignada en originación; refleja la prima de riesgo y eleva la carga
+                      financiera del deudor.</td>
                     <td><span class="estado-uso si">Sí entra</span></td>
                   </tr>
                   <tr>
                     <th scope="row"><code>initial_list_status</code><br><small>Categórica</small></th>
-                    <td class="txt">Estado inicial de listado del préstamo (valores posibles: <code>W</code>, <code>F</code>).</td>
-                    <td class="txt">En <code>loan.csv</code> aparece como bloque completo institucional (<code>w</code>) o fraccionado minorista (<code>f</code>), capturando el canal de colocación.</td>
+                    <td class="txt">Estado inicial de listado del préstamo (valores posibles: <code>W</code>,
+                      <code>F</code>).</td>
+                    <td class="txt">En <code>loan.csv</code> aparece como bloque completo institucional (<code>w</code>)
+                      o fraccionado minorista (<code>f</code>), capturando el canal de colocación.</td>
                     <td><span class="estado-uso si">Sí entra</span></td>
                   </tr>
                 </tbody>
@@ -385,12 +429,14 @@
             <p class="nota"><em>Nota.</em> La columna de significado literal proviene directamente de la hoja
               <code>LoanStats</code> del diccionario oficial <code>LCDataDictionary.xlsx</code> (<a class="cita"
                 href="#ref-lc-diccionario">LendingClub, s. f.</a>); en dicho archivo la columna
-              <code>verification_status</code> de <code>loan.csv</code> figura como <code>is_inc_v</code>, y las variables
+              <code>verification_status</code> de <code>loan.csv</code> figura como <code>is_inc_v</code>, y las
+              variables
               derivadas (<code>meses_historial_credito</code>, <code>antiguedad_empleo</code>, <code>plazo_meses</code>)
               toman su definición de sus campos originales (<code>earliest_cr_line</code>, <code>emp_length</code>,
               <code>term</code>). Los ejemplos observados y el rol de riesgo corresponden al análisis sobre
               <code>loan.csv</code>, conservando <code>grade</code> e <code>int_rate</code> bajo el supuesto de evaluar
-              solicitudes ya pre-tarificadas en la originación.</p>
+              solicitudes ya pre-tarificadas en la originación.
+            </p>
           </div>
 
           <div class="tabla-paper" id="tab-info-prohibida">
@@ -412,8 +458,10 @@
                   </tr>
                   <tr>
                     <th scope="row"><code>loan_status</code></th>
-                    <td class="txt">Estado actual o final observado del préstamo (<em>Fully Paid</em>, <em>Charged Off</em>, etc.).</td>
-                    <td class="txt">Define la etiqueta objetivo binaria (\(Y\)) en PD y el filtro de castigos en LGD; incluirla revelaría la respuesta.</td>
+                    <td class="txt">Estado actual o final observado del préstamo (<em>Fully Paid</em>, <em>Charged
+                        Off</em>, etc.).</td>
+                    <td class="txt">Define la etiqueta objetivo binaria (\(Y\)) en PD y el filtro de castigos en LGD;
+                      incluirla revelaría la respuesta.</td>
                     <td><span class="estado-uso no">No entra</span></td>
                   </tr>
 
@@ -422,8 +470,10 @@
                   </tr>
                   <tr>
                     <th scope="row"><code>out_prncp</code><br><code>out_prncp_inv</code></th>
-                    <td class="txt">Saldo de capital aún pendiente por amortizar (total y porción de inversionistas).</td>
-                    <td class="txt">Evoluciona mes a mes después de originar el crédito; en la solicitud vale todo el principal.</td>
+                    <td class="txt">Saldo de capital aún pendiente por amortizar (total y porción de inversionistas).
+                    </td>
+                    <td class="txt">Evoluciona mes a mes después de originar el crédito; en la solicitud vale todo el
+                      principal.</td>
                     <td><span class="estado-uso no">No entra</span></td>
                   </tr>
                   <tr>
@@ -435,18 +485,22 @@
                   <tr>
                     <th scope="row"><code>total_rec_prncp</code><br><code>total_rec_int</code></th>
                     <td class="txt">Capital e intereses efectivamente recaudados hasta la fecha.</td>
-                    <td class="txt">Son consecuencia directa de si el cliente pagó o dejó de pagar tras el desembolso.</td>
+                    <td class="txt">Son consecuencia directa de si el cliente pagó o dejó de pagar tras el desembolso.
+                    </td>
                     <td><span class="estado-uso no">No entra</span></td>
                   </tr>
                   <tr>
                     <th scope="row"><code>total_rec_late_fee</code></th>
                     <td class="txt">Cargos por mora cobrados hasta la fecha.</td>
-                    <td class="txt">Solo se generan cuando el prestatario incurre en atrasos posteriores a la aprobación.</td>
+                    <td class="txt">Solo se generan cuando el prestatario incurre en atrasos posteriores a la
+                      aprobación.</td>
                     <td><span class="estado-uso no">No entra</span></td>
                   </tr>
                   <tr>
-                    <th scope="row"><code>last_pymnt_d</code><br><code>last_pymnt_amnt</code><br><code>next_pymnt_d</code></th>
-                    <td class="txt">Último mes en que se recibió pago, monto del último pago recibido y próxima fecha programada de pago.</td>
+                    <th scope="row">
+                      <code>last_pymnt_d</code><br><code>last_pymnt_amnt</code><br><code>next_pymnt_d</code></th>
+                    <td class="txt">Último mes en que se recibió pago, monto del último pago recibido y próxima fecha
+                      programada de pago.</td>
                     <td class="txt">Reflejan eventos futuros de tesorería posteriores al momento de decisión.</td>
                     <td><span class="estado-uso no">No entra</span></td>
                   </tr>
@@ -457,7 +511,8 @@
                   <tr>
                     <th scope="row"><code>recoveries</code><br><code>collection_recovery_fee</code></th>
                     <td class="txt">Recuperación bruta posterior al castigo y comisión de cobranza asociada.</td>
-                    <td class="txt">Solo existen tras declarar el impago; se usan únicamente para calcular el objetivo LGD en la Parte 2.</td>
+                    <td class="txt">Solo existen tras declarar el impago; se usan únicamente para calcular el objetivo
+                      LGD en la Parte 2.</td>
                     <td><span class="estado-uso no">No entra</span></td>
                   </tr>
 
@@ -466,15 +521,18 @@
                   </tr>
                   <tr>
                     <th scope="row"><code>last_credit_pull_d</code></th>
-                    <td class="txt">Mes más reciente en que Lending Club consultó el reporte crediticio del préstamo.</td>
-                    <td class="txt">Corresponde a revisiones de seguimiento hechas durante la vigencia del crédito, nunca en originación.</td>
+                    <td class="txt">Mes más reciente en que Lending Club consultó el reporte crediticio del préstamo.
+                    </td>
+                    <td class="txt">Corresponde a revisiones de seguimiento hechas durante la vigencia del crédito,
+                      nunca en originación.</td>
                     <td><span class="estado-uso no">No entra</span></td>
                   </tr>
                 </tbody>
               </table>
             </div>
             <p class="nota"><em>Nota.</em> Definiciones tomadas de la hoja <code>LoanStats</code> de
-              <code>LCDataDictionary.xlsx</code> (<a class="cita" href="#ref-lc-diccionario">LendingClub, s. f.</a>).</p>
+              <code>LCDataDictionary.xlsx</code> (<a class="cita" href="#ref-lc-diccionario">LendingClub, s. f.</a>).
+            </p>
           </div>
         </section>
 
@@ -484,17 +542,23 @@
 
           <h3>Ecuación general del problema: pérdida esperada</h3>
           <p>Antes de aprobar un crédito de consumo sin garantía, el banco debe responder dos preguntas concretas:
-            <strong>1) ¿qué tan probable es que el cliente incumpla?</strong> y <strong>2) si incumple, ¿qué fracción de la
-              deuda se perderá tras los cobros?</strong> Para responder ambas preguntas desde la originación, el proyecto se
-            estructura alrededor de la ecuación general de <strong>pérdida esperada</strong> (\(E[L]\)):</p>
+            <strong>1) ¿qué tan probable es que el cliente incumpla?</strong> y <strong>2) si incumple, ¿qué fracción de
+              la
+              deuda se perderá tras los cobros?</strong> Para responder ambas preguntas desde la originación, el
+            proyecto se
+            estructura alrededor de la ecuación general de <strong>pérdida esperada</strong> (\(E[L]\)):
+          </p>
           <div class="eq" id="eq-el-general">
-            <div class="formula">\[ E[L]_i = PD_i \cdot LGD_i \cdot EAD_i, \qquad E[L]_{\text{total}} = \sum_{i} E[L]_i \]</div>
+            <div class="formula">\[ E[L]_i = PD_i \cdot LGD_i \cdot EAD_i, \qquad E[L]_{\text{total}} = \sum_{i} E[L]_i
+              \]</div>
             <span class="eq-num"></span>
           </div>
           <ul>
-            <li><strong>\(PD_i\) (Probabilidad de Incumplimiento · Parte 1):</strong> probabilidad de que el crédito \(i\)
+            <li><strong>\(PD_i\) (Probabilidad de Incumplimiento · Parte 1):</strong> probabilidad de que el crédito
+              \(i\)
               termine en incumplimiento (\(Y = 1\)).</li>
-            <li><strong>\(LGD_i\) (Pérdida Dado el Incumplimiento · Parte 2):</strong> fracción de la deuda pendiente que
+            <li><strong>\(LGD_i\) (Pérdida Dado el Incumplimiento · Parte 2):</strong> fracción de la deuda pendiente
+              que
               no se logra recuperar tras la gestión de cobro, en el rango \([0, 1]\).</li>
             <li><strong>\(EAD_i\) (Exposición al Incumplimiento):</strong> monto de capital que seguiría pendiente de
               pago al momento de producirse el impago.</li>
@@ -505,15 +569,18 @@
           <div class="versus">
             <article style="--color-parte: var(--pd)">
               <h4>Parte 1 · Modelado de \(PD\)</h4>
-              <p>Clasificación binaria supervisada sobre solicitudes con desenlace cerrado para estimar \(P(Y = 1 \mid X)\).</p>
+              <p>Clasificación binaria supervisada sobre solicitudes con desenlace cerrado para estimar \(P(Y = 1 \mid
+                X)\).</p>
             </article>
             <article style="--color-parte: var(--lgd)">
               <h4>Parte 2 · Modelado de \(LGD\)</h4>
-              <p>Regresión fraccional acotada en \([0, 1]\) sobre créditos castigados para estimar la severidad de pérdida.</p>
+              <p>Regresión fraccional acotada en \([0, 1]\) sobre créditos castigados para estimar la severidad de
+                pérdida.</p>
             </article>
             <article style="--color-parte: var(--el)">
               <h4>Integración · \(E[L]\)</h4>
-              <p>Combina \(\widehat{PD}_i \cdot \widehat{LGD}_i \cdot EAD_i\) por crédito y agrega la pérdida esperada total.</p>
+              <p>Combina \(\widehat{PD}_i \cdot \widehat{LGD}_i \cdot EAD_i\) por crédito y agrega la pérdida esperada
+                total.</p>
             </article>
           </div>
 
@@ -521,11 +588,14 @@
           <p>Para entrenar los modelos de la Parte 1 y la Parte 2 de forma supervisada, primero se traduce la columna
             <code>loan_status</code> (estado observado del crédito) en la etiqueta binaria <code>malo</code>
             (\(Y \in \{0, 1\}\)) para <strong>PD</strong> y en la máscara booleana <code>castigado</code> para
-            <strong>LGD</strong>. Los créditos que aún siguen vigentes o en estados tempranos sin desenlace cerrado se marcan
-            como <code>NA</code> y se excluyen del ajuste y de la evaluación.</p>
+            <strong>LGD</strong>. Los créditos que aún siguen vigentes o en estados tempranos sin desenlace cerrado se
+            marcan
+            como <code>NA</code> y se excluyen del ajuste y de la evaluación.
+          </p>
 
           <div class="tabla-paper" id="tab-codificacion-objetivo">
-            <div class="titulo-tabla"><span class="num"></span><span class="titulo">Codificación de <code>loan_status</code>
+            <div class="titulo-tabla"><span class="num"></span><span class="titulo">Codificación de
+                <code>loan_status</code>
                 para las variables objetivo de PD (<code>malo</code>) y LGD (<code>castigado</code>)</span></div>
             <div class="contenedor" role="region" tabindex="0" aria-label="Codificación de loan_status">
               <table>
@@ -554,7 +624,8 @@
                     <th scope="row" class="txt"><code>Charged Off</code></th>
                     <td><span class="estado-uso no">1 · Malo</span></td>
                     <td class="txt">PD (\(Y = 1\)) y LGD</td>
-                    <td class="txt">Mal pagador: declarado incobrable, castigado contablemente y enviado a cobranza.</td>
+                    <td class="txt">Mal pagador: declarado incobrable, castigado contablemente y enviado a cobranza.
+                    </td>
                   </tr>
                   <tr>
                     <th scope="row" class="txt"><code>Does not meet the credit policy. Status:Charged Off</code></th>
@@ -566,25 +637,30 @@
                     <th scope="row"><code>Default</code></th>
                     <td><span class="estado-uso no">1 · Malo</span></td>
                     <td class="txt">Solo PD (\(Y = 1\))</td>
-                    <td class="txt">Mal pagador: impago confirmado y cesación prolongada, aún sin cobranza registrada tras castigo.</td>
+                    <td class="txt">Mal pagador: impago confirmado y cesación prolongada, aún sin cobranza registrada
+                      tras castigo.</td>
                   </tr>
                   <tr>
                     <th scope="row"><code>Late (31-120 days)</code></th>
                     <td><span class="estado-uso no">1 · Malo</span></td>
                     <td class="txt">Solo PD (\(Y = 1\))</td>
-                    <td class="txt">Mal pagador: mora grave con probabilidad mínima de recuperación espontánea, aún sin castigo.</td>
+                    <td class="txt">Mal pagador: mora grave con probabilidad mínima de recuperación espontánea, aún sin
+                      castigo.</td>
                   </tr>
                   <tr>
-                    <th scope="row"><code>Current</code>, <code>Issued</code>,<br><code>In Grace Period</code>, <code>Late (16-30 days)</code></th>
+                    <th scope="row"><code>Current</code>, <code>Issued</code>,<br><code>In Grace Period</code>,
+                      <code>Late (16-30 days)</code></th>
                     <td><code>NA</code></td>
                     <td class="txt">Excluidos</td>
-                    <td class="txt">Créditos abiertos o censurados: su desenlace final aún no se conoce al corte de los datos.</td>
+                    <td class="txt">Créditos abiertos o censurados: su desenlace final aún no se conoce al corte de los
+                      datos.</td>
                   </tr>
                 </tbody>
               </table>
             </div>
-            <p class="nota"><em>Nota.</em> Adaptado de <code>Definición_trabajo/explicacion_problema.md</code>,
-              <code>parte_1/configs/pd.yaml</code> y <code>parte_2/configs/lgd.yaml</code>.</p>
+            <p class="nota"><em>Nota.</em> Adaptado de <code>Analisis_del_problema/explicacion_problema.md</code>,
+              <code>parte_1/configs/pd.yaml</code> y <code>parte_2/configs/lgd.yaml</code>.
+            </p>
           </div>
 
           <p>Así quedan definidas ambas variables objetivo desde el planteamiento del problema: la <strong>Parte 1
@@ -594,9 +670,90 @@
             recuperaciones y capital se detalla en la Sección 6).</p>
 
           <h3>Partición por fecha de originación</h3>
+          <p>De los <strong>887 379 créditos</strong> descargados en el conjunto original (junio de 2007 a diciembre de
+            2015), únicamente <strong>237 695 créditos</strong> originados entre 2007 y 2014 ingresan al modelado. Los
+            <strong>649 684</strong> registros restantes quedan fuera por dos razones demostrables en los datos:
+            <strong>618 849</strong> siguen abiertos o en estados transitorios sin desenlace conocido (<code>NA</code>)
+            al momento de corte del archivo, y <strong>30 835</strong> créditos cerrados corresponden a la cohorte
+            <strong>2015</strong>, cuya censura extrema invalida su uso.
+          </p>
+
+          <figure class="lamina" id="fig-estados-volumen">
+            <figcaption><span class="num"></span><span class="titulo">Composición anual de desenlaces y volumen total
+                originado por zona de partición (2007–2015)</span></figcaption>
+            <img src="assets/img/figuras/particion/01_evolucion_estados_volumen.png" width="1707" height="704"
+              loading="lazy"
+              alt="Dos paneles: a la izquierda, barras apiladas al 100 % por año mostrando que los créditos abiertos pasan de 0 % en 2007–2010 a 46 % en 2013, 69 % en 2014 y 93 % en 2015; a la derecha, volumen total creciente desde 603 hasta 421 mil créditos dividido en Entrenamiento (2007–2012), Validación (2013), Prueba (2014) y Excluido (2015).">
+            <p class="nota"><em>Nota.</em> Elaboración propia sobre las 887 379 filas de <code>data/raw/loan.csv</code>.
+              Generada por <code>scripts/graficas_particion.py</code>.</p>
+          </figure>
+
+          <p>La causa física de esta censura creciente (<a class="xref" href="#fig-maduracion-plazos"></a>) radica en la
+            duración contractual de los préstamos frente a la fecha de recolección del archivo (<strong>diciembre de
+              2015</strong>). Todos los créditos de <strong>36 meses</strong> originados entre 2007 y 2012 vencieron a
+            más
+            tardar en 2015 (<code>0,0 %</code> a <code>0,1 %</code> abiertos). En cambio, desde 2013 ni siquiera los
+            préstamos de 36 meses
+            habían cumplido su plazo normal en diciembre de 2015, por lo que los pocos créditos marcados como
+            <code>Fully Paid</code> en 2013–2015 corresponden a prepagos anticipados mientras la gran mayoría de buenos
+            pagadores permanece en <code>Current</code>.
+          </p>
+
+          <figure class="lamina" id="fig-maduracion-plazos">
+            <figcaption><span class="num"></span><span class="titulo">Ventana contractual (36 frente a 60 meses) y
+                fracción real de créditos abiertos al corte de diciembre de 2015</span></figcaption>
+            <img src="assets/img/figuras/particion/02_maduracion_plazos_36_60.png" width="1707" height="720"
+              loading="lazy"
+              alt="Izquierda: diagrama temporal mostrando que los contratos de 36 meses originados hasta 2012 terminan antes de la línea vertical de corte en diciembre de 2015, mientras los de 60 meses desde 2011 y todos los de 2013–2015 exceden esa fecha. Derecha: curvas de porcentaje abierto, con 36 meses en 0,0 %–0,1 % hasta 2012 y saltando a 43,3 %, 66,9 % y 92,5 % entre 2013 y 2015.">
+            <p class="nota"><em>Nota.</em> Elaboración propia sobre <code>data/raw/loan.csv</code> cruzando año de
+              originación (<code>issue_d</code>) y plazo (<code>term</code>).</p>
+          </figure>
+
+          <p>Adicionalmente, la partición debe respetar el orden cronológico (<code>issue_d</code>) y no hacerse de
+            forma
+            aleatoria (<a class="xref" href="#fig-deriva-censura"></a>): la tasa observada de incumplimiento cambia año
+            tras año (pasa de <strong>13,7 %</strong> en 2009 a <strong>16,7 %</strong> en 2012 y sube a
+            <strong>22,9 %</strong> en 2013 y <strong>26,2 %</strong> en 2014), por lo que mezclar años ocultaría la
+            evolución real del riesgo en el tiempo. Al mismo tiempo, en la Parte 2 (LGD) el porcentaje de castigados que
+            alcanza a registrar recuperaciones cae del <strong>74,4 %–77,4 %</strong> en 2010–2012 a
+            <strong>37,3 %</strong> en 2014 y se desploma a apenas <strong>11,0 %</strong> en 2015, dejando al
+            <strong>89,0 %</strong> de los castigados de 2015 con una LGD aparente de <code>1,00</code> por cobranza
+            inconclusa.
+          </p>
+
+          <figure class="lamina" id="fig-deriva-censura">
+            <figcaption><span class="num"></span><span class="titulo">Evolución anual de la tasa aparente de malos (PD)
+                y madurez de recuperaciones post-castigo (LGD)</span></figcaption>
+            <img src="assets/img/figuras/particion/03_riesgo_y_recuperaciones.png" width="1707" height="685"
+              loading="lazy"
+              alt="Gráfica de líneas anuales de 2007 a 2015 con zonas sombreadas de Entrenamiento, Validación, Prueba y Excluido: la tasa de malos (PD) varía de 13,7 % en 2009 a 26,2 % en 2014, mientras que el porcentaje de castigados con recuperación (LGD) cae de 74,8 % en 2012 a 57,1 % en 2013, 37,3 % en 2014 y 11,0 % en 2015.">
+            <p class="nota"><em>Nota.</em> Elaboración propia sobre <code>data/raw/loan.csv</code>. Los castigados de
+              2015 apenas iniciaban cobro al momento de recolección del conjunto.</p>
+          </figure>
+
+          <p>Para definir los límites exactos entre entrenamiento, validación y prueba (<a class="xref"
+              href="#fig-balance-particion"></a>) se descartaron alternativas como entrenar solo con 2007–2011 (que
+            reduciría el entrenamiento a 40 534 créditos para PD y apenas 6 335 castigados para LGD, menos de la mitad
+            del
+            conjunto de prueba de 2013) o partir 2014 en validación y prueba (evaluando todo sobre el año utilizable más
+            censurado). Los cortes adoptados (<strong>2007–2012 / 2013 / 2014</strong>) logran cohortes independientes
+            por
+            etapa y un equilibrio cercano a 1:1:1 en castigados.</p>
+
+          <figure class="lamina" id="fig-balance-particion">
+            <figcaption><span class="num"></span><span class="titulo">Balance de tamaño por conjunto en la partición
+                adoptada frente a la alternativa de cohortes hasta 2013</span></figcaption>
+            <img src="assets/img/figuras/particion/04_balance_decision_particion.png" width="1707" height="688"
+              loading="lazy"
+              alt="Comparación de barras para PD y LGD: la partición adoptada logra 90,3k, 73,2k y 74,2k créditos en PD y 14,4k, 14,8k y 14,0k castigados en LGD, frente a la alternativa 07-11/12/13 donde el entrenamiento cae a 40,5k en PD y 6,3k en LGD.">
+            <p class="nota"><em>Nota.</em> Elaboración propia a partir de los conteos reales por partición en
+              <code>data/raw/loan.csv</code>.
+            </p>
+          </figure>
+
           <div class="tabla-paper" id="tab-particion">
-            <div class="titulo-tabla"><span class="num"></span><span class="titulo">Particiones temporales y número de
-                créditos</span></div>
+            <div class="titulo-tabla"><span class="num"></span><span class="titulo">Resumen final de particiones
+                temporales y datos excluidos</span></div>
             <div class="contenedor" role="region" tabindex="0" aria-label="Particiones temporales">
               <table>
                 <thead>
@@ -606,6 +763,7 @@
                     <th scope="col">Créditos (PD)</th>
                     <th scope="col">% malos</th>
                     <th scope="col">Castigados (LGD)</th>
+                    <th scope="col">Censura (NA)</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -613,103 +771,49 @@
                     <th scope="row">Entrenamiento</th>
                     <td>2007–2012</td>
                     <td>90 347</td>
-                    <td>16,30</td>
+                    <td>16,30 %</td>
                     <td>14 419</td>
+                    <td>5,79 %</td>
                   </tr>
                   <tr>
                     <th scope="row">Validación</th>
                     <td>2013</td>
                     <td>73 194</td>
-                    <td>22,95</td>
+                    <td>22,95 %</td>
                     <td>14 836</td>
+                    <td>45,68 %</td>
                   </tr>
                   <tr>
                     <th scope="row">Prueba</th>
                     <td>2014</td>
                     <td>74 154</td>
-                    <td>26,22</td>
+                    <td>26,22 %</td>
                     <td>13 981</td>
+                    <td>68,53 %</td>
                   </tr>
                   <tr>
-                    <th scope="row">Excluido</th>
+                    <th scope="row">Excluido*</th>
                     <td>2015</td>
-                    <td>—</td>
-                    <td>—</td>
-                    <td>2 773</td>
+                    <td>30 835*</td>
+                    <td>25,46 %*</td>
+                    <td>2 773*</td>
+                    <td>92,68 %</td>
                   </tr>
                 </tbody>
               </table>
             </div>
-            <p class="nota"><em>Nota.</em> Fuentes: <code>parte_1/configs/pd.yaml</code> y
-              <code>parte_2/reports/preprocesamiento/conteos_por_anio.csv</code>.</p>
+            <p class="nota"><em>Nota.</em> Conteos verificados sobre las 887 379 filas de <code>loan.csv</code> (237 695
+              créditos modelados en 2007–2014 y 618 849 créditos abiertos excluidos por desenlace desconocido).
+              *Los 30 835 cerrados de 2015 (2 773 castigados) se excluyen por sesgo de fallo temprano y cobranza
+              inconclusa (92,68 % de censura).</p>
           </div>
 
-          <p class="destacado" style="--color-parte: var(--acento)">Los créditos de 2015 se excluyen: el 93 % no tiene
-            desenlace conocido.<cite>Censura por la fecha de recolección de los datos</cite></p>
-
-          <div class="tabla-paper" id="tab-censura">
-            <div class="titulo-tabla"><span class="num"></span><span class="titulo">Fracción de créditos sin desenlace
-                conocido por año de originación</span></div>
-            <div class="contenedor" role="region" tabindex="0" aria-label="Censura por año">
-              <table>
-                <thead>
-                  <tr>
-                    <th scope="col">Años</th>
-                    <th scope="col">Sin desenlace conocido</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <th scope="row">2007–2012</th>
-                    <td>3 %</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">2013</th>
-                    <td>46 %</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">2014</th>
-                    <td>69 %</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">2015</th>
-                    <td>93 %</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <aside class="callout" data-tipo="limitacion"><strong class="etq">Limitación</strong>
-            2014 también tiene censura importante (69 %). Los pocos créditos de 2015 con desenlace son sobre todo los
-            que fallaron muy rápido, así que su tasa de malos y su LGD estarían inflados. Esto queda como limitación del
-            trabajo.</aside>
-        </section>
-
-        <!-- ===================== 4. PREPROCESAMIENTO ===================== -->
-        <section id="preprocesamiento">
-          <h2>Preprocesamiento compartido</h2>
-          <p>Las dos partes usan el mismo preprocesador, ajustado una sola vez con los 90 347 créditos de entrenamiento,
-            para que la multiplicación PD · LGD tenga sentido y la comparación entre modelos sea justa.</p>
-          <ol class="pipeline">
-            <li><strong>Carga</strong>loan.csv, 887 379 filas</li>
-            <li><strong>Limpieza</strong>porcentajes, plazo, antigüedad</li>
-            <li><strong>Objetivo</strong>malo ∈ {0, 1, NA}</li>
-            <li><strong>Partición</strong>por <code>issue_d</code></li>
-            <li><strong>Transformación</strong>mediana, estandarizar, one-hot</li>
-            <li><strong>54 variables</strong>Parquet + joblib</li>
-          </ol>
-          <ul>
-            <li><strong>Entradas:</strong> 13 numéricas originales, 3 derivadas (<code>plazo_meses</code>,
-              <code>antiguedad_empleo</code>, <code>meses_historial_credito</code>) y 5 categóricas.</li>
-            <li><strong>Faltantes numéricos:</strong> imputación con la mediana más un indicador 0/1.</li>
-            <li><strong>Escalado:</strong> estandarización con media 0 y desviación estándar 1.</li>
-            <li><strong>Categóricas:</strong> one-hot; las categorías con menos del 0,5 % se agrupan.</li>
-          </ul>
-          <aside class="callout" data-tipo="supuesto"><strong class="etq">Supuesto abierto</strong>
-            <code>grade</code> e <code>int_rate</code> las asigna el propio modelo de riesgo de Lending Club. Se
-            incluyen suponiendo un crédito ya tarificado. Si el caso de uso es decidir sin esa información, hay que
-            retirarlas de <em>las dos partes</em>.
-          </aside>
+          <aside class="callout" data-tipo="limitacion"><strong class="etq">Limitación asumida</strong>
+            La cohorte de prueba (2014) conserva una censura importante (68,53 % sin desenlace cerrado), por lo que la
+            tasa observada de malos resulta más alta (26,22 % frente a 16,30 % en entrenamiento) y solo el 37,28 % de
+            sus
+            castigados registraba recuperaciones al corte de 2015. Excluir 2015 (92,68 % abierto) evita introducir este
+            sesgo en su grado extremo, y el efecto residual en 2014 se analiza en la evaluación y discusión.</aside>
         </section>
 
         <!-- ===================== 5. PARTE 1 · PD ===================== -->
@@ -720,152 +824,1006 @@
             referencia y un perceptrón multicapa (MLP).</p>
 
           <h3>Análisis descriptivo e hipótesis</h3>
-          <div class="esqueleto"><span class="pendiente">Pendiente · Parte 1</span> Cinco hipótesis explícitas sobre qué
-            hace más riesgosa a una persona, con tablas y figuras, y su veredicto al final (confirmada o no).</div>
+          <p>Antes de ajustar modelos, se exploró el conjunto de entrenamiento crudo con desenlace conocido
+            (<strong>2007–2012</strong>, <strong>90 347 créditos</strong>: 75 618 buenos y 14 729 malos; <strong>tasa
+              base de incumplimiento: 16,30 %</strong>) sin tocar validación (2013) ni prueba (2014). Sobre ese universo
+            se formularon y contrastaron <strong>cinco hipótesis explícitas</strong> acerca de qué perfiles presentan
+            mayor riesgo de impago, verificadas directamente mediante las tasas observadas y las gráficas
+            exploratorias.</p>
 
-          <h3>Modelos y resultados preliminares</h3>
+          <h4>\(H_1\) · Calificación de riesgo y tasa de interés (<code>grade</code>, <code>int_rate</code>) <span
+              class="estado-uso si">Confirmada</span></h4>
+          <p><em>Hipótesis:</em> la probabilidad de incumplimiento crece de forma estrictamente monótona a medida que
+            empeora el grado asignado por Lending Club (<code>A</code> \(\rightarrow\) <code>G</code>) y aumenta la tasa
+            de interés. En los datos (<a class="xref" href="#fig-h1-grado-tasa"></a>), la mora sube sin excepciones
+            desde
+            <strong>6,66 %</strong> en grado <code>A</code> (\(n = 20\,935\), tasa media 7,48 %) hasta
+            <strong>40,15 %</strong> en grado <code>G</code> (\(n = 680\), tasa media 21,55 %); por rangos de tasa pasa
+            de <strong>6,00 %</strong> (\(&lt; 8\,\%\)) a <strong>39,65 %</strong> (\(\ge 20\,\%\)). Es la señal
+            individual más potente del conjunto.
+          </p>
+          <figure class="lamina" id="fig-h1-grado-tasa">
+            <figcaption><span class="num"></span><span class="titulo">Tasa de incumplimiento por grado de riesgo y rango
+                de tasa de interés en entrenamiento (2007–2012)</span></figcaption>
+            <img src="assets/img/figuras/analisis_descriptivo/fig1_h1_grado_y_tasa.png" width="2340" height="864"
+              loading="lazy"
+              alt="Dos paneles para H1: a la izquierda, barras de incumplimiento por grado A a G subiendo monótonamente de 6,7 % a 40,1 % frente al promedio de 16,3 %; a la derecha, línea por rango de tasa de interés subiendo de 6,0 % a 39,7 %.">
+            <p class="nota"><em>Nota.</em> Elaboración propia sobre 90 347 créditos de entrenamiento. Generada por
+              <code>Analisis_del_problema/analisis_descriptivo/descriptivo.py</code>.
+            </p>
+          </figure>
+
+          <h4>\(H_2\) · Capacidad de pago y carga financiera (<code>dti</code>, <code>annual_inc</code>) <span
+              class="estado-uso si">Confirmada</span></h4>
+          <p><em>Hipótesis:</em> mayor relación deuda/ingreso (<code>dti</code>) y menores ingresos anuales
+            (<code>annual_inc</code>) elevan el riesgo de impago por menor holgura de caja. Como muestra la <a
+              class="xref" href="#fig-h2-dti-ingreso"></a>, la tasa de malos crece de forma sostenida desde
+            <strong>13,55 %</strong> cuando <code>dti &lt; 10 %</code> (\(n = 24\,296\)) hasta <strong>22,27 %</strong>
+            cuando <code>dti &ge; 30 %</code> (\(n = 2\,232\)), mientras que por quintiles de ingreso desciende
+            continuamente desde <strong>18,99 %</strong> en el quintil inferior (Q1: US$ 2k–38k) hasta
+            <strong>12,30 %</strong> en el superior (Q5: US$ 90k–7,14M).
+          </p>
+          <figure class="lamina" id="fig-h2-dti-ingreso">
+            <figcaption><span class="num"></span><span class="titulo">Tasa de incumplimiento según relación
+                deuda/ingreso
+                (DTI) y quintil de ingreso anual declarado</span></figcaption>
+            <img src="assets/img/figuras/analisis_descriptivo/fig2_h2_dti_e_ingreso.png" width="2340" height="864"
+              loading="lazy"
+              alt="Dos paneles para H2: a la izquierda, el incumplimiento aumenta progresivamente de 13,5 % (DTI menor a 10 %) a 22,3 % (DTI mayor o igual a 30 %); a la derecha, disminuye por quintil de ingreso desde 19,0 % en Q1 hasta 12,3 % en Q5.">
+            <p class="nota"><em>Nota.</em> Elaboración propia. Generada por
+              <code>Analisis_del_problema/analisis_descriptivo/descriptivo.py</code>.
+            </p>
+          </figure>
+
+          <h4>\(H_3\) · Estrés de liquidez rotativa y alertas del buró (<code>revol_util</code>,
+            <code>inq_last_6mths</code>, <code>delinq_2yrs</code>, <code>pub_rec</code>) <span
+              class="estado-uso si">Confirmada</span>
+          </h4>
+          <p><em>Hipótesis:</em> una utilización cercana al límite en tarjetas rotativas, múltiples consultas recientes
+            al buró o incidentes adversos previos incrementan el incumplimiento. En la <a class="xref"
+              href="#fig-h3-liquidez-buro"></a>, <code>revol_util</code> duplica la tasa de malos al pasar de
+            <strong>11,08 %</strong> (\(&lt; 25\,\%\)) a <strong>22,36 %</strong> (\(\ge 90\,\%\)); las consultas
+            recientes suben de <strong>13,54 %</strong> (0) a <strong>23,26 %</strong> (3+); las moras previas pasan de
+            <strong>16,10 %</strong> a <strong>18,18 %</strong> (2+); y los registros públicos adversos saltan de
+            <strong>16,02 %</strong> a <strong>23,06 %</strong>.
+          </p>
+          <figure class="lamina" id="fig-h3-liquidez-buro">
+            <figcaption><span class="num"></span><span class="titulo">Incumplimiento según utilización de crédito
+                rotativo
+                y alertas recientes en el buró de crédito</span></figcaption>
+            <img src="assets/img/figuras/analisis_descriptivo/fig3_h3_liquidez_y_buro.png" width="2340" height="864"
+              loading="lazy"
+              alt="Dos paneles para H3: a la izquierda, el incumplimiento sube con la utilización de tarjetas de 11,1 % a 22,4 %; a la derecha, se eleva con consultas recientes (13,5 % a 23,3 %), moras de los últimos 2 años (16,1 % a 18,2 %) y registros públicos adversos (16,0 % a 23,1 %).">
+            <p class="nota"><em>Nota.</em> Elaboración propia. Generada por
+              <code>Analisis_del_problema/analisis_descriptivo/descriptivo.py</code>.
+            </p>
+          </figure>
+
+          <h4>\(H_4\) · Condiciones del contrato: plazo y propósito (<code>plazo_meses</code>, <code>purpose</code>)
+            <span class="estado-uso si">Confirmada</span>
+          </h4>
+          <p><em>Hipótesis:</em> los préstamos a 60 meses son sustancialmente más riesgosos que los de 36 meses (incluso
+            controlando por censura) y destinos empresariales fallan más que préstamos de consumo específicos. En todo
+            entrenamiento (<a class="xref" href="#fig-h4-plazo-proposito"></a>), 60 meses registra
+            <strong>31,95 %</strong> frente a <strong>13,09 %</strong> en 36 meses; al controlar por censura en la
+            <strong>cohorte 2010</strong> (donde ambos plazos completaron su ciclo), la brecha real se mantiene clara:
+            <strong>22,51 %</strong> vs. <strong>10,92 %</strong>. Por destino, <code>small_business</code> lidera el
+            riesgo con <strong>28,02 %</strong> (\(n = 3\,166\)), frente a <code>car</code> (<strong>11,41 %</strong>),
+            <code>major_purchase</code> (11,53 %) y <code>credit_card</code> (12,46 %).
+          </p>
+          <figure class="lamina" id="fig-h4-plazo-proposito">
+            <figcaption><span class="num"></span><span class="titulo">Impacto del plazo contractual (global y cohorte
+                madura 2010) y tasa de incumplimiento por propósito</span></figcaption>
+            <img src="assets/img/figuras/analisis_descriptivo/fig4_h4_plazo_y_proposito.png" width="2430" height="936"
+              loading="lazy"
+              alt="Dos paneles para H4: a la izquierda, 60 meses supera a 36 meses tanto en 2007–2012 (31,9 % vs 13,1 %) como en la cohorte madura 2010 (22,5 % vs 10,9 %); a la derecha, barras horizontales por propósito encabezadas por small_business (28,0 %) hasta car (11,4 %).">
+            <p class="nota"><em>Nota.</em> Elaboración propia. Generada por
+              <code>Analisis_del_problema/analisis_descriptivo/descriptivo.py</code>.
+            </p>
+          </figure>
+
+          <h4>\(H_5\) (Contraste) · Verificación de ingresos, antigüedad laboral y vivienda <span
+              class="estado-uso no">Refutada parcialmente</span></h4>
+          <p><em>Hipótesis intuitiva:</em> ingresos verificados, mayor antigüedad laboral y vivienda propia o hipotecada
+            deberían reducir el incumplimiento. Sin embargo, los datos (<a class="xref" href="#fig-h5-contraste"></a>)
+            muestran dos hallazgos contra-intuitivos clave: primero,
+            <code>Verified</code> presenta mayor mora (<strong>19,42 %</strong>) que <code>Not Verified</code>
+            (<strong>13,70 %</strong>), lo que refleja <em>sesgo de selección en verificación</em> (la plataforma audita
+            con mayor frecuencia montos altos o perfiles percibidos como más riesgosos); segundo, la antigüedad laboral
+            no
+            reduce el riesgo de forma monótona (<code>&lt; 1 año</code>: 15,81 % frente a <code>10+ años</code>: 16,93
+            %),
+            pero el grupo <strong><code>Sin dato</code> (\(n = 2\,897\)) salta a 21,33 %</strong>, validando el valor
+            informativo de registrar el dato faltante. Solo en vivienda se observa la tendencia esperada:
+            <code>MORTGAGE</code> (15,40 %) es menor que <code>RENT</code> (17,07 %).
+          </p>
+          <figure class="lamina" id="fig-h5-contraste">
+            <figcaption><span class="num"></span><span class="titulo">Contraste empírico en verificación de ingresos,
+                antigüedad laboral (incluyendo faltantes) y tenencia de vivienda</span></figcaption>
+            <img src="assets/img/figuras/analisis_descriptivo/fig5_h5_verificacion_empleo_vivienda.png" width="2610"
+              height="846" loading="lazy"
+              alt="Tres paneles para H5: verificación de ingresos mostrando la paradoja de Verified (19,4 %) mayor que Not Verified (13,7 %); antigüedad laboral relativamente plana entre 15,3 % y 17,0 % con un pico en Sin dato de 21,3 %; y vivienda con MORTGAGE (15,4 %) debajo de RENT (17,1 %).">
+            <p class="nota"><em>Nota.</em> Elaboración propia. Generada por
+              <code>Analisis_del_problema/analisis_descriptivo/descriptivo.py</code>.
+            </p>
+          </figure>
+
+          <div class="tabla-paper" id="tab-hipotesis-pd" style="--color-parte: var(--pd)">
+            <div class="titulo-tabla"><span class="num"></span><span class="titulo">Síntesis de veredictos del análisis
+                descriptivo e hipótesis de riesgo (entrenamiento 2007–2012)</span></div>
+            <div class="contenedor" role="region" tabindex="0" aria-label="Síntesis de hipótesis de riesgo">
+              <table>
+                <thead>
+                  <tr>
+                    <th scope="col">Hipótesis</th>
+                    <th scope="col" class="txt">Variables</th>
+                    <th scope="col" class="txt">Evidencia empírica principal</th>
+                    <th scope="col">Veredicto</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">\(H_1\)</th>
+                    <td class="txt"><code>grade</code>, <code>int_rate</code></td>
+                    <td class="txt"><code>A: 6,66 %</code> \(\rightarrow\) <code>G: 40,15 %</code>; tasa &lt;8 %: 6,00 %
+                      \(\rightarrow\) &ge;20 %: 39,65 %.</td>
+                    <td><span class="estado-uso si">Confirmada</span></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">\(H_2\)</th>
+                    <td class="txt"><code>dti</code>, <code>annual_inc</code></td>
+                    <td class="txt">DTI: 13,55 % \(\rightarrow\) 22,27 %; ingreso: Q1 18,99 % \(\rightarrow\) Q5 12,30
+                      %.</td>
+                    <td><span class="estado-uso si">Confirmada</span></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">\(H_3\)</th>
+                    <td class="txt"><code>revol_util</code>, <code>inq_last_6mths</code>, <code>delinq_2yrs</code>,
+                      <code>pub_rec</code></td>
+                    <td class="txt"><code>revol_util &ge;90 %</code>: 22,36 %; 3+ consultas: 23,26 %;
+                      <code>pub_rec 1+</code>: 23,06 %.</td>
+                    <td><span class="estado-uso si">Confirmada</span></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">\(H_4\)</th>
+                    <td class="txt"><code>plazo_meses</code>, <code>purpose</code></td>
+                    <td class="txt">Cohorte madura 2010: 36m 10,92 % vs. 60m 22,51 %; <code>small_business</code>: 28,02
+                      %.</td>
+                    <td><span class="estado-uso si">Confirmada</span></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">\(H_5\)</th>
+                    <td class="txt"><code>verification_status</code>, <code>antiguedad_empleo</code>,
+                      <code>home_ownership</code></td>
+                    <td class="txt">Paradoja <code>Verified</code> (19,42 % &gt; 13,70 %); empleo plano salvo
+                      <code>Sin dato</code> (21,33 %); <code>MORTGAGE</code> 15,40 %.</td>
+                    <td><span class="estado-uso no">Refutada parc.</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="nota"><em>Nota.</em> Resultados reproducibles en
+              <code>Analisis_del_problema/analisis_descriptivo/resultados/resumen_hipotesis.json</code>.
+            </p>
+          </div>
+
+          <h3>Modelos y presupuesto de búsqueda</h3>
+          <p>Para establecer una referencia rigurosa y cumplir con la regla de comparación justa del enunciado, se
+            entrenaron tres familias de modelos sobre exactamente las mismas 54 columnas preprocesadas de entrenamiento
+            (\(n = 90\,347\)), seleccionando cualquier hiperparámetro exclusivamente por su área bajo la curva ROC (AUC)
+            en el conjunto de validación temporal de 2013 (\(n = 73\,194\)):</p>
+          <ol>
+            <li><strong>Modelo nulo (tasa base):</strong> predice para todo crédito la proporción histórica de
+              incumplimiento observada en entrenamiento (\(p_{\text{base}} = 16,30\,\%\)). Define el piso de
+              discriminación nula (\(\text{AUC} = 0,5000\), \(\text{Gini} = 0\), \(\text{KS} = 0\)) y la referencia de
+              calibración sin covariables (\(\text{Brier} = 0,2033\) y \(\text{Log-Loss} = 0,6068\) en prueba).</li>
+            <li><strong>Regresión logística con regularización \(L_2\):</strong> modelo lineal generalizado con enlace
+              logit (\(54\) pesos y \(1\) intercepto: <strong>55 parámetros entrenables</strong>). Se evaluó una rejilla
+              explícita de <strong>7 configuraciones</strong> del parámetro de regularización inversa
+              \(C \in \{0,001;\; 0,01;\; 0,05;\; 0,1;\; 0,5;\; 1,0;\; 10,0\}\) con el optimizador L-BFGS en un tiempo
+              total de <strong>5,49 s</strong>. La configuración ganadora en validación fue <strong>\(C = 0,01\)</strong>
+              (\(\text{AUC}_{\text{val}} = 0,6821\), intercepto \(\beta_0 = -1,6872\), ajuste individual en \(0,65\text{ s}\)),
+              evidenciando que una regularización \(L_2\) moderadamente fuerte controla la colinealidad entre variables
+              de monto, cuota, grado y tasa de interés.</li>
+            <li><strong>Perceptrón multicapa (MLP) en PyTorch:</strong> red neuronal prealimentada entrenada con
+              entropía cruzada binaria sobre logits (<code>BCEWithLogitsLoss</code>) y parada temprana
+              (<code>paciencia = 10</code> épocas sin mejora en el AUC de validación, hasta un máximo de 100 épocas por
+              corrida). Se ejecutó una búsqueda aleatoria con presupuesto fijo de <strong>30 configuraciones</strong> y,
+              fijada la arquitectura ganadora, se reentrenó desde cero con <strong>30 semillas independientes</strong>
+              (1 a 30) para cuantificar la variabilidad por inicialización de pesos y barajado de minilotes.</li>
+          </ol>
           <div class="versus" style="--color-parte: var(--pd)">
             <article>
-              <h4>Regresión logística</h4>
+              <h4>Regresión logística (\(L_2, C = 0,01\))</h4>
               <dl>
                 <dt>Parámetros</dt>
                 <dd>55</dd>
-                <dt>Regularización</dt>
-                <dd>L2 (C = 0,1)</dd>
-                <dt>Tiempo</dt>
-                <dd>1,4 s</dd>
-                <dt>AUC prueba</dt>
-                <dd>0,6818</dd>
+                <dt>Configuraciones</dt>
+                <dd>7 (rejilla explícita de \(C\))</dd>
+                <dt>Tiempo de búsqueda</dt>
+                <dd>5,5 s (0,65 s mejor modelo)</dd>
+                <dt>AUC en prueba (2014)</dt>
+                <dd>0,6820 (Gini: 0,3640 · KS: 26,51 %)</dd>
               </dl>
             </article>
             <article>
-              <h4>MLP inicial (54-64-32-1)</h4>
+              <h4>MLP final (54–64–1, ReLU, SGD)</h4>
               <dl>
                 <dt>Parámetros</dt>
-                <dd>5 633</dd>
-                <dt>Regularización</dt>
-                <dd>L2 (α = 0,001) y parada temprana</dd>
-                <dt>Tiempo</dt>
-                <dd>13,7 s</dd>
-                <dt>AUC prueba</dt>
-                <dd>0,6803</dd>
+                <dd>3 585</dd>
+                <dt>Configuraciones</dt>
+                <dd>30 (búsqueda aleatoria: 817,5 s)</dd>
+                <dt>30 semillas</dt>
+                <dd>474,5 s · AUC prueba: 0,6875 ± 0,0025</dd>
+                <dt>AUC en prueba (mejor val.)</dt>
+                <dd>0,6902 (Gini: 0,3804 · KS: 27,73 %)</dd>
               </dl>
             </article>
           </div>
+
+          <h3>Búsqueda de hiperparámetros y 30 semillas</h3>
+          <p>La búsqueda aleatoria del MLP exploró <strong>30 configuraciones</strong> muestreadas con semilla fija
+            (<code>2026</code>) en un tiempo total de <strong>817,46 s (13,6 min)</strong> sobre el siguiente espacio:
+            arquitecturas de una a tres capas ocultas (\([16]\), \([32]\), \([64]\), \([32, 16]\), \([64, 32]\),
+            \([128, 64]\) y \([64, 32, 16]\), que abarcan desde \(897\) hasta \(15\,361\) parámetros), funciones de
+            activación <code>ReLU</code>, <code>tanh</code> y <code>ELU</code>, tasas de <code>dropout</code> en
+            \(\{0,0;\; 0,1;\; 0,2;\; 0,3\}\), optimizadores <code>Adam</code> y <code>SGD</code>, tasa de aprendizaje
+            log-uniforme en \([10^{-4}, 10^{-2}]\), penalización \(L_2\) (<em>weight decay</em>) log-uniforme en
+            \([10^{-6}, 10^{-2}]\) y tamaños de lote en \(\{128, 256, 512\}\).</p>
+          <p>La configuración ganadora fue la <strong>#15</strong> (\(\text{AUC}_{\text{val}} = 0,6888\)), compuesta por
+            una sola capa oculta de <strong>64 neuronas</strong> con activación <strong>ReLU</strong>, sin
+            <em>dropout</em> (\(0,0\)), optimizador <strong>SGD</strong> con tasa de aprendizaje \(9,54 \times 10^{-3}\),
+            penalización \(L_2 = 1,72 \times 10^{-6}\) y lote de 128 créditos (<strong>3 585 parámetros</strong>). Como
+            se aprecia en la figura de búsqueda, las arquitecturas de capacidad intermedia (\(1\,793\) a \(5\,633\)
+            parámetros) dominan el frente de validación: redes más anchas como \([128, 64]\) (\(15\,361\) parámetros)
+            memorizan más rápido el conjunto de entrenamiento sin superar en validación a una capa oculta bien
+            regularizada mediante parada temprana.</p>
+          <div class="tabla-paper" id="tab-pd-config" style="--color-parte: var(--pd)">
+            <div class="titulo-tabla"><span class="num"></span><span class="titulo">Mejor configuración del MLP de PD
+                seleccionada por AUC en validación (2013)</span></div>
+            <div class="contenedor" role="region" tabindex="0" aria-label="Mejor configuración del MLP de PD">
+              <table>
+                <thead>
+                  <tr>
+                    <th scope="col">Hiperparámetro</th>
+                    <th scope="col">Valor seleccionado (configuración #15)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">Arquitectura (entrada · oculta · salida)</th>
+                    <td>54 · 64 · 1 (3 585 parámetros entrenables)</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Función de activación</th>
+                    <td>ReLU</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Dropout</th>
+                    <td>0,0</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Función de pérdida</th>
+                    <td>Entropía cruzada binaria (<code>BCEWithLogitsLoss</code>)</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Optimizador</th>
+                    <td>SGD</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Tasa de aprendizaje</th>
+                    <td>0,00954 (\(9,54 \times 10^{-3}\))</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Penalización \(L_2\) (<em>weight decay</em>)</th>
+                    <td>\(1,72 \times 10^{-6}\)</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Tamaño de lote y parada temprana</th>
+                    <td>128 créditos · máx. 100 épocas (paciencia = 10 épocas sobre \(\text{AUC}_{\text{val}}\))</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="nota"><em>Nota.</em> Fuente: <code>parte_1/results/red_neuronal/mejor_configuracion.yaml</code> y
+              <code>parte_1/results/red_neuronal/busqueda_resumen.json</code>.</p>
+          </div>
+          <figure class="lamina" id="fig-pd-busqueda">
+            <figcaption><span class="num"></span><span class="titulo">Resultados de la búsqueda aleatoria de
+                hiperparámetros del MLP de PD (30 configuraciones)</span></figcaption>
+            <img src="assets/img/figuras/parte_1/busqueda_hiperparametros.png" width="1950" height="720" loading="lazy"
+              alt="Dos paneles de la búsqueda aleatoria del MLP de PD. Panel A: dispersión de parámetros entrenables en escala logarítmica frente al AUC de validación para Adam y SGD, destacando la configuración #15 con 3 585 parámetros y AUC de 0,6888. Panel B: barras horizontales con el top 10 de configuraciones evaluadas, entre 0,6843 y 0,6888 de AUC.">
+            <p class="nota"><em>Nota.</em> Elaboración propia. Generada por <code>parte_1/src/red_neuronal.py</code>.</p>
+          </figure>
+          <figure class="lamina" id="fig-pd-historial">
+            <figcaption><span class="num"></span><span class="titulo">Curva de aprendizaje del MLP final de PD (semilla
+                17) con parada temprana en validación</span></figcaption>
+            <img src="assets/img/figuras/parte_1/historial_perdida.png" width="1125" height="660" loading="lazy"
+              alt="Curvas de entropía cruzada binaria por época en entrenamiento (alrededor de 0,400) y validación 2013 (alrededor de 0,505) a lo largo de 30 épocas. La línea vertical punteada marca la mejor época en validación, la época 20.">
+            <p class="nota"><em>Nota.</em> Elaboración propia. La diferencia de nivel vertical entre la pérdida de
+              entrenamiento (\(\approx 0,400\)) y la de validación (\(\approx 0,501\) en la época 20) obedece al salto en
+              la tasa de incumplimiento observada entre 2007–2012 (16,30 %) y 2013 (22,95 %). Generada por
+              <code>parte_1/src/red_neuronal.py</code>.</p>
+          </figure>
+          <p>Fijada la arquitectura #15, se entrenaron <strong>30 semillas independientes</strong> (semillas 1 a 30, en
+            <strong>474,48 s</strong> totales, equivalentes a \(15,8\text{ s}\) por corrida). La tabla siguiente resume
+            la distribución completa de resultados. La variabilidad entre semillas es muy baja (desviación estándar de
+            \(0,0021\) en el AUC de validación y \(0,0025\) en el AUC de prueba). Más importante aún: <strong>incluso la
+              peor de las 30 semillas del MLP en prueba (\(\text{AUC} = 0,6822\)) supera a la regresión logística
+              optimizada (\(\text{AUC} = 0,6820\))</strong>, lo que demuestra que la ganancia de la red neuronal no es
+            producto de una semilla afortunada. Siguiendo el protocolo sin fuga hacia prueba, se guardó como modelo
+            final la <strong>semilla 17</strong> por haber obtenido el mayor AUC en validación (\(\text{AUC}_{\text{val}} = 0,6901\)).</p>
+          <div class="tabla-paper" id="tab-pd-semillas" style="--color-parte: var(--pd)">
+            <div class="titulo-tabla"><span class="num"></span><span class="titulo">Estabilidad del MLP de PD (54–64–1)
+                a través de 30 semillas independientes</span></div>
+            <div class="contenedor" role="region" tabindex="0" aria-label="Variabilidad del MLP de PD en 30 semillas">
+              <table>
+                <thead>
+                  <tr>
+                    <th scope="col">Conjunto</th>
+                    <th scope="col">Métrica</th>
+                    <th scope="col">Media</th>
+                    <th scope="col">Desv. est.</th>
+                    <th scope="col">Mínimo</th>
+                    <th scope="col">Máximo</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">Entrenamiento</th>
+                    <td>AUC</td>
+                    <td>0,7196</td>
+                    <td>0,0044</td>
+                    <td>0,7110</td>
+                    <td>0,7275</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Entrenamiento</th>
+                    <td>KS</td>
+                    <td>0,3180</td>
+                    <td>0,0067</td>
+                    <td>0,3056</td>
+                    <td>0,3288</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Entrenamiento</th>
+                    <td>Brier</td>
+                    <td>0,1235</td>
+                    <td>0,0006</td>
+                    <td>0,1224</td>
+                    <td>0,1248</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Validación (2013)</th>
+                    <td>AUC</td>
+                    <td>0,6871</td>
+                    <td>0,0021</td>
+                    <td>0,6826</td>
+                    <td>0,6901</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Validación (2013)</th>
+                    <td>Gini</td>
+                    <td>0,3741</td>
+                    <td>0,0041</td>
+                    <td>0,3651</td>
+                    <td>0,3802</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Validación (2013)</th>
+                    <td>KS</td>
+                    <td>0,2712</td>
+                    <td>0,0036</td>
+                    <td>0,2646</td>
+                    <td>0,2785</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Validación (2013)</th>
+                    <td>Brier</td>
+                    <td>0,1645</td>
+                    <td>0,0003</td>
+                    <td>0,1635</td>
+                    <td>0,1650</td>
+                  </tr>
+                  <tr class="mejor">
+                    <th scope="row">Prueba (2014)</th>
+                    <td>AUC</td>
+                    <td>0,6875</td>
+                    <td>0,0025</td>
+                    <td>0,6822</td>
+                    <td>0,6905</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Prueba (2014)</th>
+                    <td>Gini</td>
+                    <td>0,3749</td>
+                    <td>0,0049</td>
+                    <td>0,3643</td>
+                    <td>0,3811</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Prueba (2014)</th>
+                    <td>KS</td>
+                    <td>0,2744</td>
+                    <td>0,0042</td>
+                    <td>0,2657</td>
+                    <td>0,2808</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Prueba (2014)</th>
+                    <td>Brier</td>
+                    <td>0,1806</td>
+                    <td>0,0006</td>
+                    <td>0,1792</td>
+                    <td>0,1816</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Prueba (2014)</th>
+                    <td>Log-Loss</td>
+                    <td>0,5439</td>
+                    <td>0,0018</td>
+                    <td>0,5396</td>
+                    <td>0,5470</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="nota"><em>Nota.</em> Semillas 1 a 30 con arquitectura 54–64–1 (3 585 parámetros). El modelo final
+              guardado corresponde a la semilla 17 (seleccionada por el máximo AUC en validación: 0,6901). Fuente:
+              <code>parte_1/results/red_neuronal/resumen_semillas.csv</code>.</p>
+          </div>
+
+          <h3>Evaluación: discriminación y calibración</h3>
+          <p>En el conjunto de prueba de 2014 (\(n = 74\,154\), tasa observada de incumplimiento de \(26,22\,\%\)), el
+            MLP supera de forma simultánea a la regresión logística en todas las métricas de discriminación y de
+            calibración probabilística. En discriminación, el MLP final eleva el <strong>AUC de 0,6820 a 0,6902</strong>
+            (\(+0,82\) puntos de AUC; media de 30 semillas: \(0,6875\)), el <strong>índice de Gini de 0,3640 a
+              0,3804</strong> (\(+1,64\) puntos) y el <strong>estadístico KS de 26,51 % a 27,73 %</strong> (\(+1,23\)
+            puntos porcentuales). La separación máxima entre las funciones de distribución acumulada de buenos pagadores
+            \(F_{\text{buenos}}(p)\) e incumplidos \(F_{\text{malos}}(p)\) se alcanza en el umbral óptimo
+            \(p^* = 0,200\), punto que permite fijar un corte operativo de admisión con máxima distancia entre ambas
+            poblaciones.</p>
           <div class="tabla-paper" id="tab-pd-metricas" style="--color-parte: var(--pd)">
             <div class="titulo-tabla"><span class="num"></span><span class="titulo">Métricas de discriminación y
-                calibración de la Parte 1 (modelos preliminares)</span></div>
+                calibración de la Parte 1 en validación (2013) y prueba (2014)</span></div>
             <div class="contenedor" role="region" tabindex="0" aria-label="Métricas de la Parte 1">
               <table>
                 <thead>
                   <tr>
                     <th scope="col">Modelo</th>
                     <th scope="col">Conjunto</th>
+                    <th scope="col">PD media</th>
                     <th scope="col">AUC</th>
                     <th scope="col">Gini</th>
                     <th scope="col">KS</th>
                     <th scope="col">Brier</th>
+                    <th scope="col">ECE</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <th scope="row">Regresión logística</th>
+                    <th scope="row">Modelo nulo</th>
                     <td>Validación</td>
-                    <td>0,6820</td>
+                    <td>0,1630</td>
+                    <td>0,5000</td>
+                    <td>0,0000</td>
+                    <td>0,0000</td>
+                    <td>0,1812</td>
+                    <td>0,0665</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Reg. logística (\(C=0,01\))</th>
+                    <td>Validación</td>
+                    <td>0,1933</td>
+                    <td>0,6821</td>
                     <td>0,3641</td>
-                    <td>0,2661</td>
-                    <td>0,1662</td>
+                    <td>0,2665</td>
+                    <td>0,1661</td>
+                    <td>0,0417</td>
                   </tr>
                   <tr>
-                    <th scope="row">Regresión logística</th>
-                    <td>Prueba</td>
-                    <td>0,6818</td>
-                    <td>0,3637</td>
-                    <td>0,2648</td>
-                    <td>0,1832</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">MLP inicial</th>
+                    <th scope="row">MLP (30 semillas)</th>
                     <td>Validación</td>
-                    <td>0,6827</td>
-                    <td>0,3655</td>
-                    <td>0,2657</td>
-                    <td>0,1665</td>
+                    <td>0,2031</td>
+                    <td>0,6871</td>
+                    <td>0,3741</td>
+                    <td>0,2712</td>
+                    <td>0,1645</td>
+                    <td>—</td>
                   </tr>
                   <tr>
-                    <th scope="row">MLP inicial</th>
+                    <th scope="row">MLP final (sem. 17)</th>
+                    <td>Validación</td>
+                    <td>0,2100</td>
+                    <td>0,6901</td>
+                    <td>0,3802</td>
+                    <td>0,2785</td>
+                    <td>0,1635</td>
+                    <td>0,0264</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Modelo nulo</th>
                     <td>Prueba</td>
-                    <td>0,6803</td>
-                    <td>0,3606</td>
-                    <td>0,2615</td>
-                    <td>0,1847</td>
+                    <td>0,1630</td>
+                    <td>0,5000</td>
+                    <td>0,0000</td>
+                    <td>0,0000</td>
+                    <td>0,2033</td>
+                    <td>0,0991</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Reg. logística (\(C=0,01\))</th>
+                    <td>Prueba</td>
+                    <td>0,1977</td>
+                    <td>0,6820</td>
+                    <td>0,3640</td>
+                    <td>0,2651</td>
+                    <td>0,1831</td>
+                    <td>0,0645</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">MLP (30 semillas)</th>
+                    <td>Prueba</td>
+                    <td>0,2086</td>
+                    <td>0,6875</td>
+                    <td>0,3749</td>
+                    <td>0,2744</td>
+                    <td>0,1806</td>
+                    <td>—</td>
+                  </tr>
+                  <tr class="mejor">
+                    <th scope="row">MLP final (sem. 17)</th>
+                    <td>Prueba</td>
+                    <td>0,2152</td>
+                    <td>0,6902</td>
+                    <td>0,3804</td>
+                    <td>0,2773</td>
+                    <td>0,1792</td>
+                    <td>0,0474</td>
                   </tr>
                 </tbody>
               </table>
             </div>
-            <p class="nota"><em>Nota.</em> Fuente: <code>parte_1/models/metricas_comparacion.json</code>. El MLP es una
-              única corrida sin búsqueda de hiperparámetros; no es aún comparable con el resultado final.</p>
+            <p class="nota"><em>Nota.</em> Tasas de incumplimiento observadas: 16,30 % en entrenamiento (2007–2012),
+              22,95 % en validación (2013) y 26,22 % en prueba (2014). Log-Loss en prueba: 0,6068 (nulo), 0,5511
+              (logística), 0,5439 (MLP 30 semillas) y 0,5396 (MLP final). ECE: error de calibración esperado por
+              deciles. Fuentes: <code>parte_1/results/regresion_logistica/metricas.csv</code>,
+              <code>parte_1/results/red_neuronal/resumen_semillas.csv</code> y
+              <code>parte_1/results/evaluacion/metricas_evaluacion.csv</code>.</p>
           </div>
-          <aside class="callout" data-tipo="limitacion"><strong class="etq">Comparación todavía no justa</strong>
-            La regresión logística y el MLP aún no se comparan bajo la regla del enunciado: falta la búsqueda de
-            hiperparámetros con presupuesto explícito y las 30 semillas.</aside>
-
-          <h3>Búsqueda de hiperparámetros y 30 semillas</h3>
-          <div class="esqueleto"><span class="pendiente">Pendiente · Parte 1</span> Justificación del método de
-            búsqueda, número de configuraciones, tiempo total y tabla de media, desviación estándar, mínimo y máximo con
-            30 semillas.</div>
-          <figure class="lamina fig-pendiente" id="fig-pd-busqueda">
-            <figcaption><span class="num"></span><span class="pendiente">Pendiente · Parte 1</span><span
-                class="titulo">Resultados de la búsqueda de hiperparámetros del MLP de PD</span></figcaption>
-            <div class="cuerpo">Se generará con <code>parte_1/src/modelos.py</code> →
-              <code>parte_1/figures/busqueda_hiperparametros.png</code></div>
+          <figure class="lamina" id="fig-roc">
+            <figcaption><span class="num"></span><span class="titulo">Curva ROC de la regresión logística y del MLP
+                final en el conjunto de prueba (2014)</span></figcaption>
+            <img src="assets/img/figuras/parte_1/roc_prueba.png" width="1088" height="864" loading="lazy"
+              alt="Curva ROC en el conjunto de prueba 2014. La curva continua naranja del MLP final (AUC = 0,6902, Gini = 0,3804) domina en todo el rango de tasa de falsos positivos a la curva discontinua azul de la regresión logística (AUC = 0,6820, Gini = 0,3640).">
+            <p class="nota"><em>Nota.</em> Elaboración propia. Generada por <code>parte_1/src/evaluacion.py</code>.</p>
           </figure>
-
-          <h3>Evaluación: discriminación y calibración</h3>
-          <figure class="lamina fig-pendiente" id="fig-roc">
-            <figcaption><span class="num"></span><span class="pendiente">Pendiente · Parte 1</span><span
-                class="titulo">Curva ROC de la regresión logística y del MLP en prueba</span></figcaption>
-            <div class="cuerpo">Se generará con <code>parte_1/src/evaluacion.py</code> →
-              <code>parte_1/figures/roc_prueba.png</code></div>
+          <figure class="lamina" id="fig-ks">
+            <figcaption><span class="num"></span><span class="titulo">Estadístico KS en prueba (2014): distribuciones
+                acumuladas de buenos pagadores e incumplidos del MLP final</span></figcaption>
+            <img src="assets/img/figuras/parte_1/ks_prueba.png" width="1200" height="784" loading="lazy"
+              alt="Funciones de distribución acumulada empírica de buenos pagadores y de incumplidos en función de la PD predicha por el MLP en prueba 2014. La separación vertical máxima es KS = 27,73 % en el umbral PD = 0,200, frente a 26,51 % en la regresión logística.">
+            <p class="nota"><em>Nota.</em> Elaboración propia. Generada por <code>parte_1/src/evaluacion.py</code>.</p>
           </figure>
-          <figure class="lamina fig-pendiente" id="fig-ks">
-            <figcaption><span class="num"></span><span class="pendiente">Pendiente · Parte 1</span><span
-                class="titulo">Estadístico KS: distribuciones acumuladas de buenos y malos en prueba</span></figcaption>
-            <div class="cuerpo">Se generará con <code>parte_1/src/evaluacion.py</code> →
-              <code>parte_1/figures/ks_prueba.png</code></div>
-          </figure>
-          <figure class="lamina fig-pendiente" id="fig-pd-calibracion">
-            <figcaption><span class="num"></span><span class="pendiente">Pendiente · Parte 1</span><span
-                class="titulo">Curva de calibración de la PD en validación y prueba</span></figcaption>
-            <div class="cuerpo">Se generará con <code>parte_1/src/evaluacion.py</code> →
-              <code>parte_1/figures/calibracion_pd.png</code></div>
+          <p>En calibración por deciles, ambos modelos ordenan de manera estrictamente monótona el riesgo real desde el
+            primer hasta el décimo decil (en el MLP de prueba, la tasa observada sube de \(7,58\,\%\) en el decil 1 a
+            \(50,39\,\%\) en el decil 10). No obstante, el MLP logra un <strong>puntaje de Brier menor (0,1792 frente a
+              0,1831)</strong> y reduce el <strong>error de calibración esperado (ECE) de 6,45 % a 4,74 % en
+              prueba</strong> (y de 4,17 % a 2,64 % en validación). Esto ocurre porque el MLP captura mejor el cambio de
+            composición hacia préstamos de 60 meses y tasas más altas en 2013–2014, prediciendo una PD media de
+            \(21,52\,\%\) en prueba frente a \(19,77\,\%\) de la regresión logística. La brecha vertical remanente
+            frente a la diagonal \(y = x\) en 2014 (\(26,22\,\%\) observado frente a \(21,52\,\%\) predicho) corresponde
+            exactamente al sesgo de censura por maduración documentado en la Sección 3.3, donde los créditos sanos de 60
+            meses originados en 2014 seguían vigentes (<em>Current</em>) al corte del archivo.</p>
+          <figure class="lamina" id="fig-pd-calibracion">
+            <figcaption><span class="num"></span><span class="titulo">Curvas de calibración por deciles de la PD en
+                validación (2013) y prueba (2014)</span></figcaption>
+            <img src="assets/img/figuras/parte_1/calibracion_pd.png" width="2080" height="816" loading="lazy"
+              alt="Dos paneles con las curvas de calibración por deciles en validación 2013 (Panel A) y prueba 2014 (Panel B). En ambos conjuntos la curva naranja del MLP final queda más cerca de la diagonal de calibración perfecta que la curva azul de la regresión logística, especialmente en los deciles medios y altos.">
+            <p class="nota"><em>Nota.</em> Elaboración propia. Generada por <code>parte_1/src/evaluacion.py</code>.</p>
           </figure>
 
           <h3>Scorecard</h3>
-          <p>La scorecard transforma la probabilidad en puntos. Con puntaje base \(P_0\), odds de referencia
-            \(\theta_0\) y puntos para duplicar las odds (PDO):</p>
+          <p>La scorecard crediticia traduce la probabilidad de incumplimiento estimada \(p = \widehat{\text{PD}}\) a una
+            escala entera de puntos en la que un mayor puntaje representa menor riesgo (mayores <em>odds</em> de ser buen
+            pagador, \(\text{odds} = (1 - p)/p\)). Siguiendo el estándar de la industria bancaria (Siddiqi, 2017), se
+            fijaron tres parámetros de anclaje: un puntaje base <strong>\(P_0 = 600\text{ puntos}\)</strong> para unas
+            <em>odds</em> de referencia de <strong>\(\theta_0 = 19:1\)</strong> (19 buenos por cada malo, equivalente a
+            \(p_0 = 1/(1 + 19) = 5,0\,\%\)) y un incremento de <strong>\(\text{PDO} = 20\text{ puntos}\)</strong> por
+            cada duplicación de las <em>odds</em> de cumplimiento:</p>
           <div class="eq" id="eq-scorecard">
-            <div class="formula">\[ \text{Puntaje} = P_0 + \frac{\text{PDO}}{\ln 2}\,\ln\!\left(\frac{1 - p}{p}\right) -
-              \frac{\text{PDO}}{\ln 2}\,\ln \theta_0 \]</div>
+            <div class="formula">\[ \text{Puntaje}(p) = P_0 + \frac{\text{PDO}}{\ln 2}\,\ln\!\left(\frac{1 - p}{p}\right)
+              - \frac{\text{PDO}}{\ln 2}\,\ln \theta_0 = A + B\,\ln\!\left(\frac{1 - p}{p}\right) \]</div>
             <span class="eq-num"></span>
           </div>
-          <p><span class="pendiente">Pendiente · Parte 1</span> Verificar la derivación y los valores de \(P_0\),
-            \(\theta_0\) y PDO con los que se construye la tabla de puntos.</p>
-          <figure class="lamina fig-pendiente" id="fig-scorecard">
-            <figcaption><span class="num"></span><span class="pendiente">Pendiente · Parte 1</span><span
-                class="titulo">Distribución de puntajes de la scorecard en prueba, por buenos y malos</span>
-            </figcaption>
-            <div class="cuerpo">Se generará con <code>parte_1/src/scorecard.py</code> →
-              <code>parte_1/figures/distribucion_puntajes.png</code></div>
+          <p>Sustituyendo \(P_0 = 600\), \(\theta_0 = 19\) y \(\text{PDO} = 20\), se obtienen las constantes exactas de
+            escalado <strong>\(B = \text{PDO}/\ln 2 = 28,8539\)</strong> y <strong>\(A = P_0 - B\ln\theta_0 =
+              515,0414\)</strong>. En el caso particular de la regresión logística, como el logit es
+            \(\ln(p/(1 - p)) = \beta_0 + \sum_{j=1}^{54} \beta_j x_j\), el puntaje se descompone en una <strong>suma
+              aditiva exacta de puntos por variable</strong>:</p>
+          <p>\[ \text{Puntaje}_{\text{LR}}(\mathbf{x}) = \underbrace{(A - B\beta_0)}_{\text{Puntaje base } = 563,72} +
+            \sum_{j=1}^{54} \underbrace{(-B\beta_j x_j)}_{\Delta\text{Puntos}_j} \]</p>
+          <p>donde la diferencia numérica máxima entre sumar la tabla de puntos por variable y aplicar la ecuación de
+            log-odds sobre la probabilidad predicha en los \(74\,154\) créditos de prueba es de apenas
+            \(2,27 \times 10^{-13}\text{ puntos}\) (precisión de máquina). En el MLP final, la misma transformación
+            log-odds sobre \(p = \widehat{\text{PD}}_{\text{MLP}}\) produce en prueba (2014) una media global de
+            \(558,38 \pm 25,91\text{ puntos}\), separando nítidamente la mediana de los <strong>buenos pagadores
+              (\(562,69\text{ puntos}\))</strong> de la mediana de los <strong>incumplidos
+              (\(545,20\text{ puntos}\))</strong> por \(17,49\text{ puntos}\) (casi un PDO completo).</p>
+          <figure class="lamina" id="fig-scorecard">
+            <figcaption><span class="num"></span><span class="titulo">Distribución de puntajes de la scorecard en prueba
+                (2014) y tasa de incumplimiento por decil de puntaje</span></figcaption>
+            <img src="assets/img/figuras/parte_1/distribucion_puntajes.png" width="2112" height="784" loading="lazy"
+              alt="Dos paneles de la Scorecard en prueba 2014 con el MLP final. Panel A: histogramas superpuestos de densidad para buenos pagadores (mediana 562,7 puntos) y malos pagadores (mediana 545,2 puntos), con línea de referencia en P0 = 600. Panel B: barras con la tasa de incumplimiento observada por decil de puntaje, descendiendo monótonamente desde 50,4 % en D1 (451-524 puntos) hasta 7,6 % en D10 (592-650 puntos).">
+            <p class="nota"><em>Nota.</em> Elaboración propia. Generada por <code>parte_1/src/scorecard.py</code>.</p>
           </figure>
+          <div class="tabla-paper" id="tab-scorecard-bandas" style="--color-parte: var(--pd)">
+            <div class="titulo-tabla"><span class="num"></span><span class="titulo">Desempeño por bandas decílicas de la
+                Scorecard (MLP final) en el conjunto de prueba (2014)</span></div>
+            <div class="contenedor" role="region" tabindex="0" aria-label="Bandas decílicas de la Scorecard en prueba">
+              <table>
+                <thead>
+                  <tr>
+                    <th scope="col">Banda</th>
+                    <th scope="col">Rango</th>
+                    <th scope="col">Media pts.</th>
+                    <th scope="col">Créditos</th>
+                    <th scope="col">Malos</th>
+                    <th scope="col">PD pred.</th>
+                    <th scope="col">Tasa obs.</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">D1</th>
+                    <td>[450,9 – 524,5]</td>
+                    <td>514,3</td>
+                    <td>7 416</td>
+                    <td>3 737</td>
+                    <td>50,62 %</td>
+                    <td>50,39 %</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">D2</th>
+                    <td>(524,5 – 535,9]</td>
+                    <td>530,6</td>
+                    <td>7 415</td>
+                    <td>3 050</td>
+                    <td>36,91 %</td>
+                    <td>41,13 %</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">D3</th>
+                    <td>(535,9 – 544,4]</td>
+                    <td>540,3</td>
+                    <td>7 415</td>
+                    <td>2 675</td>
+                    <td>29,45 %</td>
+                    <td>36,08 %</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">D4</th>
+                    <td>(544,4 – 551,5]</td>
+                    <td>548,0</td>
+                    <td>7 416</td>
+                    <td>2 245</td>
+                    <td>24,19 %</td>
+                    <td>30,27 %</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">D5</th>
+                    <td>(551,5 – 558,1]</td>
+                    <td>554,8</td>
+                    <td>7 415</td>
+                    <td>1 960</td>
+                    <td>20,16 %</td>
+                    <td>26,43 %</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">D6</th>
+                    <td>(558,1 – 564,6]</td>
+                    <td>561,4</td>
+                    <td>7 415</td>
+                    <td>1 732</td>
+                    <td>16,73 %</td>
+                    <td>23,36 %</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">D7</th>
+                    <td>(564,6 – 571,6]</td>
+                    <td>568,0</td>
+                    <td>7 416</td>
+                    <td>1 392</td>
+                    <td>13,79 %</td>
+                    <td>18,77 %</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">D8</th>
+                    <td>(571,6 – 580,0]</td>
+                    <td>575,6</td>
+                    <td>7 415</td>
+                    <td>1 173</td>
+                    <td>10,95 %</td>
+                    <td>15,82 %</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">D9</th>
+                    <td>(580,0 – 592,5]</td>
+                    <td>585,6</td>
+                    <td>7 415</td>
+                    <td>915</td>
+                    <td>8,01 %</td>
+                    <td>12,34 %</td>
+                  </tr>
+                  <tr class="mejor">
+                    <th scope="row">D10</th>
+                    <td>(592,5 – 649,6]</td>
+                    <td>605,2</td>
+                    <td>7 416</td>
+                    <td>562</td>
+                    <td>4,41 %</td>
+                    <td>7,58 %</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="nota"><em>Nota.</em> D1 agrupa el decil de mayor riesgo y D10 el de menor riesgo. La tasa de
+              incumplimiento observada desciende de forma estrictamente monótona en las 10 bandas, logrando una razón de
+              discriminación de \(6,65\times\) entre D1 (50,39 %) y D10 (7,58 %). Fuente:
+              <code>parte_1/results/scorecard/resumen_bandas_scorecard.csv</code>.</p>
+          </div>
+          <div class="tabla-paper" id="tab-scorecard-puntos" style="--color-parte: var(--pd)">
+            <div class="titulo-tabla"><span class="num"></span><span class="titulo">Principales factores de la tabla
+                aditiva de puntos de la Scorecard (Regresión Logística, puntaje base = 563,72)</span></div>
+            <div class="contenedor" role="region" tabindex="0" aria-label="Tabla de puntos por variable de la Scorecard">
+              <table>
+                <thead>
+                  <tr>
+                    <th scope="col" class="txt">Variable transformada</th>
+                    <th scope="col" class="txt">Unidad de cambio</th>
+                    <th scope="col">Coeficiente \(\beta_j\)</th>
+                    <th scope="col">Puntos (\(-B\beta_j\))</th>
+                    <th scope="col" class="txt">Efecto sobre el puntaje</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row" class="txt"><code>purpose = small_business</code></th>
+                    <td class="txt">Categoría activa (1)</td>
+                    <td>+0,5751</td>
+                    <td>−16,59</td>
+                    <td class="txt">Mayor penalización individual (microempresa)</td>
+                  </tr>
+                  <tr>
+                    <th scope="row" class="txt"><code>annual_inc</code></th>
+                    <td class="txt">+1 desv. est.</td>
+                    <td>−0,3935</td>
+                    <td>+11,35</td>
+                    <td class="txt">Mayor factor protector por capacidad de pago</td>
+                  </tr>
+                  <tr>
+                    <th scope="row" class="txt"><code>int_rate</code></th>
+                    <td class="txt">+1 desv. est.</td>
+                    <td>+0,3514</td>
+                    <td>−10,14</td>
+                    <td class="txt">Penalización directa por mayor tasa de originación</td>
+                  </tr>
+                  <tr>
+                    <th scope="row" class="txt"><code>purpose = credit_card</code></th>
+                    <td class="txt">Categoría activa (1)</td>
+                    <td>−0,3482</td>
+                    <td>+10,05</td>
+                    <td class="txt">Refinanciación de tarjeta con menor riesgo relativo</td>
+                  </tr>
+                  <tr>
+                    <th scope="row" class="txt"><code>plazo_meses</code></th>
+                    <td class="txt">+1 desv. est. (60 vs. 36 m)</td>
+                    <td>+0,2788</td>
+                    <td>−8,04</td>
+                    <td class="txt">Castigo por exposición prolongada a 60 meses</td>
+                  </tr>
+                  <tr>
+                    <th scope="row" class="txt"><code>grade = A</code></th>
+                    <td class="txt">Categoría activa (1)</td>
+                    <td>−0,1809</td>
+                    <td>+5,22</td>
+                    <td class="txt">Bonificación adicional por mejor calificación</td>
+                  </tr>
+                  <tr>
+                    <th scope="row" class="txt"><code>inq_last_6mths</code></th>
+                    <td class="txt">+1 desv. est.</td>
+                    <td>+0,1625</td>
+                    <td>−4,69</td>
+                    <td class="txt">Castigo por búsqueda reciente de liquidez</td>
+                  </tr>
+                  <tr>
+                    <th scope="row" class="txt"><code>total_acc</code></th>
+                    <td class="txt">+1 desv. est.</td>
+                    <td>−0,0921</td>
+                    <td>+2,66</td>
+                    <td class="txt">Bonificación por amplitud de historial crediticio</td>
+                  </tr>
+                  <tr>
+                    <th scope="row" class="txt"><code>revol_util</code></th>
+                    <td class="txt">+1 desv. est.</td>
+                    <td>+0,0877</td>
+                    <td>−2,53</td>
+                    <td class="txt">Castigo por saturación de cupo revolvente</td>
+                  </tr>
+                  <tr>
+                    <th scope="row" class="txt"><code>home_ownership = MORTGAGE</code></th>
+                    <td class="txt">Categoría activa (1)</td>
+                    <td>−0,0830</td>
+                    <td>+2,39</td>
+                    <td class="txt">Bonificación por tenencia de vivienda con hipoteca</td>
+                  </tr>
+                  <tr>
+                    <th scope="row" class="txt"><code>missingindicator_antiguedad_empleo</code></th>
+                    <td class="txt">Faltante activo (1)</td>
+                    <td>+0,0746</td>
+                    <td>−2,15</td>
+                    <td class="txt">Penalización por omitir antigüedad laboral</td>
+                  </tr>
+                  <tr>
+                    <th scope="row" class="txt"><code>dti</code></th>
+                    <td class="txt">+1 desv. est.</td>
+                    <td>+0,0639</td>
+                    <td>−1,84</td>
+                    <td class="txt">Castigo por mayor carga de deuda sobre ingreso</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="nota"><em>Nota.</em> Selección de las 12 características con mayor impacto interpretable entre las
+              54 columnas del modelo lineal. La tabla completa se encuentra en
+              <code>parte_1/results/scorecard/tabla_puntos_variables.csv</code>.</p>
+          </div>
 
           <h3>Variables de riesgo e interpretabilidad</h3>
-          <figure class="lamina fig-pendiente" id="fig-permutacion">
-            <figcaption><span class="num"></span><span class="pendiente">Pendiente · Parte 1</span><span
-                class="titulo">Importancia por permutación de las variables del modelo de PD</span></figcaption>
-            <div class="cuerpo">Se generará con <code>parte_1/src/interpretabilidad.py</code> →
-              <code>parte_1/figures/importancia_permutacion.png</code></div>
+          <p>Para comparar de manera directa qué señales utiliza la red neuronal frente a la regresión logística sin
+            fragmentar artificialmente las variables que tienen indicador de dato faltante o codificación
+            <em>one-hot</em>, se aplicó <strong>importancia por permutación agrupada</strong> en el conjunto de prueba de
+            2014 (\(10\) repeticiones aleatorias con semilla <code>2026</code>). En cada repetición se permutan de forma
+            simultánea todas las columnas transformadas que pertenecen a una misma variable original (por ejemplo, el
+            valor escalado de <code>annual_inc</code> junto con su indicador de faltante, o las 7 columnas binarias de
+            <code>grade</code>), midiendo la caída media en el AUC de prueba (\(\Delta\text{AUC}\)).</p>
+          <figure class="lamina" id="fig-permutacion">
+            <figcaption><span class="num"></span><span class="titulo">Importancia por permutación agrupada (Top 15
+                variables en prueba 2014): MLP final frente a Regresión Logística</span></figcaption>
+            <img src="assets/img/figuras/parte_1/importancia_permutacion.png" width="1520" height="992" loading="lazy"
+              alt="Gráfico de barras horizontales agrupadas con la caída media del AUC en prueba (multiplicada por 100) al permutar las 15 variables más importantes. En el MLP final destacan int_rate (3,95 puntos de caída), annual_inc (3,48 puntos), plazo_meses (2,53 puntos), revol_util (0,77 puntos), open_acc (0,58 puntos) y loan_amnt (0,56 puntos).">
+            <p class="nota"><em>Nota.</em> Elaboración propia. Barras de error: \(\pm 1\) desviación estándar sobre 10
+              permutaciones independientes. Generada por <code>parte_1/src/interpretabilidad.py</code>.</p>
           </figure>
+          <div class="tabla-paper" id="tab-pd-importancia" style="--color-parte: var(--pd)">
+            <div class="titulo-tabla"><span class="num"></span><span class="titulo">Top 10 variables por importancia por
+                permutación agrupada en prueba (2014) y contraste con las hipótesis \(H_1\)–\(H_5\)</span></div>
+            <div class="contenedor" role="region" tabindex="0" aria-label="Importancia por permutación agrupada">
+              <table>
+                <thead>
+                  <tr>
+                    <th scope="col">Pos.</th>
+                    <th scope="col" class="txt">Variable original</th>
+                    <th scope="col">Cols.</th>
+                    <th scope="col">\(\Delta\text{AUC} \times 100\) (MLP)</th>
+                    <th scope="col">\(\Delta\text{AUC} \times 100\) (Logística)</th>
+                    <th scope="col" class="txt">Conexión con hipótesis y lectura financiera</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="mejor">
+                    <th scope="row">1</th>
+                    <td class="txt"><code>int_rate</code></td>
+                    <td>1</td>
+                    <td>3,95 ± 0,10</td>
+                    <td>5,02 ± 0,13</td>
+                    <td class="txt">Confirma \(H_1\): predictor #1 en ambos modelos; absorbe la señal continua de
+                      <code>grade</code>.</td>
+                  </tr>
+                  <tr class="mejor">
+                    <th scope="row">2</th>
+                    <td class="txt"><code>annual_inc</code></td>
+                    <td>2</td>
+                    <td>3,48 ± 0,10</td>
+                    <td>1,99 ± 0,07</td>
+                    <td class="txt">Confirma \(H_2\): el MLP extrae +75 % más señal no lineal del ingreso que la
+                      regresión logística.</td>
+                  </tr>
+                  <tr class="mejor">
+                    <th scope="row">3</th>
+                    <td class="txt"><code>plazo_meses</code></td>
+                    <td>1</td>
+                    <td>2,53 ± 0,09</td>
+                    <td>2,07 ± 0,09</td>
+                    <td class="txt">Confirma \(H_4\): la duración del contrato (36 vs. 60 m) es el tercer pilar de
+                      riesgo.</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">4</th>
+                    <td class="txt"><code>revol_util</code></td>
+                    <td>2</td>
+                    <td>0,77 ± 0,03</td>
+                    <td>0,44 ± 0,03</td>
+                    <td class="txt">Confirma \(H_3\): la saturación del cupo revolvente duplica su aporte en el MLP.</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">5</th>
+                    <td class="txt"><code>open_acc</code></td>
+                    <td>2</td>
+                    <td>0,58 ± 0,03</td>
+                    <td>0,23 ± 0,02</td>
+                    <td class="txt">Interacción con el número de líneas abiertas y exposición crediticia activa.</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">6</th>
+                    <td class="txt"><code>loan_amnt</code></td>
+                    <td>1</td>
+                    <td>0,56 ± 0,04</td>
+                    <td>0,22 ± 0,02</td>
+                    <td class="txt">El MLP combina monto solicitado, ingreso y plazo para medir esfuerzo de pago.</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">7</th>
+                    <td class="txt"><code>dti</code></td>
+                    <td>1</td>
+                    <td>0,48 ± 0,03</td>
+                    <td>0,51 ± 0,01</td>
+                    <td class="txt">Confirma \(H_2\): carga de deuda mensual consistente en ambos modelos.</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">8</th>
+                    <td class="txt"><code>total_acc</code></td>
+                    <td>2</td>
+                    <td>0,40 ± 0,02</td>
+                    <td>0,48 ± 0,02</td>
+                    <td class="txt">Profundidad del historial crediticio como amortiguador del riesgo.</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">9</th>
+                    <td class="txt"><code>antiguedad_empleo</code></td>
+                    <td>2</td>
+                    <td>0,38 ± 0,05</td>
+                    <td>0,21 ± 0,02</td>
+                    <td class="txt">Coherente con \(H_5\): su poder predictivo proviene del indicador de dato faltante.</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">10</th>
+                    <td class="txt"><code>installment</code></td>
+                    <td>1</td>
+                    <td>0,36 ± 0,03</td>
+                    <td>−0,08 ± 0,01</td>
+                    <td class="txt">El MLP aprovecha la cuota mensual sin sufrir la colinealidad lineal con
+                      <code>loan_amnt</code>.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="nota"><em>Nota.</em> \(\Delta\text{AUC} \times 100\) indica cuántos puntos centesimales cae el AUC
+              de prueba al permutar cada variable original (10 repeticiones). Fuente:
+              <code>parte_1/results/interpretabilidad/importancia_permutacion.csv</code>.</p>
+          </div>
+          <p>El contraste entre la tabla de permutación y las hipótesis de la Sección 5.1 explica con claridad <strong>por
+              qué el MLP supera a la regresión logística</strong>:</p>
+          <ul>
+            <li><strong>Redistribución de la señal más allá de la tasa de interés (\(H_1\) y \(H_2\)):</strong> La
+              regresión logística concentra su capacidad predictiva en <code>int_rate</code> (\(\Delta\text{AUC} = 5,02\)
+              puntos), mientras que subutiliza variables con asimetría extrema como <code>annual_inc</code>
+              (\(1,99\) puntos). Gracias a su capa oculta con activación ReLU, el MLP captura el efecto saturado del
+              ingreso anual (\(\Delta\text{AUC} = 3,48\) puntos) y sus interacciones con <code>loan_amnt</code>
+              (\(0,56\) vs. \(0,22\)) e <code>installment</code> (\(0,36\) vs. \(-0,08\)). Notablemente,
+              <code>grade</code> ocupa el puesto 14 (\(\Delta\text{AUC} = 0,18\) puntos en MLP y \(0,15\) en logística)
+              porque, una vez condicionada la predicción en la variable continua <code>int_rate</code>, la letra del
+              grado aporta solo un ajuste fino.</li>
+            <li><strong>Confirmación multivariada de \(H_3\), \(H_4\) y de la refutación parcial de \(H_5\):</strong> El
+              plazo en meses (<code>plazo_meses</code>, #3 con \(2,53\) puntos) y la utilización revolvente
+              (<code>revol_util</code>, #4 con \(0,77\) puntos) ratifican las hipótesis \(H_4\) y \(H_3\). Por su parte,
+              los tres componentes de \(H_5\) reproducen exactamente el diagnóstico descriptivo: la verificación de
+              ingresos (<code>verification_status</code>) termina en el último lugar (#21, \(\Delta\text{AUC} = 0,01\)
+              puntos) porque su correlación cruda positiva con el incumplimiento era un efecto de selección ya explicado
+              por monto y tasa; en cambio, <code>antiguedad_empleo</code> (#9, \(0,38\) puntos) y
+              <code>home_ownership</code> (#12, \(0,24\) puntos) sí aportan señal genuina a través del indicador de
+              empleo faltante (\(-2,15\) puntos en la scorecard) y la tenencia de hipoteca (\(+2,39\) puntos).</li>
+          </ul>
         </section>
 
         <!-- ===================== 6. PARTE 2 · LGD ===================== -->
@@ -909,7 +1867,8 @@
                     <th scope="row"><code>funded_amnt</code></th>
                     <td class="txt">Total amount committed to that loan</td>
                     <td class="txt">Lo desembolsado; se prefiere a <code>loan_amnt</code> y
-                      <code>funded_amnt_inv</code>.</td>
+                      <code>funded_amnt_inv</code>.
+                    </td>
                   </tr>
                   <tr>
                     <th scope="row"><code>total_rec_prncp</code></th>
@@ -1070,7 +2029,8 @@
               </table>
             </div>
             <p class="nota"><em>Nota.</em> Fuentes: <code>parte_2/results/referencia/metricas.csv</code> y
-              <code>parte_2/results/red/resumen_semillas.csv</code>.</p>
+              <code>parte_2/results/red/resumen_semillas.csv</code>.
+            </p>
           </div>
           <aside class="callout" data-tipo="nota"><strong class="etq">Observación a discutir</strong>
             En prueba, la mejora del MLP frente al modelo nulo y a la regresión lineal es pequeña en RMSE (0,0855 frente
@@ -1145,7 +2105,8 @@
               </table>
             </div>
             <p class="nota"><em>Nota.</em> Semillas 1 a 30. El modelo guardado usa la semilla 8. Fuente:
-              <code>parte_2/results/red/resumen_semillas.csv</code>.</p>
+              <code>parte_2/results/red/resumen_semillas.csv</code>.
+            </p>
           </div>
 
           <figure class="lamina" id="fig-lgd-distribucion">
@@ -1184,14 +2145,16 @@
           </div>
           <p>La EAD por defecto es el monto desembolsado multiplicado por la fracción promedio que seguía pendiente al
             incumplir, estimada en los castigados de entrenamiento y separada por plazo: 0,601 para 36 meses y 0,749
-            para 60 meses. Es coherente con la definición del LGD.</p>
-          <aside class="callout" data-tipo="alerta"><strong class="etq">PD provisional</strong>
-            Estos resultados usan la PD provisional (<code>provisional_regresion_logistica</code>), no la del modelo
-            final de la Parte 1. Deben recalcularse cuando <code>intercambio/pd_prueba.csv</code> se sobrescriba.
-          </aside>
+            para 60 meses. Es coherente con la definición del LGD. Al integrar las probabilidades definitivas del
+            <strong>MLP final de la Parte 1</strong> (<code>intercambio/pd_prueba.csv</code>, semilla 17) con las
+            predicciones de severidad de la <strong>red neuronal de la Parte 2</strong>, la pérdida esperada total del
+            portafolio de prueba asciende a <strong>US$ 154 013 735</strong> (\(14,51\,\%\) del monto desembolsado),
+            cerrando en \(+\text{US\$ } 12,81\text{ millones}\) la brecha respecto al cálculo preliminar que usaba la
+            regresión logística provisional y ubicándose a solo un \(8,4\,\%\) de la cota inferior observada en los
+            créditos castigados (US$ 168 195 586).</p>
           <div class="tabla-paper" id="tab-el" style="--color-parte: var(--el)">
-            <div class="titulo-tabla"><span class="num"></span><span class="titulo">Pérdida esperada frente a pérdida
-                observada en el conjunto de prueba (2014)</span></div>
+            <div class="titulo-tabla"><span class="num"></span><span class="titulo">Pérdida esperada (MLP final de PD ×
+                MLP de LGD × EAD) frente a pérdida observada en el conjunto de prueba (2014)</span></div>
             <div class="contenedor" role="region" tabindex="0" aria-label="Pérdida esperada en prueba">
               <table>
                 <thead>
@@ -1210,55 +2173,61 @@
                     <td>1 061 569 725</td>
                   </tr>
                   <tr class="mejor">
-                    <th scope="row">Pérdida esperada total (US$)</th>
-                    <td>141 208 624</td>
+                    <th scope="row">Pérdida esperada total (US$) · <code>mlp_final</code> × <code>red_lgd</code></th>
+                    <td>154 013 735 (14,51 % del monto)</td>
                   </tr>
                   <tr>
-                    <th scope="row">Pérdida observada, cota inferior (US$)</th>
-                    <td>168 195 586</td>
+                    <th scope="row">Pérdida observada, cota inferior: solo <em>Charged Off</em> (US$)</th>
+                    <td>168 195 586 (15,84 % del monto)</td>
                   </tr>
                   <tr>
-                    <th scope="row">Pérdida observada, cota superior (US$)</th>
-                    <td>229 530 555</td>
+                    <th scope="row">Pérdida observada, cota superior: + <em>Default</em> y <em>Late</em> con LGD = 1 (US$)</th>
+                    <td>229 530 555 (21,62 % del monto)</td>
                   </tr>
                   <tr>
-                    <th scope="row">PD media predicha</th>
-                    <td>0,196</td>
+                    <th scope="row">PD media predicha (<code>mlp_final</code>)</th>
+                    <td>0,2152 (21,52 %)</td>
                   </tr>
                   <tr>
-                    <th scope="row">Tasa real de malos</th>
-                    <td>0,262</td>
+                    <th scope="row">Tasa real de malos observada</th>
+                    <td>0,2622 (26,22 %)</td>
                   </tr>
                   <tr>
-                    <th scope="row">LGD medio predicho</th>
-                    <td>0,923</td>
+                    <th scope="row">LGD medio predicho (<code>red_lgd</code>)</th>
+                    <td>0,9226 (92,26 %)</td>
                   </tr>
                 </tbody>
               </table>
             </div>
-            <p class="nota"><em>Nota.</em> Fuente: <code>parte_2/results/perdida_esperada/resumen.json</code>. La cota
-              inferior suma la pérdida real de los castigados; la superior supone que los créditos en <em>Default</em> o
-              <em>Late</em> pierden toda su deuda pendiente.</p>
+            <p class="nota"><em>Nota.</em> Fuente: <code>parte_2/results/perdida_esperada/resumen.json</code>
+              (<code>pd_es_provisional: false</code>). La cota inferior suma la pérdida real de los castigados; la
+              superior supone que los créditos en <em>Default</em> o <em>Late (31-120 days)</em> pierden toda su deuda
+              pendiente.</p>
           </div>
           <figure class="lamina" id="fig-el-calibracion">
-            <figcaption><span class="num"></span><span class="titulo">Pérdida esperada frente a observada por grupos en
-                prueba</span></figcaption>
+            <figcaption><span class="num"></span><span class="titulo">Pérdida esperada frente a observada por deciles de
+                riesgo en el conjunto de prueba (2014)</span></figcaption>
             <img src="assets/img/figuras/parte_2/perdida_esperada/calibracion_perdida_prueba.png" width="825"
               height="825" loading="lazy"
-              alt="Pérdida esperada frente a observada, en porcentaje del monto prestado, por grupos de riesgo. Los puntos observados quedan por encima de la diagonal en los grupos de menor pérdida esperada y se acercan a ella en los de mayor pérdida. Las barras muestran la cota superior que incluye los créditos en Default y Late.">
-            <p class="nota"><em>Nota.</em> Elaboración propia. Generada por
-              <code>parte_2/src/perdida_esperada.py</code>.</p>
+              alt="Pérdida esperada frente a observada, en porcentaje del monto prestado, por los 10 deciles de riesgo en prueba 2014 usando la PD del MLP final. La tasa esperada sube monótonamente de 2,43 % en el decil 1 hasta 34,66 % en el decil 10, cruzando y alineándose con la pérdida observada de los castigados en los deciles 9 y 10.">
+            <p class="nota"><em>Nota.</em> Elaboración propia. En los deciles de mayor riesgo (grupos 9 y 10, que
+              concentran US$ 81,0 millones de la pérdida esperada total), la tasa esperada (24,36 % y 34,66 % del monto)
+              queda comprendida entre la cota inferior de castigados (22,90 % y 31,48 %) y la cota superior con
+              morosos tardíos (31,62 % y 42,34 %). Generada por <code>parte_2/src/perdida_esperada.py</code>.
+            </p>
           </figure>
         </section>
 
         <!-- ===================== 8. COMPARACIÓN JUSTA ===================== -->
         <section id="comparacion-justa">
           <h2>Comparación justa</h2>
-          <p>El enunciado exige mismos datos, presupuesto de búsqueda explícito, 30 semillas y número de parámetros.
-            Esta tabla se llena a medida que cada parte entrega sus resultados.</p>
+          <p>El enunciado exige evaluar los modelos lineales de referencia y las redes neuronales sobre exactamente los
+            mismos conjuntos de entrenamiento, validación y prueba, con el mismo preprocesador de 54 características,
+            presupuesto de búsqueda explícito, reporte del número de parámetros entrenables y evaluación con 30 semillas
+            independientes. La tabla siguiente consolida la auditoría de paridad experimental en ambas tareas.</p>
           <div class="tabla-paper" id="tab-justa">
-            <div class="titulo-tabla"><span class="num"></span><span class="titulo">Condiciones de comparación por tarea
-                y familia de modelos</span></div>
+            <div class="titulo-tabla"><span class="num"></span><span class="titulo">Condiciones de comparación justa y
+                desempeño en prueba (2014) por tarea y familia de modelos</span></div>
             <div class="contenedor" role="region" tabindex="0" aria-label="Condiciones de comparación">
               <table>
                 <thead>
@@ -1268,36 +2237,64 @@
                     <th scope="col">Parámetros</th>
                     <th scope="col">Configuraciones</th>
                     <th scope="col">Semillas</th>
+                    <th scope="col">Tiempo total</th>
+                    <th scope="col">Desempeño en prueba (2014)</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
                     <th scope="row">PD</th>
-                    <td>Regresión logística</td>
-                    <td>55</td>
+                    <td>Modelo nulo (tasa base)</td>
+                    <td>1</td>
                     <td>1</td>
                     <td>—</td>
+                    <td>&lt; 0,01 s</td>
+                    <td>AUC: 0,5000 · Brier: 0,2033</td>
                   </tr>
                   <tr>
                     <th scope="row">PD</th>
-                    <td>MLP</td>
-                    <td>5 633 (inicial)</td>
-                    <td><span class="pendiente">Pendiente</span></td>
-                    <td><span class="pendiente">Pendiente</span></td>
+                    <td>Regresión logística (\(L_2, C=0,01\))</td>
+                    <td>55</td>
+                    <td>7 (rejilla \(C\))</td>
+                    <td>— (convexo)</td>
+                    <td>5,5 s</td>
+                    <td>AUC: 0,6820 · KS: 26,51 % · Brier: 0,1831</td>
+                  </tr>
+                  <tr class="mejor">
+                    <th scope="row">PD</th>
+                    <td>MLP (54–64–1, ReLU, SGD)</td>
+                    <td>3 585</td>
+                    <td>30 (aleatoria)</td>
+                    <td>30 (1 a 30)</td>
+                    <td>817,5 s + 474,5 s</td>
+                    <td>AUC: 0,6875 ± 0,0025 (sem. 17: 0,6902 · KS: 27,73 % · Brier: 0,1792)</td>
                   </tr>
                   <tr>
                     <th scope="row">LGD</th>
-                    <td>Regresión lineal</td>
-                    <td>55</td>
+                    <td>Modelo nulo (media / mediana)</td>
+                    <td>1</td>
                     <td>1</td>
                     <td>—</td>
+                    <td>&lt; 0,01 s</td>
+                    <td>RMSE: 0,0859 (media) / 0,0811 (mediana) · MAE: 0,0775 / 0,0699</td>
                   </tr>
                   <tr>
                     <th scope="row">LGD</th>
-                    <td>MLP</td>
+                    <td>Regresión lineal (OLS recortada)</td>
+                    <td>55</td>
+                    <td>1</td>
+                    <td>— (cerrado)</td>
+                    <td>0,04 s</td>
+                    <td>RMSE: 0,0858 · MAE: 0,0758</td>
+                  </tr>
+                  <tr class="mejor">
+                    <th scope="row">LGD</th>
+                    <td>MLP (54–64–32–16–1, tanh, Adam)</td>
                     <td>6 145</td>
-                    <td>40</td>
-                    <td>30</td>
+                    <td>40 (aleatoria)</td>
+                    <td>30 (1 a 30)</td>
+                    <td>237,5 s + 108,9 s</td>
+                    <td>RMSE: 0,0855 ± 0,0005 · MAE: 0,0762 ± 0,0005</td>
                   </tr>
                 </tbody>
               </table>
@@ -1308,15 +2305,82 @@
         <!-- ===================== 9. DISCUSIÓN ===================== -->
         <section id="discusion">
           <h2>Discusión</h2>
-          <h3>¿Qué aportó la red neuronal?</h3>
-          <div class="esqueleto"><span class="pendiente">Pendiente</span> Respuesta por tarea, con base en las métricas,
-            su variabilidad entre semillas, el costo de cómputo y la interpretabilidad.</div>
+          <h3>¿Qué aportó la red neuronal en cada tarea?</h3>
+          <p>El contraste empírico entre las dos partes del trabajo muestra que la utilidad de un perceptrón multicapa
+            sobre datos tabulares depende críticamente de la estructura de la señal disponible en el momento de la
+            originación:</p>
+          <ul>
+            <li><strong>En Probabilidad de Incumplimiento (Parte 1 · PD), la red neuronal aporta una mejora real,
+                consistente y operativamente relevante:</strong> Con \(3\,585\) parámetros (una sola capa oculta de 64
+              neuronas con ReLU), el MLP supera a la regresión logística regularizada (\(55\) parámetros) en las 30
+              semillas evaluadas (rango de AUC en prueba de \([0,6822;\; 0,6905]\) frente a \(0,6820\) del modelo
+              lineal). En el modelo seleccionado por validación (semilla 17), la ganancia es de \(+0,82\) puntos de AUC,
+              \(+1,64\) puntos de Gini, \(+1,23\) puntos porcentuales en KS (\(27,73\,\%\) vs. \(26,51\,\%\)) y una
+              reducción del error de calibración esperado (ECE) de \(6,45\,\%\) a \(4,74\,\%\). Como demostró el análisis
+              de importancia por permutación, esa ventaja proviene de capturar relaciones no lineales y de saturación en
+              el ingreso anual (<code>annual_inc</code>: \(\Delta\text{AUC} = 3,48\) puntos en el MLP frente a \(1,99\)
+              en la logística) y su interacción con el monto, la cuota y el plazo, a cambio de un costo computacional de
+              \(15,8\text{ s}\) por entrenamiento individual frente a \(0,65\text{ s}\) de la regresión logística y de
+              perder la descomposición aditiva exacta por variable en la scorecard.</li>
+            <li><strong>En Pérdida Dado Incumplimiento (Parte 2 · LGD), el margen de mejora sobre el modelo lineal y el
+                modelo nulo es marginal:</strong> El MLP de tres capas ocultas (\(6\,145\) parámetros) reduce el RMSE de
+              prueba apenas de \(0,0858\) (regresión lineal) y \(0,0859\) (nulo de la media) a \(0,0855 \pm 0,0005\).
+              Esto no es una falla del algoritmo de optimización, sino una consecuencia estructural del negocio de
+              crédito de consumo sin garantía: al no existir colateral hipotecario ni prendario, la recuperación post
+              castigo depende de gestiones externas de cobranza que ocurren años después del desembolso y que son casi
+              ortogonales a las 21 variables medidas al originar, concentrando el \(47\,\%\) de los créditos castigados
+              exactamente en \(\text{LGD} = 1,0\).</li>
+          </ul>
+
           <h3>Hipótesis: confirmadas y no confirmadas</h3>
-          <div class="esqueleto"><span class="pendiente">Pendiente · Parte 1</span> Veredicto de cada una de las
-            hipótesis del análisis descriptivo.</div>
+          <p>El ciclo completo entre el análisis descriptivo sobre entrenamiento (Sección 5.1) y la interpretabilidad
+            multivariada sobre prueba (Sección 5.6) arrojó veredictos coherentes en las cinco hipótesis planteadas:</p>
+          <ul>
+            <li><strong>\(H_1\) (Confirmada — Calificación y precio del riesgo):</strong> La tasa de incumplimiento se
+              multiplica por más de seis veces entre el grado <code>A</code> (\(6,66\,\%\)) y el grado <code>G</code>
+              (\(40,15\,\%\)). En los modelos multivariados, <code>int_rate</code> es el predictor #1 absoluto
+              (\(\Delta\text{AUC} = 3,95\) puntos en MLP y \(5,02\) en logística) y absorbe la mayor parte de la
+              variación discreta de <code>grade</code>.</li>
+            <li><strong>\(H_2\) (Confirmada — Capacidad de pago y endeudamiento):</strong> Menores ingresos anuales y
+              mayores razones deuda/ingreso elevan monótonamente la mora. Además, <code>annual_inc</code> se convierte
+              en la segunda variable más importante de toda la red neuronal (\(\Delta\text{AUC} = 3,48\) puntos) y en el
+              mayor factor protector de la scorecard aditiva (\(+11,35\) puntos por desviación estándar).</li>
+            <li><strong>\(H_3\) (Confirmada — Estrés revolvente e historial adverso):</strong> La utilización del cupo
+              revolvente (<code>revol_util</code>) es la cuarta variable más influyente del MLP
+              (\(\Delta\text{AUC} = 0,77\) puntos), seguida por las consultas en los últimos 6 meses
+              (<code>inq_last_6mths</code>, \(-4,69\) puntos por desviación estándar en la scorecard).</li>
+            <li><strong>\(H_4\) (Confirmada — Horizonte contractual y propósito):</strong> El plazo de 60 frente a 36
+              meses (<code>plazo_meses</code>) es el tercer predictor global del MLP (\(\Delta\text{AUC} = 2,53\)
+              puntos), mientras que los créditos para pequeña empresa (<code>purpose = small_business</code>) registran
+              la tasa de mora más alta (\(28,02\,\%\)) y el mayor castigo puntual de la scorecard (\(-16,59\) puntos).</li>
+            <li><strong>\(H_5\) (Refutada parcialmente — Paradoja de verificación y valor del dato faltante):</strong>
+              Se refutó que estar verificado (<code>verification_status = Verified</code>) reduzca el riesgo bruto
+              (\(19,42\,\%\) vs. \(13,70\,\%\) en no verificados), revelando un sesgo de selección operativa donde
+              Lending Club verifica con mayor frecuencia solicitudes de mayor monto y tasa; por ello, una vez controlado
+              el resto de variables, <code>verification_status</code> tiene importancia nula (#21,
+              \(\Delta\text{AUC} = 0,01\) puntos). También se refutó que la antigüedad laboral reduzca linealmente la
+              mora entre 1 y 10+ años, pero se confirmó que la ausencia del dato (<code>Sin dato</code>: \(21,33\,\%\) de
+              mora y \(-2,15\) puntos en la scorecard) constituye una señal de alerta genuina.</li>
+          </ul>
+
           <h3>Aprendizajes sobre el problema</h3>
-          <div class="esqueleto"><span class="pendiente">Pendiente</span> Listado de aprendizajes que surgieron del
-            proceso de modelamiento.</div>
+          <ol>
+            <li><strong>La partición temporal exige auditar el ciclo de maduración de los contratos:</strong> Dividir por
+              fecha de originación evita mirar el futuro, pero en carteras con plazos de 36 y 60 meses induce censura
+              selectiva por la derecha en las cohortes recientes (2013–2014). Sin el diagnóstico de la Sección 3.3, la
+              brecha entre la PD predicha (\(21,52\,\%\)) y la tasa observada en los préstamos cerrados de 2014
+              (\(26,22\,\%\)) se habría malinterpretado como un defecto del modelo y no como el efecto matemático de
+              excluir el \(46,6\,\%\) de préstamos sanos que seguían <em>Current</em>.</li>
+            <li><strong>En datos tabulares financieros, más capacidad no equivale a mejor generalización:</strong> Una
+              red superficial de una capa oculta (<code>54–64–1</code>, \(3\,585\) parámetros) superó consistentemente a
+              arquitecturas profundas de hasta \(15\,361\) parámetros en PD, mientras que en LGD ningún incremento de
+              complejidad logró vencer la ausencia de variables de garantías o de gestión de cobranza.</li>
+            <li><strong>El acoplamiento PD × LGD × EAD demuestra el impacto financiero de la calibración:</strong>
+              Sustituir la PD provisional de la regresión logística (\(19,77\,\%\)) por la del MLP final (\(21,52\,\%\))
+              incrementó la reserva de pérdida esperada del portafolio de prueba de US$ 141,21 millones a
+              <strong>US$ 154,01 millones</strong>, reduciendo sustancialmente la subestimación frente a las pérdidas
+              materializadas en la cartera de 2014.</li>
+          </ol>
         </section>
 
         <!-- ===================== 10. ALUCINACIONES ===================== -->
@@ -1416,19 +2480,46 @@
         <!-- ===================== 11. REPRODUCIBILIDAD ===================== -->
         <section id="reproducibilidad">
           <h2>Reproducibilidad</h2>
-          <p>Todo el proyecto usa un único entorno virtual en Python 3.12. Los comandos se ejecutan desde
-            <code>parte_2/</code>.</p>
-          <pre><code>python -m pip install -r requirements.txt
+          <p>Todo el proyecto usa un único entorno virtual en Python 3.12 ubicado en la raíz del repositorio y fijado en
+            <code>requirements.txt</code>. La secuencia completa para reproducir desde cero el preprocesador compartido,
+            la Parte 1 (PD, Scorecard e Interpretabilidad), la Parte 2 (LGD y Pérdida Esperada) y el paquete JSON del
+            aplicativo interactivo es la siguiente:</p>
+          <pre><code># 0. Instalación de dependencias (desde la raíz del repositorio)
+python -m pip install -r requirements.txt
+
+# 1. Parte 2 (ajustar primero el preprocesador compartido de 54 columnas y entrenar LGD)
+cd parte_2
 python -m src.preprocesamiento --config configs/lgd.yaml
 python -m src.referencia_lgd   --config configs/lgd.yaml
 python -m src.red_lgd          --config configs/lgd.yaml --modo busqueda
 python -m src.red_lgd          --config configs/lgd.yaml --modo semillas
-python -m src.perdida_esperada --config configs/lgd.yaml</code></pre>
-          <p>Para una demostración de menos de dos minutos se agrega <code>--demo</code> a cualquier modo. Cualquier
-            parámetro se puede cambiar sin editar archivos, por ejemplo
-            <code>--set particion.fin_entrenamiento=2012-12-31</code>.</p>
-          <div class="esqueleto"><span class="pendiente">Pendiente · Parte 1</span> Comandos de la Parte 1 y del
-            servidor local de la aplicación.</div>
+
+# 2. Parte 1 (transformar conjuntos de PD, entrenar modelos, scorecard, permutación y exportar app)
+cd ../parte_1
+python -m src.preprocesamiento      --config configs/pd.yaml
+python -m src.regresion_logistica   --config configs/pd.yaml
+python -m src.red_neuronal          --config configs/pd.yaml --modo busqueda
+python -m src.red_neuronal          --config configs/pd.yaml --modo semillas
+python -m src.evaluacion            --config configs/pd.yaml
+python -m src.scorecard             --config configs/pd.yaml
+python -m src.interpretabilidad     --config configs/pd.yaml
+
+# 3. Pérdida esperada final (con intercambio/pd_prueba.csv del MLP final) y paquete web
+cd ../parte_2
+python -m src.perdida_esperada      --config configs/lgd.yaml
+cd ../parte_1
+python -m src.exportar_app          --config configs/pd.yaml
+
+# 4. Servidor local para visualizar el reporte y la calculadora interactiva (desde la raíz)
+cd ..
+python -m http.server 8000 --directory docs</code></pre>
+          <p>Para una demostración rápida en vivo (menos de dos minutos en sustentación) se agrega la bandera
+            <code>--demo</code> a cualquier comando sin sobrescribir los artefactos finales de producción. Cualquier
+            hiperparámetro o umbral de partición se puede modificar desde la línea de comandos sin editar código ni
+            archivos YAML mediante <code>--set</code>, por ejemplo:
+            <code>python -m src.scorecard --config configs/pd.yaml --set scorecard.pdo=40 --set scorecard.puntaje_base=700</code>
+            o <code>python -m src.red_neuronal --config configs/pd.yaml --modo entrenar --set red_neuronal.entrenar.dropout=0.25</code>.
+          </p>
         </section>
 
         <!-- ===================== 12. CONTRIBUCIONES ===================== -->

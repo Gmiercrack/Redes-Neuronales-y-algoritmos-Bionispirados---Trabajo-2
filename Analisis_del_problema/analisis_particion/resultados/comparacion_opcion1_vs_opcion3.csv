@@ -1,0 +1,11 @@
+esquema,conjunto,modelo,n_creditos,tasa_malos_obs,pd_media_pred,auc,gini,ks,brier
+Opcion 1 (Train 2007-2012),Validacion 2013,Regresion Logistica,73194,0.2295,0.1921,0.682,0.3641,0.2661,0.1662
+Opcion 1 (Train 2007-2012),Validacion 2013,"MLP (64,32)",73194,0.2295,0.182,0.6827,0.3655,0.2657,0.1665
+Opcion 1 (Train 2007-2012),Prueba 2014,Regresion Logistica,74154,0.2622,0.1967,0.6818,0.3637,0.2648,0.1832
+Opcion 1 (Train 2007-2012),Prueba 2014,"MLP (64,32)",74154,0.2622,0.1861,0.6803,0.3606,0.2615,0.1847
+Opcion 1 (Train 2007-2012),Prueba 2014-H1,Regresion Logistica,39166,0.2541,0.1976,0.6746,0.3492,0.2561,0.1799
+Opcion 1 (Train 2007-2012),Prueba 2014-H1,"MLP (64,32)",39166,0.2541,0.1862,0.6738,0.3476,0.2512,0.181
+Opcion 3 (Train 2007-2013H1),Validacion 2013-H2,Regresion Logistica,40109,0.2338,0.2113,0.6833,0.3667,0.2743,0.1672
+Opcion 3 (Train 2007-2013H1),Validacion 2013-H2,"MLP (64,32)",40109,0.2338,0.2103,0.6861,0.3721,0.2719,0.1662
+Opcion 3 (Train 2007-2013H1),Prueba 2014-H1,Regresion Logistica,39166,0.2541,0.2139,0.6829,0.3658,0.2697,0.1767
+Opcion 3 (Train 2007-2013H1),Prueba 2014-H1,"MLP (64,32)",39166,0.2541,0.215,0.6825,0.365,0.2651,0.1764

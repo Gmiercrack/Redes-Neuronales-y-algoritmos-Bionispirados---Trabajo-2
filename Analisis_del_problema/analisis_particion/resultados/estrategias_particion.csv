@@ -1,0 +1,17 @@
+estrategia,conjunto,creditos_cerrados_pd,malos_pd,pct_malos_pd,castigados_lgd,pct_castigados_con_rec
+Opcion 1 (Actual: 2012 / 2013 / 2014),Entrenamiento,90347,14729,16.3,14419,74.12
+Opcion 1 (Actual: 2012 / 2013 / 2014),Validacion,73194,16798,22.95,14836,57.1
+Opcion 1 (Actual: 2012 / 2013 / 2014),Prueba,74154,19441,26.22,13981,37.28
+Opcion 1 (Actual: 2012 / 2013 / 2014),Excluido,30835,7851,25.46,2773,11.03
+Opcion 2 (Alt A: 2011 / 2012 / 2013),Entrenamiento,40534,6395,15.78,6335,73.2
+Opcion 2 (Alt A: 2011 / 2012 / 2013),Validacion,49813,8334,16.73,8084,74.84
+Opcion 2 (Alt A: 2011 / 2012 / 2013),Prueba,73194,16798,22.95,14836,57.1
+Opcion 2 (Alt A: 2011 / 2012 / 2013),Excluido,104989,27292,26.0,16754,32.94
+Opcion 3 (Alt B: 2013H1 / 2013H2 / 2014H1),Entrenamiento,123432,22151,17.95,21177,70.27
+Opcion 3 (Alt B: 2013H1 / 2013H2 / 2014H1),Validacion,40109,9376,23.38,8078,52.96
+Opcion 3 (Alt B: 2013H1 / 2013H2 / 2014H1),Prueba,39166,9953,25.41,7719,42.92
+Opcion 3 (Alt B: 2013H1 / 2013H2 / 2014H1),Excluido,65823,17339,26.34,9035,24.41
+Opcion 4 (Alt C: 2013 / 2014H1 / 2014H2),Entrenamiento,163541,31527,19.28,29255,65.49
+Opcion 4 (Alt C: 2013 / 2014H1 / 2014H2),Validacion,39166,9953,25.41,7719,42.92
+Opcion 4 (Alt C: 2013 / 2014H1 / 2014H2),Prueba,34988,9488,27.12,6262,30.33
+Opcion 4 (Alt C: 2013 / 2014H1 / 2014H2),Excluido,30835,7851,25.46,2773,11.03

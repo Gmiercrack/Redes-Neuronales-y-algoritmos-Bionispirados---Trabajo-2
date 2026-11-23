@@ -1,0 +1,12 @@
+capas_ocultas:
+- 64
+activacion: relu
+dropout: 0.0
+optimizador: sgd
+tasa_aprendizaje: 0.009538329811469102
+penalizacion_l2: 1.7176745069098181e-06
+tamano_lote: 128
+epocas_max: 100
+paciencia: 10
+elegida_por: val_auc
+configuracion_numero: 15

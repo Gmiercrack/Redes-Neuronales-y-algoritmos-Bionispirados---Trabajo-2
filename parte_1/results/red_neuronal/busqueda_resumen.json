@@ -1,0 +1,18 @@
+{
+  "configuraciones_entrenadas": 30,
+  "segundos_totales": 817.4627228999998,
+  "metrica_seleccion": "val_auc",
+  "mejor_valor_validacion": 0.68883820960721,
+  "parametros_mejor": 3585,
+  "mejor": {
+    "capas_ocultas": [
+      64
+    ],
+    "activacion": "relu",
+    "dropout": 0.0,
+    "optimizador": "sgd",
+    "tasa_aprendizaje": 0.009538329811469102,
+    "penalizacion_l2": 1.7176745069098181e-06,
+    "tamano_lote": 128
+  }
+}

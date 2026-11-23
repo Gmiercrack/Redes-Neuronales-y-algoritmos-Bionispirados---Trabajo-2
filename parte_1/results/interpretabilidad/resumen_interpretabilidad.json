@@ -1,0 +1,88 @@
+{
+  "repeticiones": 10,
+  "semilla": 2026,
+  "auc_base_mlp": 0.6901978627346937,
+  "auc_base_logistica": 0.6819932683356428,
+  "top_10_variables": [
+    {
+      "variable": "int_rate",
+      "n_columnas": 1,
+      "mlp_delta_auc_mean": 0.039479582960340785,
+      "mlp_delta_auc_std": 0.0009885788236544148,
+      "lr_delta_auc_mean": 0.05017491374175601,
+      "lr_delta_auc_std": 0.001250954503400483
+    },
+    {
+      "variable": "annual_inc",
+      "n_columnas": 2,
+      "mlp_delta_auc_mean": 0.03484972708775528,
+      "mlp_delta_auc_std": 0.0009761279947787812,
+      "lr_delta_auc_mean": 0.01994675597626594,
+      "lr_delta_auc_std": 0.0007349044360535085
+    },
+    {
+      "variable": "plazo_meses",
+      "n_columnas": 1,
+      "mlp_delta_auc_mean": 0.02529609565590102,
+      "mlp_delta_auc_std": 0.0008778496277195144,
+      "lr_delta_auc_mean": 0.02068563484440279,
+      "lr_delta_auc_std": 0.0009245293286534519
+    },
+    {
+      "variable": "revol_util",
+      "n_columnas": 2,
+      "mlp_delta_auc_mean": 0.007694600294486565,
+      "mlp_delta_auc_std": 0.0002799917629455432,
+      "lr_delta_auc_mean": 0.0044037569682217285,
+      "lr_delta_auc_std": 0.00026579733361260566
+    },
+    {
+      "variable": "open_acc",
+      "n_columnas": 2,
+      "mlp_delta_auc_mean": 0.005847894956505872,
+      "mlp_delta_auc_std": 0.00032811860098976963,
+      "lr_delta_auc_mean": 0.002325472999807432,
+      "lr_delta_auc_std": 0.00022633705164318085
+    },
+    {
+      "variable": "loan_amnt",
+      "n_columnas": 1,
+      "mlp_delta_auc_mean": 0.0056426043732834,
+      "mlp_delta_auc_std": 0.00042850830062592414,
+      "lr_delta_auc_mean": 0.002216656065234135,
+      "lr_delta_auc_std": 0.00019054601788558918
+    },
+    {
+      "variable": "dti",
+      "n_columnas": 1,
+      "mlp_delta_auc_mean": 0.004820371601080254,
+      "mlp_delta_auc_std": 0.00025129556632720894,
+      "lr_delta_auc_mean": 0.005116412235498147,
+      "lr_delta_auc_std": 0.00014306142535521285
+    },
+    {
+      "variable": "total_acc",
+      "n_columnas": 2,
+      "mlp_delta_auc_mean": 0.003964194921854425,
+      "mlp_delta_auc_std": 0.00024886074268816764,
+      "lr_delta_auc_mean": 0.004801539399660115,
+      "lr_delta_auc_std": 0.00022472832225621517
+    },
+    {
+      "variable": "antiguedad_empleo",
+      "n_columnas": 2,
+      "mlp_delta_auc_mean": 0.003848092071145848,
+      "mlp_delta_auc_std": 0.0004559002661143641,
+      "lr_delta_auc_mean": 0.0020616233410742034,
+      "lr_delta_auc_std": 0.00016612053305958317
+    },
+    {
+      "variable": "installment",
+      "n_columnas": 1,
+      "mlp_delta_auc_mean": 0.0036458235093974833,
+      "mlp_delta_auc_std": 0.0002716001966370148,
+      "lr_delta_auc_mean": -0.0008294341230686286,
+      "lr_delta_auc_std": 0.00014762791751465442
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "configuracion_usada": "results\\red_neuronal\\mejor_configuracion.yaml",
+  "hiperparametros": {
+    "capas_ocultas": [
+      64
+    ],
+    "activacion": "relu",
+    "dropout": 0.0,
+    "optimizador": "sgd",
+    "tasa_aprendizaje": 0.009538329811469102,
+    "penalizacion_l2": 1.7176745069098181e-06,
+    "tamano_lote": 128
+  },
+  "semillas": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30
+  ],
+  "segundos_totales": 474.4848084999976,
+  "metrica_seleccion": "validacion.auc",
+  "semilla_del_modelo_guardado": 17,
+  "parametros": 3585
+}

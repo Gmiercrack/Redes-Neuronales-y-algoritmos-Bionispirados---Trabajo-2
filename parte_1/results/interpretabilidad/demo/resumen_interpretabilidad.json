@@ -1,0 +1,88 @@
+{
+  "repeticiones": 3,
+  "semilla": 2026,
+  "auc_base_mlp": 0.6807977748979372,
+  "auc_base_logistica": 0.6836851086697986,
+  "top_10_variables": [
+    {
+      "variable": "int_rate",
+      "n_columnas": 1,
+      "mlp_delta_auc_mean": 0.04678889533025432,
+      "mlp_delta_auc_std": 0.000981846466479957,
+      "lr_delta_auc_mean": 0.06003689065804226,
+      "lr_delta_auc_std": 0.0009241079728599594
+    },
+    {
+      "variable": "plazo_meses",
+      "n_columnas": 1,
+      "mlp_delta_auc_mean": 0.02106938479982734,
+      "mlp_delta_auc_std": 0.0009471368654911847,
+      "lr_delta_auc_mean": 0.022820274474961377,
+      "lr_delta_auc_std": 0.0010638286093874992
+    },
+    {
+      "variable": "annual_inc",
+      "n_columnas": 2,
+      "mlp_delta_auc_mean": 0.010752190293997876,
+      "mlp_delta_auc_std": 0.00016150913848912113,
+      "lr_delta_auc_mean": 0.014253735236921713,
+      "lr_delta_auc_std": 0.00024361195544557546
+    },
+    {
+      "variable": "dti",
+      "n_columnas": 1,
+      "mlp_delta_auc_mean": 0.007500721165319302,
+      "mlp_delta_auc_std": 0.00021117203028256465,
+      "lr_delta_auc_mean": 0.007354102348625065,
+      "lr_delta_auc_std": 0.0001939795448265942
+    },
+    {
+      "variable": "revol_util",
+      "n_columnas": 2,
+      "mlp_delta_auc_mean": 0.004372813381191036,
+      "mlp_delta_auc_std": 0.00022023187655923753,
+      "lr_delta_auc_mean": 0.00278289840568946,
+      "lr_delta_auc_std": 0.00016982832368474024
+    },
+    {
+      "variable": "home_ownership",
+      "n_columnas": 4,
+      "mlp_delta_auc_mean": 0.002896117466313538,
+      "mlp_delta_auc_std": 0.00026181638433713276,
+      "lr_delta_auc_mean": 0.0032805984718085415,
+      "lr_delta_auc_std": 0.00019021234837286564
+    },
+    {
+      "variable": "total_acc",
+      "n_columnas": 2,
+      "mlp_delta_auc_mean": 0.002893436040590817,
+      "mlp_delta_auc_std": 0.00018476536998347903,
+      "lr_delta_auc_mean": 0.00341705363049416,
+      "lr_delta_auc_std": 0.00015553098639257938
+    },
+    {
+      "variable": "antiguedad_empleo",
+      "n_columnas": 2,
+      "mlp_delta_auc_mean": 0.0028536806490292443,
+      "mlp_delta_auc_std": 8.102206385268548e-05,
+      "lr_delta_auc_mean": 0.002416739091876822,
+      "lr_delta_auc_std": 5.2888433819171496e-05
+    },
+    {
+      "variable": "grade",
+      "n_columnas": 7,
+      "mlp_delta_auc_mean": 0.0019931523290776707,
+      "mlp_delta_auc_std": 8.111245265822368e-05,
+      "lr_delta_auc_mean": 0.0005180314560611817,
+      "lr_delta_auc_std": 4.167416266113625e-05
+    },
+    {
+      "variable": "inq_last_6mths",
+      "n_columnas": 2,
+      "mlp_delta_auc_mean": 0.0017957387257496737,
+      "mlp_delta_auc_std": 4.077227777993559e-05,
+      "lr_delta_auc_mean": 0.0015981200159956115,
+      "lr_delta_auc_std": 5.4577189881828024e-05
+    }
+  ]
+}

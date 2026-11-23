@@ -1,0 +1,63 @@
+{
+  "n_entrenamiento": 90347,
+  "tasa_malos_base_pct": 16.3,
+  "H1": {
+    "hipotesis": "H1: Grado y tasa de interes",
+    "veredicto": "CONFIRMADA",
+    "monotona_grado_A_G": true,
+    "tasa_grado_A_pct": 6.66,
+    "tasa_grado_G_pct": 40.15,
+    "spearman_int_rate": 0.2118,
+    "p_value_chi2_grade": 0.0,
+    "p_value_spearman_int_rate": 0.0
+  },
+  "H2": {
+    "hipotesis": "H2: Capacidad de pago (DTI e ingreso anual)",
+    "veredicto": "CONFIRMADA",
+    "dti_bajo_pct": 13.55,
+    "dti_alto_pct": 22.27,
+    "ingreso_q1_pct": 18.99,
+    "ingreso_q5_pct": 12.3,
+    "p_value_mannwhitney_dti": 1.3686083718454436e-79,
+    "p_value_mannwhitney_annual_inc": 2.4073848161916564e-78
+  },
+  "H3": {
+    "hipotesis": "H3: Liquidez (revol_util) y alertas en buro",
+    "veredicto": "CONFIRMADA",
+    "revol_util_menor_25_pct": 11.08,
+    "revol_util_mayor_90_pct": 22.36,
+    "inq_0_pct": 13.54,
+    "inq_3mas_pct": 23.26,
+    "pub_rec_0_pct": 16.02,
+    "pub_rec_1mas_pct": 23.06,
+    "p_value_chi2_inq": 1.73384720447403e-141,
+    "p_value_chi2_pub_rec": 1.2701830220963284e-29
+  },
+  "H4": {
+    "hipotesis": "H4: Plazo contractual (36 vs 60m) y proposito",
+    "veredicto": "CONFIRMADA",
+    "tasa_36m_total_pct": 13.09,
+    "tasa_60m_total_pct": 31.95,
+    "tasa_36m_2010_pct": 10.92,
+    "tasa_60m_2010_pct": 22.51,
+    "proposito_mas_riesgoso": "small_business",
+    "proposito_mas_riesgoso_pct": 28.02,
+    "proposito_menos_riesgoso": "car",
+    "proposito_menos_riesgoso_pct": 11.41,
+    "p_value_chi2_plazo_2010": 2.2919632789295855e-61,
+    "p_value_chi2_purpose": 8.674733269243342e-144
+  },
+  "H5": {
+    "hipotesis": "H5 (Contraste): Verificacion de ingresos, empleo y vivienda",
+    "veredicto": "REFUTADA PARCIALMENTE (paradoja en verificacion y efecto debil en empleo)",
+    "not_verified_pct": 13.7,
+    "verified_pct": 19.42,
+    "empleo_menor_1a_pct": 15.81,
+    "empleo_10mas_pct": 16.93,
+    "empleo_sin_dato_pct": 21.33,
+    "mortgage_pct": 15.4,
+    "rent_pct": 17.07,
+    "p_value_chi2_verification": 9.201851366467483e-90,
+    "p_value_chi2_home": 5.320055141365014e-10
+  }
+}
