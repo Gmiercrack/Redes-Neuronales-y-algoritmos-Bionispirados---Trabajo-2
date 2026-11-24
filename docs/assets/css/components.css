@@ -44,12 +44,24 @@ figure.lamina .nota, .tabla-paper .nota { font: .8rem/1.45 var(--f-ui); color: v
 .tabla-paper caption { text-align: left; }
 .tabla-paper thead { border-block: 1.5px solid var(--tinta); }
 .tabla-paper tbody { border-block-end: 1.5px solid var(--tinta); }
-.tabla-paper th, .tabla-paper td { padding: .45rem .75rem; text-align: right; white-space: nowrap; }
+.tabla-paper th, .tabla-paper td {
+  padding: .45rem .65rem;
+  text-align: right;
+  white-space: normal;
+  overflow-wrap: break-word;
+  vertical-align: middle;
+}
+.tabla-paper thead th { vertical-align: bottom; }
 .tabla-paper th:first-child, .tabla-paper td:first-child { text-align: left; }
 .tabla-paper tbody th { font-weight: 600; }
 .tabla-paper tbody tr:hover { background: color-mix(in oklab, var(--filete) 30%, transparent); }
 .tabla-paper tr.mejor td, .tabla-paper tr.mejor th { font-weight: 700; color: var(--color-parte, var(--acento)); }
 .tabla-paper td.txt, .tabla-paper th.txt { text-align: left; white-space: normal; }
+.tabla-paper code { overflow-wrap: anywhere; }
+@container (width < 680px) {
+  .tabla-paper table { font-size: .82rem; line-height: 1.35; }
+  .tabla-paper th, .tabla-paper td { padding: .38rem .48rem; }
+}
 .tabla-paper tr.grupo-fila th {
   background: color-mix(in oklab, var(--papel) 72%, var(--lamina));
   color: var(--acento);
@@ -127,10 +139,13 @@ figure.lamina .nota, .tabla-paper .nota { font: .8rem/1.45 var(--f-ui); color: v
 .alucinacion > summary { cursor: pointer; padding: var(--e3); font-weight: 600; list-style: none; display: flex; gap: var(--e2); align-items: center; }
 .alucinacion > summary::before { content: "▸"; transition: rotate .2s; }
 .alucinacion[open] > summary::before { rotate: 90deg; }
-.alucinacion .cat { margin-left: auto; font: 700 .64rem var(--f-ui); letter-spacing: .1em; text-transform: uppercase; border: 1px solid var(--tenue); color: var(--tenue); padding: .2em .5em; }
-.alucinacion dl { margin: 0; padding: 0 var(--e3) var(--e3); display: grid; grid-template-columns: 9.5rem 1fr; }
+.alucinacion .cat { margin-left: auto; font: 700 .64rem var(--f-ui); letter-spacing: .1em; text-transform: uppercase; border: 1px solid var(--tenue); color: var(--tenue); padding: .2em .5em; white-space: nowrap; }
+.alucinacion dl { margin: 0; padding: 0 var(--e3) var(--e3); display: grid; grid-template-columns: 9.5rem 1fr; column-gap: var(--e3); }
 .alucinacion dt, .alucinacion dd { margin: 0; padding: .45rem 0; border-top: 1px solid var(--filete); }
+.alucinacion dd { min-inline-size: 0; }
 .alucinacion dt { font: 700 .72rem var(--f-ui); letter-spacing: .08em; text-transform: uppercase; color: var(--tenue); }
+.alucinacion .evidencia-medios { grid-column: 1 / -1; border-top: 0; padding-top: .25rem; display: grid; gap: var(--e2); }
+.alucinacion .evidencia-img { display: block; inline-size: 100%; height: auto; border: 1px solid var(--filete); border-radius: var(--radio); background: var(--papel); }
 @media (width < 600px) { .alucinacion dl { grid-template-columns: 1fr; } .alucinacion dt { border-bottom: 0; padding-bottom: 0; } .alucinacion dd { border-top: 0; padding-top: 0; } }
 
 /* ---------- Pipeline ---------- */

@@ -1,5 +1,5 @@
 """
-Modelo de referencia de baja complejidad para PD: Modelo Nulo y Regresión Logística.
+Modelo de referencia de baja complejidad para PD: Regresión Logística.
 
 Evalúa una rejilla explícita del parámetro de regularización L2 (C) seleccionando
 el ganador exclusivamente sobre validación temporal (2013), registra presupuesto de
@@ -66,17 +66,6 @@ def cargar_conjuntos(config: dict, demo: bool) -> tuple[dict[str, pd.DataFrame],
     if not entradas:
         raise ValueError("No se encontraron columnas de entrada con prefijo num__ o cat__.")
     return tablas, entradas
-
-
-def evaluar_modelo_nulo(tablas: dict[str, pd.DataFrame]) -> tuple[float, list[dict]]:
-    """Evalúa el modelo constante que predice siempre la tasa base de entrenamiento."""
-    p_base = float(tablas["entrenamiento"]["malo"].astype(int).mean())
-    filas = []
-    for c in CONJUNTOS:
-        y = tablas[c]["malo"].astype(int).to_numpy()
-        pred = np.full(len(y), p_base, dtype=float)
-        filas.append({"modelo": "modelo_nulo", "conjunto": c, **calcular_metricas(y, pred)})
-    return p_base, filas
 
 
 def ejecutar_rejilla(
@@ -148,8 +137,6 @@ def ejecutar_rejilla(
 def guardar_resultados(
     tablas: dict[str, pd.DataFrame],
     entradas: list[str],
-    p_base: float,
-    filas_nulo: list[dict],
     tabla_grid: pd.DataFrame,
     best_lr: LogisticRegression,
     best_c: float,
@@ -160,12 +147,7 @@ def guardar_resultados(
     """Guarda tabla de rejilla, métricas, coeficientes, joblib, predicciones y resumen JSON."""
     out_dir.mkdir(parents=True, exist_ok=True)
     filas_lr = []
-    metricas_por_conjunto = {"modelo_nulo": {}, "regresion_logistica": {}}
-
-    for fila in filas_nulo:
-        metricas_por_conjunto["modelo_nulo"][fila["conjunto"]] = {
-            k: v for k, v in fila.items() if k not in {"modelo", "conjunto"}
-        }
+    metricas_por_conjunto = {"regresion_logistica": {}}
 
     for c in CONJUNTOS:
         X_c = tablas[c][entradas].to_numpy(dtype=float)
@@ -182,7 +164,7 @@ def guardar_resultados(
                 "pd_logistica": pred_c,
             }).to_parquet(out_dir / f"predicciones_{c}.parquet", index=False)
 
-    tabla_metricas = pd.DataFrame(filas_nulo + filas_lr)
+    tabla_metricas = pd.DataFrame(filas_lr)
     tabla_grid.to_csv(out_dir / "rejilla_c.csv", index=False)
     tabla_metricas.to_csv(out_dir / "metricas.csv", index=False)
 
@@ -213,7 +195,6 @@ def guardar_resultados(
         "parametros_entrenables": parametros,
         "intercepto": float(best_lr.intercept_[0]),
         "segundos_totales_rejilla": segundos_totales,
-        "tasa_base_entrenamiento": p_base,
         "metricas": metricas_por_conjunto,
     }
     with open(out_dir / "resumen_regresion_logistica.json", "w", encoding="utf-8") as f:
@@ -235,10 +216,9 @@ def main() -> None:
         out_dir = out_dir / "demo"
 
     tablas, entradas = cargar_conjuntos(config, args.demo)
-    p_base, filas_nulo = evaluar_modelo_nulo(tablas)
     tabla_grid, best_lr, best_c, seg_tot = ejecutar_rejilla(tablas, entradas, config, args.demo)
     tabla_metricas, resumen = guardar_resultados(
-        tablas, entradas, p_base, filas_nulo, tabla_grid, best_lr, best_c, seg_tot, config, out_dir
+        tablas, entradas, tabla_grid, best_lr, best_c, seg_tot, config, out_dir
     )
 
     pd.set_option("display.width", 140)
@@ -249,7 +229,7 @@ def main() -> None:
     print(tabla_grid[["configuracion", "C", "iteraciones", "segundos", "val_auc", "val_brier", "val_log_loss"]]
           .to_string(index=False, float_format=lambda v: f"{v:.4f}"))
     print(f"\nMejor C (en validación): {best_c} | Salida: {out_dir}")
-    print("\nMétricas finales (Modelo Nulo vs Regresión Logística):")
+    print("\nMétricas finales (Regresión Logística):")
     print(tabla_metricas[["modelo", "conjunto", "n", "auc", "gini", "ks", "brier", "log_loss"]]
           .to_string(index=False, float_format=lambda v: f"{v:.4f}"))
 

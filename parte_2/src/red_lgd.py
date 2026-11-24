@@ -206,7 +206,7 @@ def guardar_modelo(resultado: dict, hp: dict, entradas: list[str], semilla: int,
 
 def guardar_salidas_modelo(resultado: dict, hp: dict, entradas: list[str], semilla: int,
                            datos: dict, prueba_ids: pd.DataFrame, config: dict,
-                           resultados: Path, figuras: Path, media_entrenamiento: float) -> None:
+                           resultados: Path, figuras: Path) -> None:
     """Modelo, predicciones de prueba, historial y figuras de un modelo entrenado."""
     modelo = resultado["modelo"]
     guardar_modelo(resultado, hp, entradas, semilla, resultados / "modelo_red.pt")
@@ -219,7 +219,7 @@ def guardar_salidas_modelo(resultado: dict, hp: dict, entradas: list[str], semil
     for c in config["red"]["conjuntos_figuras"]:
         y = datos[c][1].numpy().astype(float)
         pred = predecir(modelo, datos[c][0])
-        figura_distribucion(y, pred, media_entrenamiento, c,
+        figura_distribucion(y, pred, c,
                             figuras / f"distribucion_lgd_{c}.png",
                             etiqueta="Predicción: red neuronal")
         cal = calibracion_por_deciles(y, pred)
@@ -235,7 +235,7 @@ def filas_metricas(evaluacion: dict, extra: dict) -> list[dict]:
 # =============================================================================
 # Modos
 # =============================================================================
-def modo_entrenar(config, datos, entradas, prueba_ids, resultados, figuras, demo, media):
+def modo_entrenar(config, datos, entradas, prueba_ids, resultados, figuras, demo):
     cfg = config["red"]["entrenar"]
     hp = {k: cfg[k] for k in CLAVES_HP}
     epocas = config["red"]["demo"]["epocas_max"] if demo else cfg["epocas_max"]
@@ -247,7 +247,7 @@ def modo_entrenar(config, datos, entradas, prueba_ids, resultados, figuras, demo
          "epocas_corridas": res["epocas_corridas"], "segundos": res["segundos"]}))
     tabla.to_csv(resultados / "metricas_entrenar.csv", index=False)
     guardar_salidas_modelo(res, hp, entradas, cfg["semilla"], datos, prueba_ids,
-                           config, resultados, figuras, media)
+                           config, resultados, figuras)
     return tabla
 
 
@@ -307,7 +307,7 @@ def modo_busqueda(config, datos, resultados, demo):
     return tabla, resumen
 
 
-def modo_semillas(config, datos, entradas, prueba_ids, resultados, figuras, demo, media):
+def modo_semillas(config, datos, entradas, prueba_ids, resultados, figuras, demo):
     cfg = config["red"]["semillas"]
     ruta_conf = Path(cfg["configuracion"])
     if demo:
@@ -352,7 +352,7 @@ def modo_semillas(config, datos, entradas, prueba_ids, resultados, figuras, demo
                    "semillas": list(semillas), "segundos_totales": total,
                    "semilla_del_modelo_guardado": mejor[1]}, f, ensure_ascii=False, indent=2)
     guardar_salidas_modelo(mejor[2], hp, entradas, mejor[1], datos, prueba_ids,
-                           config, resultados, figuras, media)
+                           config, resultados, figuras)
     return resumen, origen
 
 
@@ -378,7 +378,6 @@ def main() -> None:
 
     torch.set_num_threads(max(1, torch.get_num_threads()))
     datos, entradas, prueba_ids = preparar_datos(config, args.demo)
-    media = float(datos["entrenamiento"][1].mean())
     pd.set_option("display.width", 140)
     fmt = lambda v: f"{v:.4f}"
 
@@ -386,7 +385,7 @@ def main() -> None:
           f"entrenamiento: {len(datos['entrenamiento'][1]):,} créditos, {len(entradas)} entradas")
     if args.modo == "entrenar":
         tabla = modo_entrenar(config, datos, entradas, prueba_ids, resultados, figuras,
-                              args.demo, media)
+                              args.demo)
         print(tabla[["conjunto", "mae", "rmse", "lgd_medio_predicho", "parametros",
                      "mejor_epoca", "segundos"]].to_string(index=False, float_format=fmt))
     elif args.modo == "busqueda":
@@ -398,7 +397,7 @@ def main() -> None:
                              "parametros"]].to_string(index=False, float_format=fmt))
     else:
         resumen, origen = modo_semillas(config, datos, entradas, prueba_ids, resultados,
-                                        figuras, args.demo, media)
+                                        figuras, args.demo)
         print(f"\nConfiguración: {origen}")
         print(resumen.to_string(float_format=fmt))
     print(f"\nResultados en {resultados}  |  figuras en {figuras}")

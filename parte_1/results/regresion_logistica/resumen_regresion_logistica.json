@@ -4,41 +4,8 @@
   "metrica_seleccion": "auc",
   "parametros_entrenables": 55,
   "intercepto": -1.6871873741070365,
-  "segundos_totales_rejilla": 5.4949727000021085,
-  "tasa_base_entrenamiento": 0.16302699591574707,
+  "segundos_totales_rejilla": 5.0786129999905825,
   "metricas": {
-    "modelo_nulo": {
-      "entrenamiento": {
-        "n": 90347,
-        "tasa_malos_obs": 0.16302699591574707,
-        "pd_media_pred": 0.1630269959157471,
-        "auc": 0.5,
-        "gini": 0.0,
-        "ks": 0.0,
-        "brier": 0.13644919451843407,
-        "log_loss": 0.44465541389253266
-      },
-      "validacion": {
-        "n": 73194,
-        "tasa_malos_obs": 0.22949968576659288,
-        "pd_media_pred": 0.16302699591574707,
-        "auc": 0.5,
-        "gini": 0.0,
-        "ks": 0.0,
-        "brier": 0.18124819849563475,
-        "log_loss": 0.5533964925779904
-      },
-      "prueba": {
-        "n": 74154,
-        "tasa_malos_obs": 0.26217061790328233,
-        "pd_media_pred": 0.16302699591574707,
-        "auc": 0.5,
-        "gini": 0.0,
-        "ks": 0.0,
-        "brier": 0.2032666427923008,
-        "log_loss": 0.6068420867035572
-      }
-    },
     "regresion_logistica": {
       "entrenamiento": {
         "n": 90347,

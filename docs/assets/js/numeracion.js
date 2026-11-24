@@ -13,7 +13,11 @@
       const n = i + 1;
       const nodo = el.querySelector(g.destino);
       if (nodo) nodo.textContent = g.soloNumero ? String(n) : `${g.nombre} ${n}`;
-      if (el.id) etiquetas.set(el.id, `${g.nombre} ${n}`);
+      if (el.id) {
+        etiquetas.set(el.id, `${g.nombre} ${n}`);
+      } else {
+        console.warn(`[numeracion] elemento ${g.nombre} ${n} sin atributo id`);
+      }
     });
   }
 

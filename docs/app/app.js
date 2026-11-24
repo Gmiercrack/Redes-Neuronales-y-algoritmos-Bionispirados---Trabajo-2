@@ -1,17 +1,46 @@
-// ============================================================================
-// Polyfills condicionales con detección de características (solo navegadores antiguos)
-// ============================================================================
-if (typeof HTMLButtonElement !== 'undefined' && !('commandForElement' in HTMLButtonElement.prototype)) {
-  import('https://esm.run/invokers-polyfill').catch(() => {});
-}
-if (typeof HTMLElement !== 'undefined' && !Object.hasOwn(HTMLElement.prototype, 'popover')) {
-  import('https://unpkg.com/@oddbird/popover-polyfill@latest/dist/popover.min.js').catch(() => {});
-}
+(function (globalScope) {
+  'use strict';
 
-// ============================================================================
-// Motor matemático puro (idéntico al preprocesador, MLP y Scorecard de Python)
-// ============================================================================
-export function calcularCuotaFrancesa(monto, tasaAnualPct, plazoMeses) {
+  function instalarRespaldoComandosLocal() {
+    if (typeof document === 'undefined') return;
+    if ('commandForElement' in HTMLButtonElement.prototype) return;
+    document.addEventListener('click', (e) => {
+      const btn = e.target?.closest?.('button[commandfor][command]');
+      if (!btn) return;
+      const targetId = btn.getAttribute('commandfor');
+      const cmd = btn.getAttribute('command');
+      const target = targetId ? document.getElementById(targetId) : null;
+      if (!target) return;
+      if (cmd === 'show-modal' && typeof target.showModal === 'function' && !target.open) {
+        target.showModal();
+      } else if (cmd === 'close' && typeof target.close === 'function' && target.open) {
+        target.close();
+      } else if (cmd === 'toggle-popover') {
+        if (typeof target.togglePopover === 'function') {
+          target.togglePopover();
+        } else {
+          target.classList.toggle(':popover-open');
+        }
+      }
+    });
+  }
+
+  // ============================================================================
+  // Polyfills condicionales con detección de características (solo navegadores antiguos)
+  // ============================================================================
+  if (typeof HTMLButtonElement !== 'undefined' && !('commandForElement' in HTMLButtonElement.prototype)) {
+    import('https://esm.run/invokers-polyfill').catch(() => {
+      instalarRespaldoComandosLocal();
+    });
+  }
+  if (typeof HTMLElement !== 'undefined' && !Object.hasOwn(HTMLElement.prototype, 'popover')) {
+    import('https://unpkg.com/@oddbird/popover-polyfill@latest/dist/popover.min.js').catch(() => {});
+  }
+
+  // ============================================================================
+  // Motor matemático puro (idéntico al preprocesador, MLP y Scorecard de Python)
+  // ============================================================================
+  function calcularCuotaFrancesa(monto, tasaAnualPct, plazoMeses) {
   const r = (tasaAnualPct / 100) / 12;
   if (!(monto > 0) || !(plazoMeses > 0)) return 0;
   if (r <= 0) return Math.round((monto / plazoMeses) * 100) / 100;
@@ -19,7 +48,7 @@ export function calcularCuotaFrancesa(monto, tasaAnualPct, plazoMeses) {
   return Math.round(monto * ((r * factor) / (factor - 1)) * 100) / 100;
 }
 
-export function preprocesarPerfil(perfil, prep) {
+function preprocesarPerfil(perfil, prep) {
   const { columnas, medianas, indicadores_indices, media, escala } = prep.numericas;
   const vecNum = [];
   const faltantes = [];
@@ -65,7 +94,7 @@ function activar(valor, tipo) {
   throw new Error(`Activación no soportada: ${tipo}`);
 }
 
-export function predecirMLP(x, modeloMlp) {
+function predecirMLP(x, modeloMlp) {
   let h = x;
   const { capas, activacion } = modeloMlp;
   for (let idx = 0; idx < capas.length; idx += 1) {
@@ -86,7 +115,7 @@ export function predecirMLP(x, modeloMlp) {
   return 1 / (1 + Math.exp(-z));
 }
 
-export function predecirLogistica(x, lr) {
+function predecirLogistica(x, lr) {
   let z = lr.intercepto;
   for (let i = 0; i < lr.coeficientes.length; i += 1) {
     z += lr.coeficientes[i] * x[i];
@@ -95,12 +124,12 @@ export function predecirLogistica(x, lr) {
   return 1 / (1 + Math.exp(-zClip));
 }
 
-export function probAPuntaje(p, scorecard) {
+function probAPuntaje(p, scorecard) {
   const pClip = Math.max(1e-15, Math.min(1 - 1e-15, p));
   return scorecard.A + scorecard.B * Math.log((1 - pClip) / pClip);
 }
 
-export function calcularPercentil(puntaje, percentiles101) {
+function calcularPercentil(puntaje, percentiles101) {
   if (!Array.isArray(percentiles101) || percentiles101.length < 2) return 50;
   if (puntaje <= percentiles101[0]) return 0;
   const ultimo = percentiles101.length - 1;
@@ -117,7 +146,7 @@ export function calcularPercentil(puntaje, percentiles101) {
   return 50;
 }
 
-export function clasificarBanda(puntaje, bandas) {
+function clasificarBanda(puntaje, bandas) {
   for (let i = 0; i < bandas.length; i += 1) {
     if (puntaje <= bandas[i].puntaje_max || i === bandas.length - 1) {
       return bandas[i];
@@ -126,7 +155,7 @@ export function clasificarBanda(puntaje, bandas) {
   return bandas[0];
 }
 
-export function calcularContribucionesVariables(x, modelo) {
+function calcularContribucionesVariables(x, modelo) {
   const { regresion_logistica: lr, mapa_variables: mapa } = modelo;
   return mapa.map((grupo) => {
     let deltaPuntos = 0;
@@ -141,7 +170,7 @@ export function calcularContribucionesVariables(x, modelo) {
   });
 }
 
-export function evaluarPerfilCompleto(perfil, modelo) {
+function evaluarPerfilCompleto(perfil, modelo) {
   const x = preprocesarPerfil(perfil, modelo.preprocesador);
   const pdMlp = predecirMLP(x, modelo.mlp_pd);
   const puntajeMlp = probAPuntaje(pdMlp, modelo.scorecard);
@@ -202,6 +231,7 @@ function configurarValidacionPostInteraccion(form, anunciador) {
     if (el.validity.valueMissing) return 'Este campo es obligatorio.';
     if (el.validity.rangeUnderflow) return `Ingresa un valor mayor o igual a ${el.min}.`;
     if (el.validity.rangeOverflow) return `Ingresa un valor menor o igual a ${el.max}.`;
+    if (el.validity.stepMismatch) return `Ajusta el valor a un incremento válido (paso ${el.step || 1}).`;
     if (el.validity.badInput) return 'Ingresa un número válido.';
     return 'Revisa el valor ingresado.';
   };
@@ -297,7 +327,29 @@ function configurarValidacionPostInteraccion(form, anunciador) {
     syncAria(el, false);
   }, true);
 
-  return { syncTodos: () => form.querySelectorAll('input, select').forEach((el) => syncAria(el, false)) };
+  return {
+    syncTodos: () => form.querySelectorAll('input, select').forEach((el) => syncAria(el, false)),
+    syncCampo: (el) => syncAria(el, false),
+  };
+}
+
+async function cargarModeloWeb() {
+  const esFile = typeof window !== 'undefined' && window.location?.protocol === 'file:';
+  if (!esFile && typeof fetch === 'function') {
+    try {
+      const resp = await fetch('data/modelo_web.json', { cache: 'no-cache' });
+      if (resp.ok) return await resp.json();
+    } catch (err) {
+      console.warn('No se pudo leer data/modelo_web.json vía fetch; intentando respaldo local.', err);
+    }
+  }
+  if (globalScope.__MODELO_WEB__) {
+    return globalScope.__MODELO_WEB__;
+  }
+  if (esFile) {
+    throw new Error('Falta data/modelo_web.js para ejecución local sin servidor.');
+  }
+  throw new Error('No se pudo cargar ni data/modelo_web.json ni data/modelo_web.js.');
 }
 
 // ============================================================================
@@ -310,24 +362,49 @@ async function iniciarAplicacion() {
   const form = document.getElementById('form-perfil');
   const bannerError = document.getElementById('banner-error');
 
-  let modelo;
+  const validador = configurarValidacionPostInteraccion(form, anunciador);
+  let modelo = null;
+  let ultimoEvaluado = null;
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    validador.syncTodos();
+    if (!form.checkValidity()) {
+      const primero = form.querySelector('input:invalid, select:invalid, textarea:invalid');
+      if (primero) {
+        const detalles = primero.closest('details');
+        if (detalles && !detalles.open) {
+          detalles.open = true;
+        }
+        primero.focus();
+        anunciador.textContent = 'Hay campos por corregir antes de validar el perfil.';
+      }
+      return;
+    }
+    if (!modelo) {
+      if (bannerError) bannerError.hidden = false;
+      anunciador.textContent = 'No se ha cargado el modelo de la Scorecard.';
+      return;
+    }
+    actualizarResultados();
+    const res = ultimoEvaluado.res;
+    anunciador.textContent =
+      `Perfil válido. Puntaje Scorecard ${fmtNum.format(res.puntajeMlp)} puntos, PD ${fmtPct.format(res.pdMlp * 100)} por ciento, Banda D${res.banda.banda}.`;
+    document.getElementById('resultados-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
   try {
-    const resp = await fetch('data/modelo_web.json', { cache: 'no-cache' });
-    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-    modelo = await resp.json();
+    modelo = await cargarModeloWeb();
   } catch (err) {
     if (bannerError) bannerError.hidden = false;
-    console.error('Error cargando modelo_web.json:', err);
+    console.error('Error cargando el modelo Scorecard:', err);
     return;
   }
-
-  const validador = configurarValidacionPostInteraccion(form, anunciador);
 
   // Estado
   let presetActivoId = 'perfil_medio';
   let perfilBase = null;
   let evaluacionBase = null;
-  let ultimoEvaluado = null;
 
   const chkSinAntig = document.getElementById('chk-sin-antiguedad');
   const chkAutoCuota = document.getElementById('chk-auto-cuota');
@@ -390,7 +467,6 @@ async function iniciarAplicacion() {
     } else {
       inpAntig.disabled = false;
       inpAntig.setAttribute('required', '');
-      if (inpAntig.value.trim() === '') inpAntig.value = '5';
     }
     if (chkAutoCuota.checked) {
       const monto = Number(document.getElementById('inp-loan_amnt').value) || 0;
@@ -431,7 +507,9 @@ async function iniciarAplicacion() {
     for (const [clave, slider] of Object.entries(mapaSliders)) {
       const el = form.elements.namedItem(clave);
       if (!el || !slider) continue;
-      const val = Number(el.value);
+      const texto = String(el.value ?? '').trim();
+      if (texto === '') continue;
+      const val = Number(texto);
       if (Number.isFinite(val)) {
         slider.value = String(Math.min(Number(slider.max), Math.max(Number(slider.min), val)));
         const lblVal = document.getElementById(`val-sld-${clave}`);
@@ -792,6 +870,19 @@ async function iniciarAplicacion() {
     cargarPreset(presetActivoId || 'perfil_medio');
   });
 
+  chkSinAntig.addEventListener('change', () => {
+    if (!chkSinAntig.checked && inpAntig.value.trim() === '') {
+      inpAntig.value = '5';
+    }
+    validador.syncCampo(inpAntig);
+  });
+
+  chkAutoCuota.addEventListener('change', () => {
+    sincronizarCamposDependientes();
+    validador.syncCampo(inpCuota);
+    validador.syncCampo(inpFondeo);
+  });
+
   // Eventos del formulario principal
   form.addEventListener('input', () => {
     sincronizarCamposDependientes();
@@ -805,24 +896,6 @@ async function iniciarAplicacion() {
     actualizarResultados();
   });
 
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    validador.syncTodos();
-    if (!form.checkValidity()) {
-      const primero = form.querySelector(':invalid');
-      if (primero) {
-        primero.focus();
-        anunciador.textContent = 'Hay campos por corregir antes de validar el perfil.';
-      }
-      return;
-    }
-    actualizarResultados();
-    const res = ultimoEvaluado.res;
-    anunciador.textContent =
-      `Perfil válido. Puntaje Scorecard ${fmtNum.format(res.puntajeMlp)} puntos, PD ${fmtPct.format(res.pdMlp * 100)} por ciento, Banda D${res.banda.banda}.`;
-    document.getElementById('resultados-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
-  });
-
   // Sliders y botones What-If sincronizados en dos vías
   for (const [clave, slider] of Object.entries(mapaSliders)) {
     slider.addEventListener('input', () => {
@@ -832,6 +905,7 @@ async function iniciarAplicacion() {
       const lblVal = document.getElementById(`val-sld-${clave}`);
       if (lblVal) lblVal.textContent = ETIQUETAS_SLIDERS[clave](Number(slider.value));
       sincronizarCamposDependientes();
+      validador.syncCampo(el);
       actualizarResultados();
     });
   }
@@ -886,6 +960,23 @@ async function iniciarAplicacion() {
   cargarPreset('perfil_medio');
 }
 
+const engine = {
+  calcularCuotaFrancesa,
+  preprocesarPerfil,
+  predecirMLP,
+  predecirLogistica,
+  probAPuntaje,
+  calcularPercentil,
+  clasificarBanda,
+  calcularContribucionesVariables,
+  evaluarPerfilCompleto,
+};
+
+globalScope.ScorecardEngine = engine;
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = engine;
+}
+
 if (typeof document !== 'undefined') {
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', iniciarAplicacion);
@@ -893,3 +984,4 @@ if (typeof document !== 'undefined') {
     iniciarAplicacion();
   }
 }
+})(typeof globalThis !== 'undefined' ? globalThis : window);

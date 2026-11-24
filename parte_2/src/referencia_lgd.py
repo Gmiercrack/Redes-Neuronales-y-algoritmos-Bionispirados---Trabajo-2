@@ -1,13 +1,9 @@
 """
-Línea base y modelo de referencia para el LGD (pérdida dado incumplimiento).
+Modelo de referencia para el LGD (pérdida dado incumplimiento).
 
-Modelos:
-  - nulo_media:   predice siempre el LGD promedio de entrenamiento.
-                  Es la mejor constante posible para el RMSE.
-  - nulo_mediana: predice siempre la mediana de entrenamiento.
-                  Es la mejor constante posible para el MAE.
-  - lineal:       regresión lineal por mínimos cuadrados ordinarios con las
-                  variables de entrada transformadas.
+Modelo:
+  - lineal: regresión lineal por mínimos cuadrados ordinarios con las
+            variables de entrada transformadas.
 
 Lee los parquet que produce src/preprocesamiento.py, ajusta con entrenamiento
 y evalúa en entrenamiento, validación y prueba.
@@ -19,7 +15,6 @@ Uso (desde parte_2/):
 from __future__ import annotations
 
 import argparse
-import json
 import time
 from pathlib import Path
 
@@ -92,7 +87,7 @@ def _estilo(ax) -> None:
     ax.set_axisbelow(True)
 
 
-def figura_distribucion(y: np.ndarray, pred_lineal: np.ndarray, media: float,
+def figura_distribucion(y: np.ndarray, pred_lineal: np.ndarray,
                         conjunto: str, ruta: Path,
                         etiqueta: str = "Predicción: regresión lineal") -> None:
     bins = np.linspace(min(0.0, pred_lineal.min()), max(1.0, pred_lineal.max()), 51)
@@ -104,8 +99,6 @@ def figura_distribucion(y: np.ndarray, pred_lineal: np.ndarray, media: float,
             edgecolor=FONDO, linewidth=0.8, label="LGD observado")
     ax.hist(pred_lineal, bins=bins, weights=pesos_p, color=NARANJA, alpha=0.75,
             edgecolor=FONDO, linewidth=0.8, label=etiqueta)
-    ax.axvline(media, color=TEXTO_2, linestyle="--", linewidth=1.2,
-               label=f"Predicción: modelo nulo (media = {media:.3f})")
     ax.set_xlabel("LGD", color=TEXTO, fontsize=10)
     ax.set_ylabel("Porcentaje de créditos (%)", color=TEXTO, fontsize=10)
     ax.set_title(f"Distribución del LGD observado y predicho ({conjunto})",
@@ -159,11 +152,6 @@ def ejecutar(config: dict) -> pd.DataFrame:
 
     # --- Ajuste (solo con entrenamiento) ------------------------------------
     t0 = time.perf_counter()
-    media = float(np.mean(y["entrenamiento"]))
-    mediana = float(np.median(y["entrenamiento"]))
-    t_nulo = time.perf_counter() - t0
-
-    t0 = time.perf_counter()
     lineal = LinearRegression().fit(X["entrenamiento"], y["entrenamiento"])
     t_lineal = time.perf_counter() - t0
 
@@ -171,13 +159,9 @@ def ejecutar(config: dict) -> pd.DataFrame:
         pred = lineal.predict(Xc)
         return np.clip(pred, 0, 1) if cfg["recortar_prediccion_lineal"] else pred
 
-    predictores = {
-        "nulo_media": lambda Xc: np.full(len(Xc), media),
-        "nulo_mediana": lambda Xc: np.full(len(Xc), mediana),
-        "lineal": predecir_lineal,
-    }
-    parametros = {"nulo_media": 1, "nulo_mediana": 1, "lineal": len(entradas) + 1}
-    tiempos = {"nulo_media": t_nulo, "nulo_mediana": t_nulo, "lineal": t_lineal}
+    predictores = {"lineal": predecir_lineal}
+    parametros = {"lineal": len(entradas) + 1}
+    tiempos = {"lineal": t_lineal}
 
     # --- Evaluación ----------------------------------------------------------
     filas, predicciones = [], {}
@@ -194,22 +178,19 @@ def ejecutar(config: dict) -> pd.DataFrame:
     # --- Figuras y calibración ----------------------------------------------
     for c in cfg["conjuntos_figuras"]:
         pred_lin = predicciones[("lineal", c)]
-        figura_distribucion(y[c], pred_lin, media, c,
+        figura_distribucion(y[c], pred_lin, c,
                             figuras / f"distribucion_lgd_{c}.png")
         cal = calibracion_por_deciles(y[c], pred_lin)
         cal.to_csv(resultados / f"calibracion_lineal_{c}.csv", index=False)
         figura_calibracion(cal, c, figuras / f"calibracion_lineal_{c}.png")
 
-    # --- Modelos y predicciones de prueba ------------------------------------
+    # --- Modelo y predicciones de prueba -------------------------------------
     joblib.dump({"modelo": lineal, "entradas": entradas,
                  "recortar_prediccion": cfg["recortar_prediccion_lineal"]},
                 resultados / "modelo_lineal.joblib")
-    with open(resultados / "modelo_nulo.json", "w", encoding="utf-8") as f:
-        json.dump({"media": media, "mediana": mediana}, f, indent=2)
     pd.DataFrame({
         "id": datos["prueba"]["id"],
         "lgd": y["prueba"],
-        "pred_nulo_media": predicciones[("nulo_media", "prueba")],
         "pred_lineal": predicciones[("lineal", "prueba")],
     }).to_parquet(resultados / "predicciones_prueba.parquet", index=False)
 

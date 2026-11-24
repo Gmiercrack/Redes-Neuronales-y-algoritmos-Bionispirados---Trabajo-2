@@ -1,253 +1,196 @@
 # Trabajo 2 — Redes neuronales para datos tabulares (¿me prestas?)
 
-Curso Redes Neuronales y Algoritmos Bioinspirados, Universidad Nacional de Colombia, semestre 2026-02.
+**Curso:** Redes Neuronales y Algoritmos Bioinspirados · Semestre 2026-02  
+**Institución:** Universidad Nacional de Colombia, Sede Medellín — Facultad de Minas  
+**Docente:** Juan David Ospina Arango  
+**Autores:** Gian Carlo Mier Estrada (Parte 1 · PD, Scorecard y App) · Nestor Enrique Mendoza Rueda (Parte 2 · LGD y Pérdida Esperada)
 
-- **Parte 1:** probabilidad de incumplimiento (PD), un problema de clasificación binaria.
-- **Parte 2:** pérdida dado incumplimiento (LGD), un problema de regresión.
-- **Pérdida esperada:** combina las dos partes.
+- **Reporte técnico interactivo (GitHub Pages):** https://quique1405.github.io/Entrega-2_Algoritmos_Bio-Inspirados/
+- **Simulador interactivo de Scorecard (GitHub Pages):** https://quique1405.github.io/Entrega-2_Algoritmos_Bio-Inspirados/app/
+- **Repositorio:** https://github.com/Quique1405/Entrega-2_Algoritmos_Bio-Inspirados
 
-Este documento recoge las decisiones tomadas hasta ahora. Las que afectan a las dos partes están en la sección [Decisiones compartidas](#decisiones-compartidas-entre-pd-y-lgd).
+---
+
+## Resumen del problema y resultados finales
+
+Estimamos el riesgo de crédito de consumo sin garantía de **Lending Club** al momento de la aprobación del préstamo combinando tres componentes:
+
+$$
+E[L]_i = PD_i \cdot LGD_i \cdot EAD_i
+$$
+
+- **Parte 1 (PD):** probabilidad de incumplimiento (clasificación binaria).
+- **Parte 2 (LGD):** pérdida dado incumplimiento sobre créditos castigados (regresión acotada en $[0, 1]$).
+- **Integración ($E[L]$):** pérdida esperada del portafolio de prueba de 2014 ($n = 74\,154$ créditos; monto desembolsado US$ $1\,061\,569\,725$).
+
+### Resumen de métricas en el conjunto de prueba (2014)
+
+| Tarea | Modelo | Parámetros | Presupuesto / Semillas | Resultado en prueba (2014) |
+|---|---|---:|---|---|
+| **PD (Parte 1)** | Regresión logística ($L_2, C=0{,}01$) | 55 | 7 config. (rejilla $C$) · determinista | $\text{AUC} = 0{,}6820$ · $\text{Gini} = 0{,}3640$ · $\text{KS} = 26{,}51\%$ · $\text{Brier} = 0{,}1831$ |
+| **PD (Parte 1)** | MLP (`54–64–1`, ReLU, SGD) | 3 585 | 30 config. aleatorias · 30 semillas | $\text{AUC} = 0{,}6875 \pm 0{,}0025$ (semilla 17: $0{,}6902$ · $\text{KS} = 27{,}73\%$ · $\text{Brier} = 0{,}1792$) |
+| **Scorecard** | $P_0 = 600$, $\theta_0 = 19{:}1$, $\text{PDO} = 20$ | — | Escala log-odds ($A=515{,}04,\; B=28{,}85$) | Monotonía estricta en 10 deciles: D1 ($50{,}39\%$) a D10 ($7{,}58\%$), razón $6{,}65\times$ |
+| **LGD (Parte 2)** | Regresión lineal (OLS recortada) | 55 | 1 config. · solución cerrada | $\text{RMSE} = 0{,}0858$ · $\text{MAE} = 0{,}0758$ |
+| **LGD (Parte 2)** | MLP (`54–64–32–16–1`, tanh, Adam) | 6 145 | 40 config. aleatorias · 30 semillas | $\text{RMSE} = 0{,}0855 \pm 0{,}0005$ · $\text{MAE} = 0{,}0762 \pm 0{,}0005$ |
+| **Pérdida esperada** | `mlp_final` $\times$ `red_lgd` $\times$ `EAD` | — | Fracción pendiente por plazo (36m: $0{,}601$, 60m: $0{,}749$) | **$E[L]_{\text{total}} = \text{US\$ } 154\,013\,735$** ($14{,}51\%$ del monto; rango obs.: US$ $168{,}2\text{M}$–$229{,}5\text{M}$) |
 
 ---
 
 ## Estructura del repositorio
 
-```
+```text
 .
 ├── README.md
-├── requirements.txt              # librerías con versiones fijas (todo el proyecto)
-├── .gitignore                    # excluye data/raw/ y entornos virtuales
+├── requirements.txt                         # dependencias con versiones fijas (Python 3.12)
+├── .gitignore                               # excluye data/raw/, .venv/ y temporales pesados
 ├── data/
-│   ├── LCDataDictionary.xlsx     # diccionario de variables (hoja LoanStats)
-│   └── raw/loan.csv              # NO está en el repositorio: se descarga de Kaggle
-├── intercambio/                  # comunicación entre las partes 1 y 2
-│   ├── LEEME.md                  # formato del archivo de PD
-│   └── pd_prueba.csv             # PD de cada crédito de prueba (la escribe la parte 1)
-└── parte_2/                      # LGD
-    ├── configs/lgd.yaml          # todas las decisiones del preprocesamiento, comentadas
-    ├── src/preprocesamiento.py
-    ├── src/referencia_lgd.py     # línea base (modelo nulo) y regresión lineal
-    ├── src/red_lgd.py            # perceptrón multicapa: búsqueda, semillas, entrenamiento
-    ├── src/pd_provisional.py     # PD provisional mientras la parte 1 no entrega la suya
-    ├── src/perdida_esperada.py   # E[L] = PD * LGD * EAD con la PD del archivo de intercambio
-    ├── data/processed/           # salidas del preprocesamiento (los poblacion_*.parquet
-    │                             # no se suben: se regeneran con el preprocesamiento)
-    └── reports/preprocesamiento/ # tablas de verificación en CSV
+│   ├── LCDataDictionary.xlsx                # diccionario oficial de variables (hoja LoanStats)
+│   └── raw/loan.csv                         # NO se sube a Git (442 MB); descargable de Kaggle
+├── Analisis_del_problema/
+│   ├── explicacion_problema.md              # formulación conceptual y auditoría de variables
+│   ├── analisis_particion/
+│   │   ├── auditoria_particion.py           # auditoría empírica de censura y maduración (2007–2015)
+│   │   └── analisis_y_auditoria_particion.md
+│   └── analisis_descriptivo/
+│       ├── descriptivo.py                   # diagnóstico crudo y contraste visual de hipótesis H1–H5
+│       ├── hipotesis_riesgo_resultados.md
+│       ├── figuras/                         # figuras H1–H5
+│       └── resultados/                      # resumen_hipotesis.json y tablas CSV
+├── scripts/
+│   └── graficas_particion.py                # genera las 4 figuras editoriales de partición en docs/
+├── parte_1/                                 # Probabilidad de Incumplimiento (PD), Scorecard e Interpretabilidad
+│   ├── configs/pd.yaml                      # configuración unificada de la Parte 1
+│   ├── data/processed/                      # pd_{entrenamiento,validacion,prueba}.parquet + preprocesador
+│   ├── src/
+│   │   ├── preprocesamiento.py              # aplica el preprocesador compartido de 54 columnas
+│   │   ├── regresion_logistica.py           # rejilla explícita de regularización L2 (C)
+│   │   ├── red_neuronal.py                  # MLP en PyTorch: --modo entrenar | busqueda | semillas
+│   │   ├── evaluacion.py                    # ROC, AUC, Gini, KS, Brier, Log-Loss, ECE y calibración
+│   │   ├── scorecard.py                     # transformación P0/odds/PDO, bandas y puntos aditivos
+│   │   ├── interpretabilidad.py             # importancia por permutación agrupada (21 variables)
+│   │   └── exportar_app.py                  # exporta docs/app/data/modelo_web.{json,js} y valida paridad
+│   ├── results/                             # métricas, modelos guardados, semillas, scorecard y permutación
+│   └── figures/                             # 7 gráficas de Parte 1
+├── parte_2/                                 # Pérdida Dado Incumplimiento (LGD) y Pérdida Esperada (E[L])
+│   ├── configs/lgd.yaml                     # configuración unificada de la Parte 2
+│   ├── data/processed/                      # lgd_{entrenamiento,validacion,prueba}.parquet + preprocesador
+│   ├── src/
+│   │   ├── preprocesamiento.py              # ajusta y guarda el preprocesador compartido de 54 columnas
+│   │   ├── referencia_lgd.py                # regresión lineal de referencia
+│   │   ├── red_lgd.py                       # MLP fraccional en PyTorch: --modo entrenar | busqueda | semillas
+│   │   ├── pd_provisional.py                # utilidad histórica (ya sustituida por PD final de Parte 1)
+│   │   └── perdida_esperada.py              # integra PD × LGD × EAD sobre la prueba 2014
+│   ├── results/                             # métricas, modelos guardados y pérdida esperada definitiva
+│   └── figures/                             # figuras de LGD y calibración de pérdida esperada
+├── intercambio/
+│   ├── LEEME.md                             # contrato de intercambio entre Parte 1 y Parte 2
+│   └── pd_prueba.csv                        # PD definitiva del MLP final (semilla 17) sobre prueba 2014
+└── docs/                                    # Sitio estático listo para GitHub Pages (/docs)
+    ├── .nojekyll                            # desactiva Jekyll para despliegue estático directo
+    ├── index.html                           # reporte técnico completo (HTML + CSS + JS + KaTeX)
+    ├── assets/                              # estilos, scripts de numeración/citas y todas las figuras PNG
+    └── app/                                 # simulador interactivo de Scorecard (HTML/CSS/JS puro)
+        ├── index.html
+        ├── app.css
+        ├── app.js
+        └── data/                            # modelo_web.json + modelo_web.js (paridad < 10^-5)
 ```
 
-Los datos crudos y el diccionario están en la raíz porque los usan las dos partes.
+---
 
-## Cómo ejecutar
+## Cómo reproducir el proyecto
 
-1. Instalar las librerías, desde la raíz:
-   ```bash
-   python -m pip install -r requirements.txt
-   ```
-2. Descargar `loan.csv` del conjunto [Credit Risk Analysis](https://www.kaggle.com/datasets/ranadeep/credit-risk-dataset) y guardarlo en `data/raw/loan.csv`. El archivo no se sube al repositorio por su tamaño.
-3. Correr el preprocesamiento de la parte 2, desde `parte_2/`:
-   ```bash
-   cd parte_2
-   python -m src.preprocesamiento --config configs/lgd.yaml
-   ```
-4. Ajustar la línea base y la regresión lineal, también desde `parte_2/`:
-   ```bash
-   python -m src.referencia_lgd --config configs/lgd.yaml
-   ```
-   Resultados en `parte_2/results/referencia/` (métricas, calibración, modelos guardados) y figuras en `parte_2/figures/referencia/`.
-5. Red neuronal, también desde `parte_2/`, en este orden:
-   ```bash
-   python -m src.red_lgd --config configs/lgd.yaml --modo busqueda   # búsqueda aleatoria de hiperparámetros
-   python -m src.red_lgd --config configs/lgd.yaml --modo semillas   # mejor configuración con 30 semillas
-   ```
-   Para una prueba rápida de una sola configuración: `--modo entrenar`. Para una demostración de menos de 2 minutos, agregar `--demo` a cualquier modo. Resultados en `parte_2/results/red/` y figuras en `parte_2/figures/red/`.
-6. Pérdida esperada, también desde `parte_2/`:
-   ```bash
-   python -m src.pd_provisional --config configs/lgd.yaml     # solo mientras no exista la PD de la parte 1
-   python -m src.perdida_esperada --config configs/lgd.yaml
-   ```
-   Cuando la parte 1 sobrescriba `intercambio/pd_prueba.csv`, basta repetir la segunda línea. Resultados en `parte_2/results/perdida_esperada/`.
+Todo el proyecto corre en un único entorno virtual de **Python 3.12** con versiones fijas en `requirements.txt`.
 
-Cualquier parámetro de la configuración se puede cambiar sin editar archivos:
+### 0. Instalación del entorno (desde la raíz)
 
 ```bash
-python -m src.preprocesamiento --config configs/lgd.yaml --set particion.fin_entrenamiento=2012-12-31
+python -m pip install -r requirements.txt
 ```
 
-Hay un modo de demostración con una muestra aleatoria de los datos: `--muestra 0.1`.
+### Ruta rápida desde el repositorio clonado (sin descargar `loan.csv` de 442 MB)
+
+Los archivos preprocesados (`parte_1/data/processed/pd_*.parquet`, `parte_2/data/processed/lgd_*.parquet`), el preprocesador compartido (`preprocesador.joblib`), `intercambio/pd_prueba.csv` y los modelos entrenados ya están versionados en Git, por lo que puedes ejecutar directamente los modelos, la evaluación, la scorecard, la exportación web o el servidor local:
+
+```bash
+# 1. Parte 2: LGD (referencia lineal y MLP)
+cd parte_2
+python -m src.referencia_lgd      --config configs/lgd.yaml
+python -m src.red_lgd             --config configs/lgd.yaml --modo busqueda
+python -m src.red_lgd             --config configs/lgd.yaml --modo semillas
+
+# 2. Parte 1: PD, evaluación, scorecard e interpretabilidad
+cd ../parte_1
+python -m src.regresion_logistica --config configs/pd.yaml
+python -m src.red_neuronal        --config configs/pd.yaml --modo busqueda
+python -m src.red_neuronal        --config configs/pd.yaml --modo semillas
+python -m src.evaluacion          --config configs/pd.yaml
+python -m src.scorecard           --config configs/pd.yaml
+python -m src.interpretabilidad   --config configs/pd.yaml
+
+# 3. Integración E[L] = PD × LGD × EAD y actualización del aplicativo web
+cd ../parte_2
+python -m src.perdida_esperada    --config configs/lgd.yaml
+cd ../parte_1
+python -m src.exportar_app        --config configs/pd.yaml
+
+# 4. Levantar reporte técnico y aplicativo web localmente (un solo comando desde la raíz)
+cd ..
+python -m http.server 8000 --directory docs
+```
+
+Luego abre en el navegador:
+- Reporte técnico: `http://localhost:8000/`
+- Simulador de Scorecard: `http://localhost:8000/app/`
+
+*(El simulador también funciona abriendo directamente `docs/app/index.html` vía `file://` gracias a la carga dual `modelo_web.js` + `modelo_web.json`.)*
+
+### Ruta completa desde cero (con datos crudos de Kaggle)
+
+Si deseas regenerar el preanálisis y los archivos `.parquet` desde el archivo original:
+1. Descarga `loan.csv` del conjunto [Credit Risk Analysis](https://www.kaggle.com/datasets/ranadeep/credit-risk-dataset) y guárdalo en `data/raw/loan.csv`.
+2. Ejecuta desde la raíz del repositorio antes de los pasos de modelamiento:
+
+```bash
+python Analisis_del_problema/analisis_particion/auditoria_particion.py
+python scripts/graficas_particion.py
+python Analisis_del_problema/analisis_descriptivo/descriptivo.py
+cd parte_2
+python -m src.preprocesamiento --config configs/lgd.yaml
+cd ../parte_1
+python -m src.preprocesamiento --config configs/pd.yaml
+```
+
+### Demostración en vivo (`--demo` y `--set`)
+
+- **Modo demostración (< 2 minutos):** añade `--demo` a cualquier comando de entrenamiento, búsqueda, semillas, evaluación, scorecard o interpretabilidad sin sobrescribir los artefactos finales de producción.
+- **Modificación en vivo sin editar código ni YAML (`--set`):**
+
+```bash
+# Cambiar parámetros de la Scorecard por línea de comandos (desde parte_1/)
+python -m src.scorecard --config configs/pd.yaml --set scorecard.pdo=40 --set scorecard.puntaje_base=700
+
+# Entrenar una corrida individual del MLP con otros hiperparámetros (desde parte_1/)
+python -m src.red_neuronal --config configs/pd.yaml --modo entrenar --demo --set red_neuronal.entrenar.dropout=0.25
+
+# Modificar parámetros de la red de LGD (desde parte_2/)
+python -m src.red_lgd --config configs/lgd.yaml --modo entrenar --demo --set red.entrenar.tasa_aprendizaje=0.005
+```
 
 ---
 
-## Datos
+## Decisiones metodológicas compartidas
 
-- **Fuente:** `loan.csv`, créditos de consumo de Lending Club.
-- **Tamaño:** 887 379 créditos y 74 columnas.
-- **Período:** fecha de originación (`issue_d`) entre junio de 2007 y diciembre de 2015.
-- **Significado de las columnas:** `data/LCDataDictionary.xlsx`, hoja `LoanStats`. El enunciado exige citar el significado de cada variable desde esta fuente.
+- **Caso de uso antifuga:** estimación al momento de aprobar el crédito (`issue_d`). Solo ingresan **21 variables de entrada** conocidas en la solicitud/aprobación (13 numéricas originales, 3 derivadas y 5 categóricas) transformadas en **54 características** mediante el mismo `preprocesador.joblib` ajustado exclusivamente sobre entrenamiento (2007–2012, $n = 90\,347$). Las **14 columnas post-desembolso** (`prohibidas` en `pd.yaml` y `lgd.yaml`) están bloqueadas por verificación automática.
+- **Codificación de desenlace (`loan_status`):**
+  - `0` (Bueno): `Fully Paid`, `Does not meet the credit policy. Status:Fully Paid`.
+  - `1` (Malo en PD): `Charged Off`, `Default`, `Late (31-120 days)`, `Does not meet the credit policy. Status:Charged Off`.
+  - `LGD`: calculado únicamente sobre los **46 009 castigados** (`Charged Off` y su variante de política) como $\text{LGD} = 1 - (\texttt{recoveries} - \texttt{collection\_recovery\_fee}) / (\texttt{funded\_amnt} - \texttt{total\_rec\_prncp})$, acotado a $[0, 1]$.
+  - `NA` (Excluidos por desenlace aún abierto): `Current`, `Issued`, `In Grace Period`, `Late (16-30 days)`.
+- **Partición cronológica por `issue_d`:** Entrenamiento `2007–2012` ($90\,347$ PD · $14\,419$ LGD), Validación `2013` ($73\,194$ PD · $14\,836$ LGD) y Prueba `2014` ($74\,154$ PD · $13\,981$ LGD). Se excluye `2015` por censura severa del $93\%$ de créditos todavía vigentes.
+- **Intercambio entre partes:** `parte_1/src/red_neuronal.py --modo semillas` escribe las probabilidades definitivas del `mlp_final` (semilla 17) en [`intercambio/pd_prueba.csv`](intercambio/pd_prueba.csv), las cuales consume `parte_2/src/perdida_esperada.py` para obtener $E[L]_{\text{total}} = \text{US\$ } 154\,013\,735$ (`pd_es_provisional: false`).
 
-## Variable de desenlace
+## Nota sobre Git y GitHub Pages
 
-Codificación del enunciado a partir de `loan_status`:
-
-| Estado | Código |
-|---|---|
-| `Fully Paid` | 0 |
-| `Does not meet the credit policy. Status:Fully Paid` | 0 |
-| `Charged Off` | 1 |
-| `Default` | 1 |
-| `Late (31-120 days)` | 1 |
-| `Does not meet the credit policy. Status:Charged Off` | 1 |
-| `Current`, `Issued`, `In Grace Period`, `Late (16-30 days)` | NA (se excluyen) |
-
----
-
-## Decisiones compartidas entre PD y LGD
-
-La pérdida esperada multiplica, para cada crédito, la PD de la parte 1 y el LGD de la parte 2:
-
-$$
-E[L] = PD \cdot LGD \cdot EAD
-$$
-
-Para que esa multiplicación tenga sentido, los dos modelos deben describir y partir los créditos de la misma manera. Además, el enunciado exige que todos los modelos de una misma tarea usen el mismo preprocesamiento y las mismas particiones.
-
-### Caso de uso
-
-La pérdida esperada se estima **al momento de aprobar el crédito**. Por eso solo se usan como entradas variables conocidas en la solicitud o la aprobación.
-
-### Partición temporal
-
-La partición se hace por fecha de originación (`issue_d`), con fechas inclusivas:
-
-| Conjunto | Años | Castigados (LGD) |
-|---|---|---:|
-| Entrenamiento | 2007–2012 | 14 419 |
-| Validación | 2013 | 14 836 |
-| Prueba | 2014 | 13 981 |
-| Excluido | 2015 | 2 773 |
-
-**Motivo: censura.** Los datos se recogieron antes de que terminaran muchos créditos, así que no se observa su desenlace final. La fracción de créditos sin desenlace conocido crece con el año de originación:
-
-| Años | Sin desenlace conocido |
-|---|---:|
-| 2007–2012 | 3 % |
-| 2013 | 46 % |
-| 2014 | 69 % |
-| 2015 | 93 % |
-
-En 2015, los pocos créditos con desenlace son sobre todo los que fallaron muy rápido. Por eso su tasa de malos está inflada, y sus castigos son tan recientes que la cobranza probablemente no había terminado, lo que también infla su LGD. Por estas razones 2015 se excluye de todo ajuste y evaluación. 2014 también tiene censura importante, y eso queda como limitación.
-
-Fuente: `parte_2/reports/preprocesamiento/conteos_por_anio.csv`.
-
-**Alternativa descartada:** entrenamiento hasta 2013 y 2014 partido en validación y prueba. Da más datos de entrenamiento (29 255 castigados), pero validación y prueba saldrían del año con más censura después de 2015.
-
-### Variables de entrada
-
-La lista está en `parte_2/configs/lgd.yaml`, sección `variables`:
-
-- **13 numéricas originales.** Ejemplos: `loan_amnt`, `annual_inc`, `dti`, `revol_util`.
-- **3 derivadas:**
-  - `plazo_meses`, de `term`;
-  - `antiguedad_empleo`, de `emp_length`;
-  - `meses_historial_credito`, de `earliest_cr_line` e `issue_d`.
-- **5 categóricas:** `grade`, `home_ownership`, `verification_status`, `purpose` e `initial_list_status`.
-
-**Supuesto abierto.** `grade` e `int_rate` las asigna el propio modelo de riesgo de Lending Club. Se incluyen bajo el supuesto de que se evalúa un crédito ya tarificado. Si el caso de uso es decidir sin esa información, hay que retirarlas de **las dos partes**.
-
-**Columnas prohibidas.** Las columnas que solo se conocen después de otorgar el crédito (pagos, recuperaciones, fechas de pago) están listadas en `prohibidas`. Usarlas como entrada sería fuga de información. El código se detiene si alguna aparece entre las entradas.
-
-### Preprocesamiento
-
-- **Faltantes numéricos:** se imputan con la mediana y se agrega un indicador 0/1 de "era faltante".
-- **Escalado:** estandarización, con media 0 y desviación estándar 1.
-- **Categóricas:** codificación *one-hot*, es decir, una columna 0/1 por categoría. Las categorías con menos del 0.5 % de los créditos se agrupan en una sola.
-- **Ajuste:** los parámetros (medianas, medias, desviaciones y categorías) se ajustan con **todos los créditos de entrenamiento con desenlace conocido**, buenos y malos: 90 347 en total (75 618 buenos y 14 729 malos). Validación y prueba no intervienen en el ajuste.
-
-El preprocesador ajustado está en `parte_2/data/processed/preprocesador.joblib`. Se puede cargar con `joblib.load` y aplicar con `.transform(...)` para obtener exactamente las mismas 54 variables transformadas en la parte 1. Las funciones `limpiar` y `a_tabla_numerica` de `parte_2/src/preprocesamiento.py` preparan el `DataFrame` antes de transformarlo.
-
-### Intercambio de resultados
-
-La pérdida esperada se calcula al momento de aprobar, cuando no se sabe si el crédito va a incumplir. Por eso la parte 2 necesita la PD de **todos los créditos de prueba con desenlace conocido** (buenos y malos), no solo de los castigados. El formato está en [`intercambio/LEEME.md`](intercambio/LEEME.md): un CSV `intercambio/pd_prueba.csv` con columnas `id`, `pd` y, opcionalmente, `modelo`.
-
-Para entrenar el modelo de PD con exactamente el mismo preprocesamiento, el preprocesamiento genera `parte_2/data/processed/poblacion_{entrenamiento,validacion,prueba}.parquet`: todos los créditos con desenlace conocido, ya transformados, con la variable objetivo `malo`. Las columnas están descritas en el mismo `LEEME.md`.
-
-Mientras la parte 1 no entregue su PD, el archivo tiene una PD **provisional** (regresión logística), marcada con `modelo = provisional_regresion_logistica`.
-
----
-
-## Parte 2: LGD
-
-### Definición
-
-El LGD es la fracción de la deuda pendiente que se pierde después del proceso de cobro. Se construye a partir de columnas del conjunto de datos; las definiciones citadas son las del diccionario:
-
-$$
-EAD_{\text{default}} = \texttt{funded\_amnt} - \texttt{total\_rec\_prncp}
-$$
-
-$$
-LGD = 1 - \frac{\texttt{recoveries} - \texttt{collection\_recovery\_fee}}{EAD_{\text{default}}}
-$$
-
-| Campo | Definición en el diccionario | Motivo |
-|---|---|---|
-| `funded_amnt` | total amount committed to that loan | Lo desembolsado. Se prefiere a `loan_amnt` (lo solicitado) y a `funded_amnt_inv` (solo la parte de los inversionistas). |
-| `total_rec_prncp` | principal received to date | Capital devuelto antes del incumplimiento. |
-| `recoveries` | post charge off gross recovery | Lo cobrado después del castigo. |
-| `collection_recovery_fee` | post charge off collection fee | Se resta porque lo retiene la agencia de cobranza. |
-
-No se usa `out_prncp` (saldo pendiente) como denominador, porque vale 0 después del castigo.
-
-### Qué créditos se usan
-
-Solo los **castigados** (`Charged Off` y `Does not meet the credit policy. Status:Charged Off`): créditos declarados incobrables y enviados a cobranza. Las recuperaciones se registran después del castigo. Los créditos en `Default` o `Late (31-120 days)` cuentan como malos para la PD, pero todavía no tienen proceso de cobro, y su LGD saldría igual a 1 por construcción.
-
-| Estado | Créditos | Con alguna recuperación |
-|---|---:|---:|
-| `Charged Off` | 45 248 | 53 % |
-| `Does not meet the credit policy. Status:Charged Off` | 761 | 64 % |
-| `Default` | 1 219 | 0 % |
-| `Late (31-120 days)` | 11 591 | 0 % |
-
-Fuente: `parte_2/reports/preprocesamiento/recuperaciones_por_estado.csv`.
-
-### Resultados del preprocesamiento
-
-- **Créditos castigados en el archivo:** 46 009, ninguno descartado por exposición no positiva ni por datos faltantes. Los 2 773 de 2015 quedan fuera por la partición.
-- **Recorte:** 38 casos con LGD menor que 0 se llevaron a 0; ninguno era mayor que 1.
-- **Distribución** (sobre los 46 009): media 0.930 y mediana 0.981. El 47 % de los `Charged Off` no tiene ninguna recuperación, así que su LGD es exactamente 1: la distribución acumula casi la mitad de los créditos en ese valor. Los créditos de Lending Club no tienen garantía, así que se recupera poco.
-
-### Limitaciones de la variable objetivo
-
-- No hay fechas de las recuperaciones, así que no se pueden descontar en el tiempo.
-- No se incluyen intereses no cobrados ni costos internos de cobranza.
-- Los créditos castigados poco antes de recoger los datos pueden no haber terminado su cobranza, lo que infla su LGD. Por eso se excluye 2015; 2014 sigue parcialmente afectado.
-
-### Plan de modelamiento
-
-1. **Línea base:** el modelo nulo, que predice siempre el LGD promedio de entrenamiento.
-2. **Modelo de referencia:** una regresión lineal.
-3. **Red neuronal:** un perceptrón multicapa con salida sigmoide, para que la predicción quede en $[0, 1]$. Se comparan dos funciones de pérdida derivadas por máxima verosimilitud:
-   - error cuadrático medio, que corresponde a un modelo gaussiano;
-   - entropía cruzada binaria con objetivo fraccional (*fractional logit*; Papke y Wooldridge, 1996).
-4. **Evaluación:**
-   - MAE y RMSE, con 30 semillas para la red;
-   - comparación de la distribución de las predicciones con la observada;
-   - calibración por deciles.
-5. **Pérdida esperada:** con la PD de la parte 1, sobre todos los créditos de prueba con desenlace conocido. Reglas de EAD disponibles (`perdida_esperada.ead` en `lgd.yaml`):
-   - `monto`: el monto desembolsado `funded_amnt`. Supone incumplimiento inmediato y sobreestima la pérdida.
-   - `fraccion_pendiente` (por defecto): ese monto multiplicado por la fracción promedio del monto que seguía pendiente al incumplir, estimada en los castigados de entrenamiento y separada por plazo. Es coherente con la definición del LGD.
-
-   La pérdida observada se reporta como un rango: los castigados aportan su pérdida real; los créditos en `Default` o `Late (31-120 days)` no tienen cobranza registrada, así que la cota superior supone que pierden toda su deuda pendiente.
-
----
-
-## Pendientes
-
-- [x] Fijar las fechas de corte de la partición temporal.
-- [ ] Confirmar si `grade` e `int_rate` se mantienen como variables de entrada.
-- [x] Definir el archivo de intercambio de PD (`intercambio/LEEME.md`).
-- [ ] La parte 1 sobrescribe `intercambio/pd_prueba.csv` con su PD real.
-
-## Nota sobre Git
-
-`data/raw/` está en `.gitignore`. Antes de cada commit, conviene revisar con `git status` que `loan.csv` no aparezca: GitHub rechaza archivos de más de 100 MB.
+- `data/raw/` está ignorado en `.gitignore` para no subir `loan.csv` (442 MB, superior al límite de 100 MB de GitHub).
+- Todo el reporte y la aplicación viven en `docs/` con rutas relativas y `docs/.nojekyll`, listos para publicarse en **Settings → Pages → Branch: `main` / `/docs`**.

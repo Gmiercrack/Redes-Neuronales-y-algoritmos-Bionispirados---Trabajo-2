@@ -228,17 +228,11 @@ preprocesamiento:
 
 
 # -----------------------------------------------------------------------------
-# LÍNEA BASE Y MODELO DE REFERENCIA (src/referencia_lgd.py)
+# MODELO DE REFERENCIA (src/referencia_lgd.py)
 # -----------------------------------------------------------------------------
-# Se ajustan solo con entrenamiento y se evalúan en los tres conjuntos.
-#   nulo_media:   predice siempre el LGD promedio de entrenamiento (la mejor
-#                 constante para el RMSE). Equivale a una regresión lineal con
-#                 solo intercepto. No lo exige el enunciado: sirve para medir
-#                 cuánto aportan las variables de entrada.
-#   nulo_mediana: predice siempre la mediana de entrenamiento (la mejor
-#                 constante para el MAE).
-#   lineal:       regresión lineal por mínimos cuadrados ordinarios. Es el
-#                 modelo de baja complejidad que pide el enunciado.
+# Se ajusta solo con entrenamiento y se evalúa en los tres conjuntos.
+#   lineal: regresión lineal por mínimos cuadrados ordinarios. Es el modelo
+#           de baja complejidad que pide el enunciado.
 #
 # La codificación one-hot conserva todas las categorías, así que las columnas
 # de cada variable categórica suman 1 y son colineales con el intercepto.

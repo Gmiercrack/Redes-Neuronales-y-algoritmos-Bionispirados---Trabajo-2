@@ -1,6 +1,6 @@
 # =============================================================================
 # PARTE 1 - PROBABILIDAD DE INCUMPLIMIENTO (PD)
-# Configuración del preprocesamiento
+# Configuración general del pipeline de PD (preprocesamiento, modelos, evaluación, scorecard y app)
 # =============================================================================
 #
 # Uso (desde la carpeta parte_1/):
@@ -164,7 +164,7 @@ interpretabilidad:
   semilla: 2026
 
 # -----------------------------------------------------------------------------
-# APLICATIVO WEB INTERACTIVO (src/exportar_app.py -> docs/app/data/modelo_web.json)
+# APLICATIVO WEB INTERACTIVO (src/exportar_app.py -> docs/app/data/modelo_web.{json,js})
 # -----------------------------------------------------------------------------
 app_web:
   salida_json: ../docs/app/data/modelo_web.json

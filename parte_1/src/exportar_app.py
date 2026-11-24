@@ -602,10 +602,18 @@ def main() -> None:
     )
 
     ruta_salida.write_text(texto_json, encoding="utf-8")
+    ruta_salida_js = ruta_salida.with_suffix(".js")
+    ruta_salida_js.write_text(
+        "// Generado automáticamente por parte_1/src/exportar_app.py — NO editar manualmente.\n"
+        f"globalThis.__MODELO_WEB__ = {texto_json};\n",
+        encoding="utf-8",
+    )
     tamano_kb = ruta_salida.stat().st_size / 1024.0
+    tamano_js_kb = ruta_salida_js.stat().st_size / 1024.0
 
     print(f"=== EXPORTACIÓN APP WEB SCORECARD{' [DEMO]' if args.demo else ''} ===")
-    print(f"Archivo generado : {ruta_salida.resolve()} ({tamano_kb:.1f} KB)")
+    print(f"Archivo JSON     : {ruta_salida.resolve()} ({tamano_kb:.1f} KB)")
+    print(f"Archivo JS (file): {ruta_salida_js.resolve()} ({tamano_js_kb:.1f} KB)")
     print(f"Entradas totales : {paquete['meta']['n_entradas']} ({paquete['meta']['n_variables_originales']} variables)")
     print(f"MLP PD           : capas={mlp_pd_json['capas_ocultas']}, act={mlp_pd_json['activacion']}, semilla={mlp_pd_json['semilla']}")
     print(f"LGD Parte 2      : {'incluido (capas=' + str(lgd_json['capas_ocultas']) + ', act=' + lgd_json['activacion'] + ')' if lgd_json else 'no incluido'}")

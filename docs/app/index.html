@@ -19,7 +19,8 @@
   <link rel="stylesheet" href="../assets/css/base.css">
   <link rel="stylesheet" href="app.css">
 
-  <script type="module" src="app.js"></script>
+  <script defer src="data/modelo_web.js"></script>
+  <script defer src="app.js"></script>
 </head>
 
 <body>
@@ -34,7 +35,8 @@
         <button class="nav-btn" type="button" commandfor="dialog-metodologia" command="show-modal">
           Metodología y video
         </button>
-        <a class="nav-enlace" href="https://github.com/" target="_blank" rel="noopener noreferrer">Repositorio</a>
+        <a class="nav-enlace" href="https://github.com/Quique1405/Entrega-2_Algoritmos_Bio-Inspirados" target="_blank"
+          rel="noopener noreferrer">Repositorio</a>
       </nav>
     </div>
   </header>
@@ -71,12 +73,12 @@
     </section>
 
     <div id="banner-error" class="banner-alerta" role="alert" hidden>
-      <strong>No se pudo cargar <code>data/modelo_web.json</code>.</strong>
-      Si abriste este archivo directamente con doble clic (<code>file://</code>), el navegador bloquea la lectura local de JSON.
-      Ejecuta en la carpeta raíz del proyecto:
+      <strong>No se pudo cargar el paquete del modelo (<code>data/modelo_web.json</code> / <code>data/modelo_web.js</code>).</strong>
+      Regenera ambos archivos ejecutando desde <code>parte_1/</code>:
+      <code>..\.venv\Scripts\python.exe -m src.exportar_app --config configs/pd.yaml</code>,
+      o levanta un servidor local desde la raíz del proyecto con:
       <code>.\.venv\Scripts\python.exe -m http.server 8000 --directory docs</code>
-      y abre <code>http://localhost:8000/app/</code>. Si cambiaste los scripts Python, regenera el JSON con
-      <code>.\.venv\Scripts\python.exe -m src.exportar_app</code> desde <code>parte_1/</code>.
+      y abre <code>http://localhost:8000/app/</code>.
     </div>
 
     <div id="anunciador-estado" class="sr-only" aria-live="polite" aria-atomic="true"></div>
@@ -102,7 +104,7 @@
                   </div>
                   <span id="help-loan_amnt" class="campo-ayuda">Rango típico: 500 a 40.000 USD</span>
                   <input id="inp-loan_amnt" name="loan_amnt" type="number" inputmode="decimal"
-                    min="500" max="40000" step="250" required
+                    min="500" max="40000" step="any" required
                     aria-describedby="help-loan_amnt" data-error="err-loan_amnt">
                   <span id="err-loan_amnt" class="campo-error">
                     <span role="img" aria-label="Error">⚠</span>
@@ -118,7 +120,7 @@
                   </div>
                   <span id="help-int_rate" class="campo-ayuda">De 5,0 % a 31,0 % efectiva nominal anual</span>
                   <input id="inp-int_rate" name="int_rate" type="number" inputmode="decimal"
-                    min="5" max="31" step="0.1" required
+                    min="5" max="31" step="any" required
                     aria-describedby="help-int_rate" data-error="err-int_rate">
                   <span id="err-int_rate" class="campo-error">
                     <span role="img" aria-label="Error">⚠</span>
@@ -205,7 +207,7 @@
                   </div>
                   <span id="help-annual_inc" class="campo-ayuda">Ingreso anual declarado (2.000 a 1.000.000 USD)</span>
                   <input id="inp-annual_inc" name="annual_inc" type="number" inputmode="decimal"
-                    min="2000" max="1000000" step="1000" required
+                    min="2000" max="1000000" step="any" required
                     aria-describedby="help-annual_inc" data-error="err-annual_inc">
                   <span id="err-annual_inc" class="campo-error">
                     <span role="img" aria-label="Error">⚠</span>
@@ -221,7 +223,7 @@
                   </div>
                   <span id="help-dti" class="campo-ayuda">Pagos mensuales de deuda sobre ingreso mensual (0 a 50 %)</span>
                   <input id="inp-dti" name="dti" type="number" inputmode="decimal"
-                    min="0" max="50" step="0.5" required
+                    min="0" max="50" step="any" required
                     aria-describedby="help-dti" data-error="err-dti">
                   <span id="err-dti" class="campo-error">
                     <span role="img" aria-label="Error">⚠</span>
@@ -303,7 +305,7 @@
                   </div>
                   <span id="help-revol_util" class="campo-ayuda">Porcentaje del cupo de tarjetas actualmente usado (0 a 130 %)</span>
                   <input id="inp-revol_util" name="revol_util" type="number" inputmode="decimal"
-                    min="0" max="130" step="1" required
+                    min="0" max="130" step="any" required
                     aria-describedby="help-revol_util" data-error="err-revol_util">
                   <span id="err-revol_util" class="campo-error">
                     <span role="img" aria-label="Error">⚠</span>
@@ -317,7 +319,7 @@
                   </div>
                   <span id="help-meses_historial_credito" class="campo-ayuda">Meses desde la primera línea en el buró (12 a 700)</span>
                   <input id="inp-meses_historial_credito" name="meses_historial_credito" type="number" inputmode="numeric"
-                    min="12" max="700" step="6" required
+                    min="12" max="700" step="1" required
                     aria-describedby="help-meses_historial_credito" data-error="err-meses_historial_credito">
                   <span id="err-meses_historial_credito" class="campo-error">
                     <span role="img" aria-label="Error">⚠</span>
@@ -381,7 +383,7 @@
                     </div>
                     <span id="help-installment" class="campo-ayuda">Calculada según monto, tasa y plazo</span>
                     <input id="inp-installment" name="installment" type="number" inputmode="decimal"
-                      min="10" max="2000" step="1" required
+                      min="10" max="2000" step="any" required
                       aria-describedby="help-installment" data-error="err-installment">
                     <span id="err-installment" class="campo-error">
                       <span role="img" aria-label="Error">⚠</span>
@@ -395,7 +397,7 @@
                     </div>
                     <span id="help-funded_amnt" class="campo-ayuda">Habitualmente igual al monto solicitado</span>
                     <input id="inp-funded_amnt" name="funded_amnt" type="number" inputmode="decimal"
-                      min="500" max="40000" step="250" required
+                      min="500" max="40000" step="any" required
                       aria-describedby="help-funded_amnt" data-error="err-funded_amnt">
                     <span id="err-funded_amnt" class="campo-error">
                       <span role="img" aria-label="Error">⚠</span>
@@ -411,7 +413,7 @@
                     </div>
                     <span id="help-revol_bal" class="campo-ayuda">Saldo total en líneas rotativas</span>
                     <input id="inp-revol_bal" name="revol_bal" type="number" inputmode="decimal"
-                      min="0" max="300000" step="500" required
+                      min="0" max="300000" step="any" required
                       aria-describedby="help-revol_bal" data-error="err-revol_bal">
                     <span id="err-revol_bal" class="campo-error">
                       <span role="img" aria-label="Error">⚠</span>
@@ -823,10 +825,11 @@
         No es necesario editar HTML ni JavaScript al cambiar hiperparámetros o reentrenar la red neuronal, la regresión
         logística o el modelo LGD de Parte 2. Basta ejecutar desde <code>parte_1/</code>:
       </p>
-      <pre><code>.\.venv\Scripts\python.exe -m src.exportar_app --config configs/pd.yaml</code></pre>
+      <pre><code>..\.venv\Scripts\python.exe -m src.exportar_app --config configs/pd.yaml</code></pre>
       <p>
-        El script regenera <code>docs/app/data/modelo_web.json</code> y verifica automáticamente que la diferencia numérica
-        entre PyTorch / scikit-learn y los pesos exportados sea menor a 10<sup>−5</sup>.
+        El script regenera <code>docs/app/data/modelo_web.json</code> y <code>docs/app/data/modelo_web.js</code> (para uso
+        directo en modo <code>file://</code>) y verifica automáticamente que la diferencia numérica entre PyTorch /
+        scikit-learn y los pesos exportados sea menor a 10<sup>−5</sup>.
       </p>
 
       <h3>Video promocional del proyecto</h3>
