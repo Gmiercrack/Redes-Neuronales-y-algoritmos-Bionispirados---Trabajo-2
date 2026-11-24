@@ -5,9 +5,9 @@
 **Docente:** Juan David Ospina Arango  
 **Autores:** Gian Carlo Mier Estrada (Parte 1 · PD, Scorecard y App) · Nestor Enrique Mendoza Rueda (Parte 2 · LGD y Pérdida Esperada)
 
-- **Reporte técnico interactivo (GitHub Pages):** https://quique1405.github.io/Entrega-2_Algoritmos_Bio-Inspirados/
-- **Simulador interactivo de Scorecard (GitHub Pages):** https://quique1405.github.io/Entrega-2_Algoritmos_Bio-Inspirados/app/
-- **Repositorio:** https://github.com/Quique1405/Entrega-2_Algoritmos_Bio-Inspirados
+- **Reporte técnico interactivo (GitHub Pages):** https://gmiercrack.github.io/Redes-Neuronales-y-algoritmos-Bionispirados---Trabajo-2/
+- **Simulador interactivo de Scorecard (GitHub Pages):** https://gmiercrack.github.io/Redes-Neuronales-y-algoritmos-Bionispirados---Trabajo-2/app/
+- **Repositorio:** https://github.com/Gmiercrack/Redes-Neuronales-y-algoritmos-Bionispirados---Trabajo-2
 
 ---
 
