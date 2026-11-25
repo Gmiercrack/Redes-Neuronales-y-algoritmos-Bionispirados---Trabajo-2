@@ -40,7 +40,8 @@
       <nav aria-label="Principal">
         <a class="secundario" href="#referencias">Referencias</a>
         <a class="secundario" href="app/index.html">Aplicación</a>
-        <a class="secundario pronto" aria-disabled="true" href="#">Video</a>
+        <a class="secundario" href="https://drive.google.com/file/d/17uh0zZLba5SqkAg16Qf_esht64eKBgSp/view?usp=drive_link"
+          target="_blank" rel="noopener noreferrer">Video</a>
         <a class="secundario" href="https://github.com/Gmiercrack/Redes-Neuronales-y-algoritmos-Bionispirados---Trabajo-2"
           target="_blank" rel="noopener noreferrer">Repositorio</a>
         <button class="btn-indice" id="abrir-indice" type="button">Índice</button>
@@ -3179,8 +3180,56 @@ python -m http.server 8000 --directory docs
         <!-- ===================== 13. CONTRIBUCIONES ===================== -->
         <section id="contribuciones">
           <h2>Contribuciones y videos</h2>
-          <div class="esqueleto"><span class="pendiente">Pendiente</span> Aporte de Gian Carlo Mier Estrada y de Nestor
-            Enrique Mendoza Rueda, con enlaces a los videos individuales y al video promocional.</div>
+          <p class="antetitulo">Video promocional y aportes individuales del equipo</p>
+
+          <aside class="callout" data-tipo="nota">
+            <strong class="etq">Video promocional del proyecto (versión preliminar)</strong>
+            Presentación general de la problemática de riesgo de crédito, el sistema predictivo (PD, LGD y pérdida
+            esperada) y la demostración del simulador interactivo de Scorecard:
+            <a href="https://drive.google.com/file/d/17uh0zZLba5SqkAg16Qf_esht64eKBgSp/view?usp=drive_link"
+              target="_blank" rel="noopener noreferrer"><strong>Ver video promocional preliminar en Google Drive
+                ↗</strong></a>
+          </aside>
+
+          <h3>Videos de contribución individual</h3>
+          <p>A continuación se documentan los aportes específicos de cada integrante y el estado de sus videos de
+            contribución individual. Actualmente se encuentra publicado el video de contribución de <strong>Gian Carlo
+              Mier Estrada</strong> y se está a la espera del video de contribución de <strong>Nestor Enrique Mendoza
+              Rueda</strong>.</p>
+
+          <div class="versus">
+            <article style="--color-parte: var(--pd)">
+              <h4>Gian Carlo Mier Estrada</h4>
+              <p><strong>Rol y aportes principales:</strong> Parte 1 (Probabilidad de Incumplimiento · PD), auditoría de
+                partición temporal y análisis descriptivo (\(H_1\)–\(H_5\)), regresión logística con rejilla \(C\), MLP
+                con búsqueda aleatoria de 30 configuraciones y 30 semillas, evaluación (ROC, Gini, KS y calibración),
+                Scorecard crediticia, interpretabilidad por permutación agrupada, aplicativo web interactivo
+                (<code>docs/app/</code>), documentación de cacería de la alucinación y consolidación del reporte
+                técnico.</p>
+              <dl>
+                <dt>Video de contribución</dt>
+                <dd><a href="https://drive.google.com/file/d/1KxWnywIRGnMsmuaJr9PvH5rYPT540R8r/view?usp=drive_link"
+                    target="_blank" rel="noopener noreferrer">Ver video — Gian Carlo Mier Estrada ↗</a></dd>
+                <dt>Estado</dt>
+                <dd><span class="estado-uso si">Disponible</span></dd>
+              </dl>
+            </article>
+
+            <article style="--color-parte: var(--lgd)">
+              <h4>Nestor Enrique Mendoza Rueda</h4>
+              <p><strong>Rol y aportes principales:</strong> Parte 2 (Pérdida Dado Incumplimiento · LGD), diseño e
+                implementación del preprocesador compartido de 54 columnas (<code>preprocesador.joblib</code>),
+                definición de LGD sobre créditos castigados, regresión lineal de referencia, MLP fraccional con búsqueda
+                de 40 configuraciones y 30 semillas, contrato de intercambio (<code>intercambio/LEEME.md</code>) e
+                integración de la pérdida esperada (\(E[L] = PD \cdot LGD \cdot EAD\)).</p>
+              <dl>
+                <dt>Video de contribución</dt>
+                <dd>A la espera del video de contribución individual de Nestor Enrique Mendoza Rueda.</dd>
+                <dt>Estado</dt>
+                <dd><span class="pendiente">En espera</span></dd>
+              </dl>
+            </article>
+          </div>
         </section>
 
         <!-- ===================== REFERENCIAS ===================== -->

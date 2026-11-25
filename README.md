@@ -7,6 +7,8 @@
 
 - **Reporte técnico interactivo (GitHub Pages):** https://gmiercrack.github.io/Redes-Neuronales-y-algoritmos-Bionispirados---Trabajo-2/
 - **Simulador interactivo de Scorecard (GitHub Pages):** https://gmiercrack.github.io/Redes-Neuronales-y-algoritmos-Bionispirados---Trabajo-2/app/
+- **Video promocional (preliminar):** https://drive.google.com/file/d/17uh0zZLba5SqkAg16Qf_esht64eKBgSp/view?usp=drive_link
+- **Video de contribución individual — Gian Carlo Mier Estrada:** https://drive.google.com/file/d/1KxWnywIRGnMsmuaJr9PvH5rYPT540R8r/view?usp=drive_link *(a la espera del video de contribución de Nestor Enrique Mendoza Rueda)*
 - **Repositorio:** https://github.com/Gmiercrack/Redes-Neuronales-y-algoritmos-Bionispirados---Trabajo-2
 
 ---
